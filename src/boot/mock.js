@@ -9,5 +9,5 @@
 // the mock index only works in DEV
 if (process.env.DEV) {
   console.debug('\u001b[35m' + '[Boot] ', 'Mock')
-  require('@/mock/index')
+  //require('@/mock/index')
 }

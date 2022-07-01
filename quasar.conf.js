@@ -115,15 +115,29 @@ module.exports = configure(function (ctx) {
 
     // Full list of options: https://v2.quasar.dev/quasar-cli/quasar-conf-js#Property%3A-devServer
     devServer: {
-      https: false,
-      port: 8080,
+      // in order to proxy to srvsyr01, must set https
+      https: {
+        cert: fs.readFileSync(path.resolve(__dirname, './https/localhost+2.pem')),
+        key: fs.readFileSync(path.resolve(__dirname, './https/localhost+2-key.pem'))
+      },
+      port: 443, // the devServer <port> must same to nginx and srvsyr01, otherwise you will receive some <forbidden> result.
       open: false, // opens browser window automatically
-      // ****sage service disallow some request, don't use it here****
-      // please use in nignx to provide, both proxy this devServer and srysyr01
-      // the nginx service <port> must <same> to srvsyr01
-      // otherwise you will receive some forbideen result.
+
+      // please using nignx to provide proxy first, then let devServer proxy to nignx
       proxy: {
         '/Data': {
+          target: 'http://192.168.0.246'
+        },
+        '/auth': {
+          target: 'http://192.168.0.246'
+        },
+        '/trans': {
+          target: 'http://192.168.0.246'
+        },
+        '/api1': {
+          target: 'http://192.168.0.246'
+        },
+        '/print': {
           target: 'http://192.168.0.246'
         }
       }
@@ -144,16 +158,7 @@ module.exports = configure(function (ctx) {
       // directives: [],
 
       // Quasar plugins
-      plugins: [
-        'Cookies',
-        'Dialog',
-        'Loading',
-        'Notify',
-        'LoadingBar',
-        'LocalStorage',
-        'SessionStorage',
-        'Meta'
-      ]
+      plugins: ['Cookies', 'Dialog', 'Loading', 'Notify', 'LoadingBar', 'LocalStorage', 'SessionStorage', 'Meta']
     },
 
     // animations: 'all', // --- includes all animations
@@ -188,6 +193,7 @@ module.exports = configure(function (ctx) {
       chainWebpackCustomSW(chain) {
         chain
           .plugin('eslint-webpack-plugin')
+          // eslint-disable-next-line no-undef
           .use(ESLintPlugin, [{ extensions: ['js'] }])
       },
 

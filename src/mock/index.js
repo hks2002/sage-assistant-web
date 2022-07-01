@@ -16,6 +16,7 @@ if (process.env.DEV) {
   const mockfiles = require.context('/src/mock/services', false, /.js$/)
   mockfiles.keys().forEach((key) => {
     const file = key.slice(2)
+    console.debug('\u001b[35m' + '[Mock] ', 'Mounting', file)
     require(`/src/mock/services/${file}`)
   })
   console.debug('\u001b[35m' + '[Mock] ', 'Mounted')
