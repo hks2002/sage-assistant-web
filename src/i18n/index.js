@@ -7,8 +7,8 @@
  * @CopyRight      : Dedienne Aerospace China ZhuHai
  */
 // inport all language txt define
-import enUS from './en-US'
-import zhCN from './zh-CN'
+import enUS from './en-US.json'
+import zhCN from './zh-CN.json'
 
 // export all language
 export default {

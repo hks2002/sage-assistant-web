@@ -1,9 +1,6 @@
 {
   "eslint.validate": ["javascript", "javascriptreact", "typescript", "vue"],
-  "editor.codeActionsOnSave": [
-    "source.fixAll.eslint",
-    "source.organizeImports"
-  ],
+  "editor.codeActionsOnSave": ["source.fixAll.eslint", "source.organizeImports"],
   // formatting, when
   "editor.formatOnPaste": false,
   "editor.formatOnSave": true,
