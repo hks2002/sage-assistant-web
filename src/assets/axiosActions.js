@@ -20,31 +20,20 @@ const { t } = i18n.global
 const axiosGet = async (url, params) => {
   /* Don't forget return Axios result: return axios */
   return axios.get(url, { params: params }).then((resp) => {
-    const entity = url.replace('/Data/', '')
-
     if (resp.status == 200) {
       /* Success */
       return resp.data
-    } else if (resp.status == 204) {
-      /* Error */
-      Notify.create({
-        type: 'negative',
-        message: t('Get ' + entity + ' Failed')
-      })
-
-      return new Promise((res, rej) => {
-        rej('Failed')
-      })
     } else {
-      /* Unsupport */
+      let msg = t('Contact your admin')
+      if (resp.data.message) {
+        msg = resp.data.message
+      }
       Notify.create({
         type: 'negative',
-        message: t('Contact your admin')
+        message: msg
       })
 
-      return new Promise((res, rej) => {
-        rej('Failed')
-      })
+      return Promise.reject('Failed')
     }
   })
 }
@@ -52,31 +41,20 @@ const axiosGet = async (url, params) => {
 const axiosPost = async (url, data, axiosConfig) => {
   /* Don't forget return Axios result: return axios */
   return axios.post(url, data, axiosConfig).then((resp) => {
-    const entity = url.replace('/Data/', '')
-
     if (resp.status == 200) {
       /* Success */
       return resp.data
-    } else if (resp.status == 204) {
-      /* Error */
-      Notify.create({
-        type: 'negative',
-        message: t('Post ' + entity + ' Failed')
-      })
-
-      return new Promise((res, rej) => {
-        rej('Failed')
-      })
     } else {
-      /* Unsupport */
+      let msg = t('Contact your admin')
+      if (resp.data.message) {
+        msg = resp.data.message
+      }
       Notify.create({
         type: 'negative',
-        message: t('Contact your admin')
+        message: msg
       })
 
-      return new Promise((res, rej) => {
-        rej('Failed')
-      })
+      return Promise.reject('Failed')
     }
   })
 }
@@ -91,9 +69,7 @@ const axiosDelete = async (url, params) => {
       message: t('At least select one')
     })
 
-    return new Promise((res, rej) => {
-      rej('Failed')
-    })
+    return Promise.reject('Failed')
   } else {
     /* Donn't forget return Axios result: return axios */
     return axios.delete(url, { params: params }).then((resp) => {
@@ -101,32 +77,21 @@ const axiosDelete = async (url, params) => {
         /* Success */
         Notify.create({
           type: 'positive',
-          message: t('Delete ' + entity + '  Success')
+          message: t('Delete {entity} Success', { entity: entity })
         })
 
-        return new Promise((res) => {
-          res('Success')
-        })
-      } else if (resp.status == 204) {
-        /* Error */
-        Notify.create({
-          type: 'negative',
-          message: t('Delete ' + entity + ' Failed')
-        })
-
-        return new Promise((res, rej) => {
-          rej('Failed')
-        })
+        return new Promise.resolve('Success')
       } else {
-        /* Unsupport */
+        let msg = t('Contact your admin')
+        if (resp.data.message) {
+          msg = resp.data.message
+        }
         Notify.create({
           type: 'negative',
-          message: t('Contact your admin')
+          message: msg
         })
 
-        return new Promise((res, rej) => {
-          rej('Failed')
-        })
+        return Promise.reject('Failed')
       }
     })
   }
@@ -142,9 +107,7 @@ const axiosCreate = async (url, data) => {
       message: t('Can not be empty')
     })
 
-    return new Promise((res, rej) => {
-      rej('Failed')
-    })
+    return Promise.reject('Failed')
   } else {
     /* Donn't forget return Axios result: return axios */
     return axios.post(url, { data: data }).then((resp) => {
@@ -152,32 +115,22 @@ const axiosCreate = async (url, data) => {
         /* Success */
         Notify.create({
           type: 'positive',
-          message: t('Create ' + entity + '  Success')
+          message: t('Create {entity} Success', { entity: entity })
         })
 
-        return new Promise((res) => {
-          res('Success')
-        })
-      } else if (resp.status == 204) {
-        /* Error */
+        return new Promise.resolve('Success')
+      }
+      {
+        let msg = t('Contact your admin')
+        if (resp.data.message) {
+          msg = resp.data.message
+        }
         Notify.create({
           type: 'negative',
-          message: t('Create ' + entity + ' Failed')
+          message: msg
         })
 
-        return new Promise((res, rej) => {
-          rej('Failed')
-        })
-      } else {
-        /* Unsupport */
-        Notify.create({
-          type: 'negative',
-          message: t('Contact your admin')
-        })
-
-        return new Promise((res, rej) => {
-          rej('Failed')
-        })
+        return Promise.reject('Failed')
       }
     })
   }
@@ -193,9 +146,7 @@ const axiosModify = async (url, params, data) => {
       message: t('Must select one record')
     })
 
-    return new Promise((res, rej) => {
-      rej('Failed')
-    })
+    return new Promise.resolve('Failed')
   } else if (Object.keys(params)[0] === '0') {
     /* More than one Recoder */
     Notify.create({
@@ -203,9 +154,7 @@ const axiosModify = async (url, params, data) => {
       message: t('Must only one record')
     })
 
-    return new Promise((res, rej) => {
-      rej('Failed')
-    })
+    return new Promise.resolve('Failed')
   } else {
     /* Donn't forget return Axios result: return axios */
     return axios.put(url, { params: params, data: data }).then((resp) => {
@@ -213,17 +162,15 @@ const axiosModify = async (url, params, data) => {
         /* Success */
         Notify.create({
           type: 'positive',
-          message: t('Modify ' + entity + '  Success')
+          message: t('Modify {entity} Success', { entity: entity })
         })
 
-        return new Promise((res) => {
-          res('Success')
-        })
+        return new Promise.resolve('Success')
       } else if (resp.status == 204) {
         /* Error */
         Notify.create({
           type: 'negative',
-          message: t('Modify ' + entity + ' Failed')
+          message: t('Modify {entity} Failed', { entity: entity })
         })
 
         return new Promise((res, rej) => {

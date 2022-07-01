@@ -11,14 +11,13 @@ import { SessionStorage } from 'quasar'
 
 axios.interceptors.request.use(
   (config) => {
-    // Add xsrf header config.withCredentials
-    const xsrfValue = SessionStorage.getItem('XSRF-TOKEN')
+    const token = SessionStorage.getItem('authorization')
 
-    if (xsrfValue) {
-      const xsrfConfig = {
-        headers: { 'X-XSRF-TOKEN': xsrfValue }
+    if (token) {
+      const tokenCfg = {
+        headers: { 'authorization': token }
       }
-      Object.assign(config, xsrfConfig)
+      Object.assign(config, tokenCfg)
     }
 
     //console.debug('\u001b[31m' + '[Axios] ', 'Request config:', config)
