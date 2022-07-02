@@ -74,7 +74,7 @@ Util.extend(Mock.XHR.prototype, {
       that.dispatchEvent(new Event('readystatechange'))
     }
     function setResponse(data) {
-      data.hasOwnProperty('statusCode')
+      Object.prototype.hasOwnProperty.call(data, 'statusCode')
         ? (that.status = data.statusCode) &&
           (that.statusText = data.statusText) &&
           (that.responseText = JSON.stringify(data.data, null, 4))
