@@ -53,7 +53,8 @@ export function notifySuccess(message) {
     icon: 'fas fa-check-square',
     type: 'positive',
     position: 'top',
-    message: message
+    message: message,
+    html: true
   })
 }
 
@@ -62,7 +63,8 @@ export function notifyError(message) {
     icon: 'fas fa-exclamation-triangle',
     type: 'negative',
     position: 'top',
-    message: message
+    message: message,
+    html: true
   })
 }
 
@@ -71,7 +73,8 @@ export function notifyWaring(message) {
     icon: 'fas fa-exclamation-circle',
     type: 'warning',
     position: 'top',
-    message: message
+    message: message,
+    html: true
   })
 }
 
@@ -80,7 +83,8 @@ export function notifyInfo(message) {
     icon: 'fas fa-exclamation-square',
     type: 'info',
     position: 'top',
-    message: message
+    message: message,
+    html: true
   })
 }
 
@@ -89,7 +93,8 @@ export function notifyOnging(message) {
     icon: 'fas fa-spinner',
     type: 'ongoing',
     position: 'top',
-    message: message
+    message: message,
+    html: true
   })
 }
 // Notify
