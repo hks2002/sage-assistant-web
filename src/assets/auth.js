@@ -6,29 +6,26 @@
  * @FilePath       : \web2\src\assets\auth.js
  * @CopyRight      : Dedienne Aerospace China ZhuHai
  */
+import { axios } from '@/assets/axios'
+import { axiosGet } from '@/assets/axiosActions'
+import { notifyError } from '@/assets/common'
+import { SessionStorage } from 'quasar'
 
-import { getSessionStorage, setSessionStorage } from '@/assets/storage'
-import _indexOf from 'lodash/indexOf'
-
-export function setAuthority(json) {
+const setAuthority = (json) => {
   const str = JSON.stringify(json)
   const authorizations = str.match(/sessions\?f=([A-Z]+)/g)
   for (let i = 0; i < authorizations.length; ++i) {
     authorizations[i] = authorizations[i].replace('sessions?f=', '')
   }
-  setSessionStorage('authorizations', authorizations)
+  SessionStorage.set('authorizations', authorizations)
 }
 
-export function getAuthority() {
-  return getSessionStorage('authorizations')
-}
-
-export function isAuthorised(fun) {
+const isAuthorised = (fun) => {
   if (process.env.DEV) {
     return true
   }
-  const authorizations = getSessionStorage('authorizations')
-  const index = _indexOf(authorizations, fun)
+  const authorizations = SessionStorage.getItem('authorizations')
+  const index = authorizations.findIndex(fun)
   if (index > -1) {
     return true
   } else {
@@ -36,8 +33,62 @@ export function isAuthorised(fun) {
   }
 }
 
-export default {
+const doReLogin = async () => {
+  const token = SessionStorage.getItem('authorization')
+  if (!token) return Promise.resolve(false)
+
+  return axios
+    .post(
+      '/auth/login/submit',
+      {},
+      { headers: { authorization: token, accept: 'application/json' } }
+    )
+    .then(
+      (response) => {
+        return response.status === 200 ? true : false
+      },
+      (error) => {
+        notifyError(error.response.data.$diagnoses[0].$message)
+        return false
+      }
+    )
+}
+
+const fetchUserProfiles = async () => {
+  // post must have {}, if data is empty, otherwise forbidden
+  // sage return 201 status, don't use axiosPost
+  axios
+    .post(
+      '/api1/syracuse/collaboration/syracuse/userProfiles/$template/$workingCopies',
+      {}
+    )
+    .then((response) => {
+      const data = response.data
+      const userProfiles = {}
+      userProfiles.userName = `${data.user.firstName} ${data.user.lastName}`
+      userProfiles.userInfo = `${data.user.firstName} ${data.user.lastName}(${data.user.email})`
+      userProfiles.sageInfo = `${data.productName} ${data.selectedEndpoint.description}`
+      userProfiles.userId = data.user.$uuid
+      userProfiles.roleId = data.selectedRole.$uuid
+      userProfiles.locale = data.selectedLocale.code
+      userProfiles.localeDesc = data.selectedLocale.description
+      userProfiles.endpointId = data.selectedEndpoint.$uuid
+      SessionStorage.set('userProfiles', userProfiles)
+    })
+}
+
+const fetchAuthorityData = async () => {
+  axiosGet(
+    "/api1/syracuse/collaboration/syracuse/pages('x3.erp.EXPLOIT.home.$navigation')"
+  ).then((response) => {
+    setAuthority(response)
+  })
+}
+
+export {
   setAuthority,
-  getAuthority,
-  isAuthorised
+  isAuthorised,
+  doReLogin,
+  fetchUserProfiles,
+  fetchAuthorityData
 }

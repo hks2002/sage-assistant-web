@@ -29,8 +29,8 @@ export default route(function (/* { store, ssrContext } */) {
   const createHistory = process.env.SERVER
     ? createMemoryHistory
     : process.env.VUE_ROUTER_MODE === 'history' /* ❗️ Leave this as is ❗️  */
-    ? createWebHistory
-    : createWebHashHistory
+      ? createWebHistory
+      : createWebHashHistory
 
   const Router = createRouter({
     scrollBehavior: () => ({ left: 0, top: 0 }),
@@ -47,7 +47,10 @@ export default route(function (/* { store, ssrContext } */) {
   const pagesStore = usePagesStore()
 
   Router.beforeEach(async (to, from, next) => {
-    const token = getToken()
+    let token = getToken()
+    if (process.env.DEV) {
+      token = true
+    }
 
     if (!token) {
       // if not get login token, redirect to login //
@@ -61,8 +64,8 @@ export default route(function (/* { store, ssrContext } */) {
       // forward, backward doesn't have name, get name from matched array
       const idx =
         to.path === '/Login' ||
-        to.path === '/WaitInput' ||
-        to.path.startsWith('/Exception')
+          to.path === '/WaitInput' ||
+          to.path.startsWith('/Exception')
           ? -1
           : to.matched.findIndex((r) => r.name === to.name)
       if (idx >= 0) {
@@ -75,11 +78,11 @@ export default route(function (/* { store, ssrContext } */) {
         pagesStore.hasPage(nameWithParams)
           ? pagesStore.setActivePage(nameWithParams)
           : pagesStore.addPage({
-              id: nameWithParams,
-              name: name,
-              query: query,
-              params: params
-            })
+            id: nameWithParams,
+            name: name,
+            query: query,
+            params: params
+          })
       }
 
       // default, alway pass it

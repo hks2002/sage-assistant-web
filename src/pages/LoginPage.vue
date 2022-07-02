@@ -81,18 +81,20 @@
 </template>
 
 <script setup>
-import { setAuthority } from '@/assets/auth'
+import { fetchAuthorityData, fetchUserProfiles } from '@/assets/auth'
 import { axios } from '@/assets/axios'
-import { axiosGet, axiosPost } from '@/assets/axiosActions'
-import { ebus } from '@/assets/ebus'
-import { removeToken, setLoginData, setToken } from '@/assets/storage'
-import { useQuasar } from 'quasar'
+import { SessionStorage, useQuasar } from 'quasar'
 import { onMounted, ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
 import { Vue3Lottie } from 'vue3-lottie'
 
+// common vars
 const $q = useQuasar()
 const $router = useRouter()
+const { t } = useI18n()
+
+// page vars
 const isLgXs = $q.screen.gt.xs
 const isPwd = ref(true)
 const username = ref('')
@@ -101,7 +103,7 @@ const loading = ref(false)
 const loginMessage = ref('')
 
 onMounted(() => {
-  removeToken()
+  SessionStorage.remove('authorization')
 })
 
 // This function is from Sage login page, login.js
@@ -150,66 +152,33 @@ const doLogin = async () => {
   loading.value = true
   const token = authToken('basic', username.value, password.value)
 
-  await axiosPost(
-    '/auth/login/submit',
-    { username: username.value },
-    { headers: { authorization: token } }
-  )
+  await axios
+    .post(
+      '/auth/login/submit',
+      {},
+      { headers: { authorization: token, accept: 'application/json' } }
+    )
     .then(
-      (data) => {
-        if (data === '') {
-          /* empty means succuss */
-          setToken(token)
-          fetchLoginData()
-          fetchAuthorityData()
-          $router.push({ name: 'Home' })
+      (response) => {
+        if (response.status === 200) {
+          Promise.all([fetchUserProfiles(), fetchAuthorityData()]).then(() => {
+            SessionStorage.set('authorization', token)
+            $router.push({ name: 'Home' })
+          })
         } else {
-          removeToken()
-          const reg = /(?<=login_onload\().*(?=\))/
-
-          const txt = reg.exec(data)[0]
-          loginMessage.value = JSON.parse(txt).errorMessage
+          SessionStorage.remove('authorization')
+          loginMessage.value = t('Oops!')
         }
       },
-      () => {
-        removeToken()
-        loginMessage.value = t('Wrong happans!')
+      (error) => {
+        SessionStorage.remove('authorization')
+        loginMessage.value = error.response.data.$diagnoses[0].$message
       }
     )
     .finally(() => {
       loading.value = false
       $q.loadingBar.stop()
     })
-}
-
-const fetchLoginData = async () => {
-  // post must have {}, if data is empty, otherwise forbidden
-  // sage return 201 status, don't use axiosPost
-  await axios
-    .post(
-      '/api1/syracuse/collaboration/syracuse/userProfiles/$template/$workingCopies',
-      {}
-    )
-    .then((response) => {
-      const data = response.data
-      const loginData = {}
-      loginData.userInfo = `${data.user.firstName} ${data.user.lastName}(${data.user.email})`
-      loginData.sageInfo = `${data.productName} ${data.selectedEndpoint.description}`
-      loginData.userId = data.user.$uuid
-      loginData.roleId = data.selectedRole.$uuid
-      loginData.locale = data.selectedLocale.code
-      loginData.localeDesc = data.selectedLocale.description
-      setLoginData(loginData)
-      ebus.emit('updateLoginData')
-    })
-}
-
-const fetchAuthorityData = async () => {
-  await axiosGet(
-    "/api1/syracuse/collaboration/syracuse/pages('x3.erp.EXPLOIT.home.$navigation')"
-  ).then((response) => {
-    setAuthority(response)
-  })
 }
 </script>
 

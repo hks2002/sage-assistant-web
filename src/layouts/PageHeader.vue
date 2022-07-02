@@ -2,7 +2,7 @@
  * @Author         : Robert Huang<56649783@qq.com>
  * @Date           : 2022-03-25 11:01:23
  * @LastEditors    : Robert Huang<56649783@qq.com>
- * @LastEditTime   : 2022-05-30 00:38:19
+ * @LastEditTime   : 2022-06-24 18:57:49
  * @FilePath       : \web2\src\layouts\PageHeader.vue
  * @CopyRight      : Dedienne Aerospace China ZhuHai
 -->
@@ -41,7 +41,7 @@
           color="primary"
           v-model="site"
           :options="siteList"
-          @update:model-value="setCookieSite"
+          @update:model-value="changeSite"
         >
           <template #selected-item="{ opt }">
             <span class="text-white">{{ opt }}</span>
@@ -116,16 +116,10 @@
 import { axiosGet } from '@/assets/axiosActions'
 import { infoDialog } from '@/assets/common'
 import { ebus } from '@/assets/ebus'
-import {
-  getCookies,
-  getLoginData,
-  removeToken,
-  setCookies
-} from '@/assets/storage'
 import { usePagesStore } from '@/stores/pageManager'
-import { useQuasar } from 'quasar'
+import { LocalStorage, SessionStorage, useQuasar } from 'quasar'
 import languages from 'quasar/lang/index.json'
-import { onBeforeUnmount, onMounted, ref } from 'vue'
+import { onBeforeMount, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
 
@@ -151,44 +145,23 @@ const sageInfo = ref('Sage')
 const totalInformCount = ref(0)
 
 // languages vars
+// 'fr', 'de'
 const { locale, t } = useI18n()
 const appLanguages = languages.filter((lang) =>
-  ['en-US', 'zh-CN', 'fr', 'de'].includes(lang.isoName)
+  ['en-US', 'zh-CN'].includes(lang.isoName)
 )
 const langOptions = appLanguages.map((lang) => ({
   label: lang.nativeName,
   value: lang.isoName
 }))
 
-// events
-onMounted(() => {
-  if (getCookies('site')) {
-    site.value = getCookies('site')
-  } else {
-    site.value = 'ZHU'
-    setCookieSite()
-  }
-
-  axiosGet('/Data/Sites').then((data) => {
-    siteList.value = data
-    setCookies('siteList', siteList.value, 3600 * 24 * 7)
-  })
-
-  updateLoginData()
-  ebus.on('updateLoginData', updateLoginData)
-})
-
-onBeforeUnmount(() => {
-  ebus.off('updateLoginData', updateLoginData)
-})
-
 // actions
 const toggleLeftDrawer = () => {
   ebus.emit('toggleLeftDrawer')
 }
 
-const setCookieSite = () => {
-  setCookies('site', site.value, 3600 * 24 * 7)
+const changeSite = () => {
+  LocalStorage.set('site', site.value)
   ebus.emit('changeSite', site.value)
 }
 
@@ -202,17 +175,34 @@ const goHome = () => {
 }
 
 const doLogout = () => {
-  removeToken()
-  $router.push({ name: 'Login' })
+  SessionStorage.remove('authorization')
+  $router.push({ path: '/Login' })
 }
 
-const updateLoginData = () => {
-  const loginData = getLoginData()
-  if (loginData) {
-    userInfo.value = loginData.userInfo
-    sageInfo.value = loginData.sageInfo
+const updateUserProfiles = () => {
+  const userProfiles = SessionStorage.getItem('userProfiles')
+  if (userProfiles) {
+    userInfo.value = userProfiles.userInfo
+    sageInfo.value = userProfiles.sageInfo
   }
 }
+
+// events
+onBeforeMount(() => {
+  updateUserProfiles()
+
+  if (LocalStorage.getItem('site')) {
+    site.value = LocalStorage.getItem('site')
+  } else {
+    LocalStorage.set('site', 'ZHU')
+    site.value = 'ZHU'
+  }
+
+  axiosGet('/Data/Sites').then((data) => {
+    siteList.value = data
+    LocalStorage.set('siteList', siteList.value)
+  })
+})
 
 const changeLanguage = (val) => {
   // This change $t() in template automaticly,
