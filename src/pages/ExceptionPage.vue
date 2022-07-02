@@ -1,7 +1,7 @@
 <template>
-  <page>
+  <q-page>
     <ExceptionLottieVue :ErrorCode="ErrorCode" />
-  </page>
+  </q-page>
 </template>
 
 <script setup>
