@@ -6,326 +6,155 @@
  * @FilePath       : \web2\src\assets\sageSvcs.js
  * @CopyRight      : Dedienne Aerospace China ZhuHai
  */
+import { doReLogin } from '@/assets/auth'
 import { axios } from '@/assets/axios'
 import { notifyError } from '@/assets/common'
-import { SessionStorage } from 'quasar'
+import { ACT, actData, doAct, noRevise, selData, setData, sSData, tgt } from '@/assets/sageActs'
+import { date, SessionStorage } from 'quasar'
+import { v4 as uuidv4 } from 'uuid'
 
-const getSageSessionUrl = async (fnc) => {
-  const trackngId = new Date().getTime()
-  SessionStorage.set('lastTrackngId', trackngId)
+const srvEnv = process.env.DEV ? 'EXPLOITEST' : 'EXPLOIT'
 
-  if (
-    SessionStorage.getItem('lastSessionType') === fnc &&
-    SessionStorage.getItem('lastSessionSuccessed')
-  ) {
-    return SessionStorage.getItem('lastSessionUrl')
-  }
+/**
+ * Every action needs get session first.
+ * @param {*} transPage  fun: GESSOH, GESPOH trans:'2~1, 2~1' ......
+ * @returns session url
+ */
+const getSageSessionUrl = async (transPage) => {
+  // reuse last session url
+  const url = SessionStorage.getItem(transPage)
+  if (url) return url
 
-  const sessionRequestUrl =
-    '/trans/x3/erp/EXPLOIT/$sessions?f=' +
-    fnc +
-    '/2//M' +
-    '&trackngId=' +
-    trackngId
+  const fnc = transPage.substring(0, 6)
+  const trans = transPage.substring(6)
+
+  const sessionRequestUrl = `/trans/x3/erp/${srvEnv}/$sessions?f=${fnc}/2//M&trackngId=${uuidv4()}`
 
   const sageSessionUrl = await axios
     .post(sessionRequestUrl, { settings: {} })
-    .then((response) => {
-      const location = response.headers.location.split('?')[0]
-      if (response.status === 200) {
-        if (response.data.sap.target.type === 'box') {
-          notifyError(response.data.sap.target.box.li)
-          return '/#/Exception/403'
+    .then(
+      async (response) => {
+        // Sage set function session url at headers.location
+        // Having  headers.location means success
+        if (response.status === 200 && response.headers.location) {
+          const url = response.headers.location
+          // if provide transaction
+          if (trans) {
+            const rtn = await doAct(url, transPage, selData(ACT.SELECT_LIST, tgt('B', 'bA', 0), trans))
+            if (!rtn) return false
+          }
+          SessionStorage.set(transPage, url)
+          return url
         }
-        SessionStorage.set('lastSessionType', fnc)
-        SessionStorage.set('lastSessionUrl', location)
-        SessionStorage.set('lastSessionSuccessed', true)
-        return location
-      } else if (
-        response.status === 202 &&
-        response.data.phase === 'Tracking'
-      ) {
-        SessionStorage.set('lastSessionSuccessed', false)
-        getSageSessionUrl(fnc)
-        return location
-      } else {
-        SessionStorage.set('lastSessionSuccessed', false)
-        return '/#/Exception/500'
+
+        // If server return pop message, always return false
+        if (response.status === 200 && response.data.sap && response.data.sap.target.type === 'box') {
+          notifyError(response.data.sap.target.box.li)
+          return false
+        }
+
+        // If return data is not application/json, means false, mostly is login page
+        if (response.status === 200 && response.headers['content-type'] !== 'application/json') {
+          const rtn = await doReLogin()
+          if (rtn) return getSageSessionUrl(transPage)
+        }
+
+        // unmatch above knonw condition, always return false
+        SessionStorage.remove(transPage)
+        return false
+      },
+      (error) => {
+        console.log(error)
+        SessionStorage.remove(transPage)
+        return false
       }
-    })
+    )
     .catch((error) => {
       console.log(error)
-      SessionStorage.set('lastSessionSuccessed', false)
-      return '/#/Exception/500'
+      SessionStorage.remove(transPage)
+      return false
     })
 
   return sageSessionUrl
 }
 
-const doAction = async (sageSessionUrl, action, data) => {
-  return await axios
-    .put(
-      sageSessionUrl +
-        '/requestSvc?act=' +
-        action +
-        '&trackngId=' +
-        SessionStorage.getItem('lastTrackngId'),
-      data
-    )
-    .then(() => {
-      SessionStorage.set('lastSessionSuccessed', true)
-      return true
-    })
-    .catch((error) => {
-      console.log(error)
-      SessionStorage.set('lastSessionSuccessed', false)
-      return false
-    })
+const transPageDefaultVal = {
+  'GESSOH2~1': 'TCC100008',
+  'GESSOH2~2': 'TLC110001',
+  'GESPOH3~1': 'TCF100001',
+  GESSDH: 'TBL100001',
+  GESSIH: 'TFC100001'
 }
 
-const selectListItemByLine = async (sageSessionUrl, line) => {
-  const data = {
-    act: 1052,
-    fld: { fmtKind: 'SHOW', ctx: {}, notModified: true },
-    param: { target: { win: 'B', xid: 'bA', nl: 0 }, std: [line] },
-    tech: {}
-  }
-
-  return await axios
-    .put(
-      sageSessionUrl +
-        '/requestSvc?act=1052&trackngId=' +
-        SessionStorage.getItem('lastTrackngId'),
-      data
-    )
-    .then((response) => {
-      if (response.status === 200) {
-        SessionStorage.set('lastSessionSuccessed', true)
-        return true
-      } else if (response.status === 202) {
-        SessionStorage.set('lastSessionSuccessed', true)
-        return false
-      } else {
-        SessionStorage.set('lastSessionSuccessed', false)
-        return false
-      }
-    })
-    .catch((error) => {
-      console.log(error)
-      SessionStorage.set('lastSessionSuccessed', false)
-      return false
-    })
+/**
+ * Return select transaction val by provided orderNO
+ * @param {*} orderNO
+ * @returns
+ */
+const getSalesOrderTransaction = (orderNO) => {
+  const reg1 = /^[A-Z](CC|DSR|REP|RCL)[\d]{6,7}$/
+  const reg2 = /^[A-Z](OL|LC)[\d]{6}$/
+  return reg1.test(orderNO) ? '2~1' : reg2.test(orderNO) ? '2~2' : '2~1'
 }
 
-// some times 1051 doesn't return the request record, please using 781 edit instead.
-const selectListItemByValue = async (sageSessionUrl, val) => {
-  const data = {
-    act: 1051,
-    fld: { fmtKind: 'SHOW', ctx: {}, notModified: false, v: '' },
-    param: { target: { win: 'B', xid: 'bA', nl: 0 }, std: [val] },
-    tech: {}
-  }
-  return await axios
-    .put(
-      sageSessionUrl +
-        '/requestSvc?act=1051&trackngId=' +
-        SessionStorage.getItem('lastTrackngId'),
-      data
-    )
-    .then((response) => {
-      if (response.status === 200) {
-        SessionStorage.set('lastSessionSuccessed', true)
-        return true
-      } else if (response.status === 202) {
-        SessionStorage.set('lastSessionSuccessed', true)
-        return false
-      } else {
-        SessionStorage.set('lastSessionSuccessed', false)
-        return false
-      }
-    })
-    .catch((error) => {
-      console.log(error)
-      SessionStorage.set('lastSessionSuccessed', false)
-      return false
-    })
+/**
+ * Return select transaction val by provided invoiceNO
+ * @param {*} invoiceNO
+ * @returns
+ */
+const getInvoiceTransaction = (invoiceNO) => {
+  const reg1 = /[A-Z]FC.*/
+  const reg2 = /[A-Z]PC.*/
+  return reg1.test(invoiceNO) ? '3~2' : reg2.test(invoiceNO) ? '3~3' : '3~2'
 }
 
-const selectListItemWithEditByValue = async (sageSessionUrl, val) => {
-  const data = {
-    act: 781,
-    fld: { fmtKind: 'EDIT', ctx: {}, notModified: false, v: val },
-    param: { target: { win: 'B', xid: 'bA', nl: 0 }, sudo: [[], ['7~' + val]] },
-    tech: {}
-  }
-  return await axios
-    .put(
-      sageSessionUrl +
-        '/requestSvc?act=781&trackngId=' +
-        SessionStorage.getItem('lastTrackngId'),
-      data
-    )
-    .then((response) => {
-      if (response.status === 200) {
-        SessionStorage.set('lastSessionSuccessed', true)
-        return true
-      } else if (response.status === 202) {
-        SessionStorage.set('lastSessionSuccessed', true)
-        return false
-      } else {
-        SessionStorage.set('lastSessionSuccessed', false)
-        return false
-      }
-    })
-    .catch((error) => {
-      console.log(error)
-      SessionStorage.set('lastSessionSuccessed', false)
-      return false
-    })
-}
-
-const enterPrintPage = async (sageSessionUrl) => {
-  // enter the report print page
-  const data = {
-    act: 2820,
-    fld: { fmtKind: 'SHOW', ctx: {}, notModified: false, v: '' },
-    tech: {}
-  }
-
-  return await axios
-    .put(
-      sageSessionUrl +
-        '/requestSvc?act=2820 &trackngId=' +
-        SessionStorage.getItem('lastTrackngId'),
-      data
-    )
-    .then(() => {
-      SessionStorage.set('lastSessionSuccessed', true)
-      return true
-    })
-    .catch((error) => {
-      console.log(error)
-      SessionStorage.set('lastSessionSuccessed', false)
-      return false
-    })
-}
-
-const doActionsForSagePrint = async (sageSessionUrl, rpt, val) => {
-  switch (rpt) {
-    case 'SA': {
-      let sessionType = ''
-      const reg1 = /^[A-Z](CC|DSR|REP|RCL|LC)[\d]{6,7}$/
-      const reg2 = /^[A-Z]LC[\d]{6}$/
-      if (reg1.test(val)) {
-        sessionType = '2~1'
-      } else if (reg2.test(val)) {
-        sessionType = '2~2'
-      } else {
-        sessionType = '2~1'
-      }
-
-      if (!(await selectListItemByLine(sageSessionUrl, sessionType))) {
-        return false
-      }
-      if (!(await selectListItemWithEditByValue(sageSessionUrl, val))) {
-        return false
-      }
-      if (!(await enterPrintPage(sageSessionUrl))) {
-        return false
-      }
-
-      return true
-    }
-    case 'Delivery': {
-      if (!(await selectListItemWithEditByValue(sageSessionUrl, val))) {
-        return false
-      }
-      if (!(await enterPrintPage(sageSessionUrl))) {
-        return false
-      }
-      if (!(await selectListItemByLine(sageSessionUrl, '7~1:BONLIV!1'))) {
-        return false
-      }
-
-      return true
-    }
-    case 'Invoice': {
-      let sessionType = ''
-      const reg1 = /[A-Z]FC.*/
-      const reg2 = /[A-Z]PC.*/
-      if (reg1.test(val)) {
-        sessionType = '2~2'
-      } else if (reg2.test(val)) {
-        sessionType = '2~3'
-      } else {
-        sessionType = '2~2'
-      }
-
-      if (!(await selectListItemByLine(sageSessionUrl, sessionType))) {
-        return false
-      }
-      if (!(await selectListItemWithEditByValue(sageSessionUrl, val))) {
-        return false
-      }
-      if (!(await enterPrintPage(sageSessionUrl))) {
-        return false
-      }
-
-      return true
-    }
-    case 'PurchaseOrder': {
-      let reportType = ''
-      if (val2) {
-        reportType = '7~1:BONTTC2!1'
-      } else {
-        reportType = '7~1:BONCDE2!1'
-      }
-      // Sage need orderno with orderday, val= orday~orderno
-      if (!(await selectListItemByValue(sageSessionUrl, val))) {
-        return false
-      }
-      if (!(await selectListItemByLine(sageSessionUrl, reportType))) {
-        return false
-      }
-      if (!(await enterPrintPage(sageSessionUrl))) {
-        return false
-      }
-
-      return true
-    }
-    default:
-      return false
-  }
-}
-
-const getSagePrintUUID = async (sageSessionUrl) => {
+/**
+ * After call it, call getSageReportUrl also
+ *
+ * If success, localStorage will set 'printUUID'
+ *
+ * @param {*} url
+ * @returns printUUID
+ */
+const getSagePrintUUID = async (url) => {
   // send the print action
   const sagePrintUUID = await axios
-    .put(
-      sageSessionUrl +
-        '/requestSvc?act=2125&trackngId=' +
-        SessionStorage.getItem('lastTrackngId'),
-      {
-        act: 2125,
-        fld: { fmtKind: 'EDIT', ctx: {}, notModified: true },
-        tech: {}
-      }
-    )
+    .put(`${url}/requestSvc?act=${ACT.GET_PRINT_URL}&trackngId=${uuidv4()}`, actData(ACT.GET_PRINT_URL))
     .then(
       (response) => {
-        SessionStorage.set('lastSessionSuccessed', true)
-        return response.data.sap.jobs.report.submitted.pop().uuid // here need
+        // message means error
+        if (response.data.sap.target.type === 'box') {
+          notifyError(response.data.sap.target.box.li)
+          return false
+        }
+
+        // success
+        if (response.data.sap && response.data.sap.jobs && response.data.sap.jobs.report) {
+          const uuid = response.data.sap.jobs.report.submitted[0].uuid // here need
+          localStorage.setItem('printUUID', uuid)
+          return uuid // here need
+        }
+        // default false
+        return false
       },
       (error) => {
         console.log(error)
-        SessionStorage.set('lastSessionSuccessed', false)
-        return '/#/Exception/500'
+        return false
       }
     )
   return sagePrintUUID
 }
 
-const getSageReportUrl = async (printUUID) => {
+/**
+ * Before call it, get 'printUUID' from getSagePrintUUID return or set it to localStorage
+ * @param {*} printUUID
+ * @param {*} cbk [Option] callback function (cnt)
+ * @returns
+ */
+const getSageReportUrl = async (printUUID, cbk) => {
+  printUUID = printUUID ? printUUID : localStorage.getItem('printUUID')
+  let cnt = 0
+
   function sleep(millisecond) {
     return new Promise((resolve) => {
       setTimeout(() => {
@@ -336,42 +165,260 @@ const getSageReportUrl = async (printUUID) => {
 
   let status = 202
   do {
-    await sleep(1000)
-    status = await axios
-      .get("/print/srvedi01.dedaero.lan:1890/$getState('" + printUUID + "')")
-      .then(
-        (response) => response.status,
-        (error) => {
-          console.log(error)
-          return 500
-        }
-      )
+    await sleep(100)
+    cnt++
+    if (typeof cbk === 'function') {
+      cbk(cnt)
+    }
+
+    status = await axios.get(`/print/srvedi01.dedaero.lan:1890/$getState('${printUUID}')`).then(
+      (response) => response.status,
+      (error) => {
+        console.log(error)
+        return 500
+      }
+    )
   } while (status === 202) // 202 creating, 201 created
 
   if (status === 201) {
-    const sageReportUrl = await axios
-      .get("/print/srvedi01.dedaero.lan:1890/$getReport('" + printUUID + "')")
-      .then(
-        (response) => response.headers.location,
-        (error) => {
-          console.log(error)
-          return '/#/Exception/500'
-        }
-      )
+    const sageReportUrl = await axios.get(`/print/srvedi01.dedaero.lan:1890/$getReport('${printUUID}')`).then(
+      (response) => response.headers.location,
+      (error) => {
+        console.log(error)
+        return '/#/Exception/500'
+      }
+    )
     return sageReportUrl
   } else {
     return '/#/Exception/500'
   }
 }
 
+/**
+ * Going to print page, if need choose report, please provide it.
+ * @param {*} url
+ * @param {*} transPage
+ * @param {*} xid
+ * @param {*} val
+ * @param {*} rpt
+ * @returns
+ */
+const doActPrint = async (url, transPage, xid, val, rpt) => {
+  // enter print page
+  let rtn = await doAct(url, transPage, setData(ACT.ENTER_PRINT_PAGE, tgt('B', xid, 0), val))
+  if (!rtn) return false
+
+  // if provide rpt, select report
+  if (rpt) {
+    rtn = await doAct(url, transPage, selData(ACT.SELECT_LIST, tgt('C', 'bA', 0), rpt))
+    if (!rtn) return false
+  }
+
+  // print report
+  rtn = await getSagePrintUUID(url)
+  if (!rtn) return false
+
+  return true
+}
+
+/**
+ * Go to other record, let system doesn't lock current record.
+ *
+ * ***Important, call it after every operate***
+ *
+ * @param {*} url
+ * @param {*} transPage
+ * @param {*} xid
+ * @param {*} val
+ */
+const doActGo = async (url, transPage, xid, val) => {
+  return await doAct(url, transPage, setData(ACT.INPUT_ENTER, tgt('B', xid, 0), val))
+}
+
+/**
+ * Call an batch actions for print an report
+ * @param {*} url
+ * @param {*} rpt
+ * @param {*} val
+ * @param {*} val2
+ * @returns
+ */
+const doActsForSagePrint = async (url, rpt, val, val2) => {
+  switch (rpt) {
+    case 'SA': {
+      const transPage = 'GESSOH' + getSalesOrderTransaction(val)
+
+      let rtn = await doActPrint(url, transPage, 'AA5', val)
+      // call it, let system do not lock record
+      await doActGo(url, transPage, 'AA5', transPageDefaultVal[transPage])
+
+      return rtn
+    }
+    case 'Delivery': {
+      const transPage = 'GESSDH'
+
+      let rtn = await doActPrint(url, 'GESSDH', 'AA6', val, '7~1:BONLIV!1')
+      // call it, let system do not lock record
+      await doActGo(url, transPage, 'AA6', transPageDefaultVal[transPage])
+
+      return rtn
+    }
+    case 'Invoice': {
+      const transPage = 'GESSIH' + getInvoiceTransaction(val)
+
+      let rtn = await doActPrint(url, transPage, 'AA6', val)
+      // call it, let system do not lock record
+      await doActGo(url, transPage, 'AA6', transPageDefaultVal[transPage])
+
+      return rtn
+    }
+
+    case 'PurchaseOrder': {
+      const transPage = 'GESPOH' + '3~1'
+      // select nor purchase order
+      // select report code true= tax include
+      const select = val2 ? '7~1:BONTTC2!1' : '7~1:BONCDE2!1'
+
+      let rtn = await doActPrint(url, transPage, 'AA5', val, select)
+      // call it, let system do not lock record
+      await doActGo(url, transPage, 'AA5', transPageDefaultVal[transPage])
+
+      return rtn
+    }
+    default:
+      return false
+  }
+}
+
+/**
+ * Modify Sage value
+ * @param {*} transPage
+ * @param {*} mainTgt
+ * @param {*} mainVal
+ * @param {*} modLine
+ * @param {*} modTgt
+ * @param {*} modifyVal
+ * @returns
+ */
+const updateSageField = async (transPage, mainTgt, mainVal, modLine, modTgt, modifyVal) => {
+  const url = await getSageSessionUrl(transPage)
+  let rtn = false
+
+  // input target, here must await,
+  // ***DO NOT DELETE***
+  // be confirmed, without it, the first call will be failed.
+  rtn = await doActGo(url, transPage, mainTgt, mainVal)
+  if (!rtn) return false
+
+  // edit mode
+  if (modLine == 0) {
+    rtn = await doAct(url, transPage, sSData(ACT.REVISE_MAIN, tgt('B', mainTgt, 0), mainVal, tgt('B', modTgt, modLine)))
+  } else {
+    rtn = await doAct(url, transPage, sSData(ACT.REVISE_SUB, tgt('B', mainTgt, 0), mainVal, tgt('B', modTgt, modLine)))
+  }
+
+  if (!rtn) {
+    // here could not await, make response time less to user
+    doActGo(url, transPage, mainTgt, transPageDefaultVal[transPage])
+    return false
+  }
+
+  // Prod ENV need choose revise or not, here always choose no revise
+  if (srvEnv === 'EXPLOIT') {
+    rtn = await doAct(url, transPage, noRevise)
+    if (!rtn) {
+      // here could not await, make response time less to user
+      doActGo(url, transPage, mainTgt, transPageDefaultVal[transPage])
+      return false
+    }
+  }
+
+  // modify and save
+  rtn = await doAct(url, transPage, setData(ACT.SAVE, tgt('B', modTgt, modLine), modifyVal))
+  if (!rtn) {
+    // here could not await, make response time less to user
+    doActGo(url, transPage, mainTgt, transPageDefaultVal[transPage])
+    return false
+  }
+
+  // go to the default record, let system do not lock record
+  // here could not await, make response time less to user
+  doActGo(url, transPage, mainTgt, transPageDefaultVal[transPage])
+
+  return true
+}
+
+/**
+ * Set SAD ready status
+ * @param {*} orderno
+ * @param {*} line
+ * @param {*} ready
+ * @returns
+ */
+const updateSageSADReady = async (orderno, line, ready) => {
+  const transPage = 'GESSOH' + getSalesOrderTransaction(orderno)
+  return await updateSageField(transPage, 'AA5', orderno, line, 'EA51', parseInt(ready))
+}
+
+/**
+ * Set delivery ready status
+ * @param {*} orderno
+ * @param {*} line
+ * @param {*} ready
+ * @returns
+ */
+const updateSageDeliveryReady = async (orderno, line, ready) => {
+  const transPage = 'GESSOH' + getSalesOrderTransaction(orderno)
+  return await updateSageField(transPage, 'AA5', orderno, line, 'EA52', parseInt(ready))
+}
+
+/**
+ * Set QC check pass status
+ * @param {*} orderno
+ * @param {*} line
+ * @param {*} ready
+ * @returns
+ */
+const updateSageProductReady = async (orderno, line, ready) => {
+  const transPage = 'GESSOH' + getSalesOrderTransaction(orderno)
+  return await updateSageField(transPage, 'AA5', orderno, line, 'EA54', parseInt(ready))
+}
+
+/**
+ * Update planed delivey date for order line
+ * @param {*} orderno
+ * @param {*} line
+ * @param {*} planDate
+ * @returns
+ */
+const updateSageDeliveryPlanDate = async (orderno, line, planDate) => {
+  const transPage = 'GESSOH' + getSalesOrderTransaction(orderno)
+  const fmtStr = date.formatDate(planDate, 'YYYYMMDD')
+  return await updateSageField(transPage, 'AA5', orderno, line, 'EA29', fmtStr)
+}
+
+/**
+ * Update Ack date by purchase order line
+ * @param {*} orderno
+ * @param {*} line
+ * @param {*} ackDate
+ * @returns
+ */
+const updateSagePurchaseAckDate = async (orderno, line, ackDate) => {
+  const transPage = 'GESPOH' + '3~1'
+  const fmtStr = date.formatDate(ackDate, 'YYYYMMDD')
+  return await updateSageField(transPage, 'AA5', orderno, line, 'CA66', fmtStr)
+}
+
 export {
   getSageSessionUrl,
-  doAction,
-  doActionsForSagePrint,
-  selectListItemByLine,
-  selectListItemByValue,
-  selectListItemWithEditByValue,
-  enterPrintPage,
-  getSagePrintUUID,
-  getSageReportUrl
+  getSalesOrderTransaction,
+  getInvoiceTransaction,
+  doActsForSagePrint,
+  getSageReportUrl,
+  updateSageSADReady,
+  updateSageProductReady,
+  updateSageDeliveryReady,
+  updateSageDeliveryPlanDate,
+  updateSagePurchaseAckDate
 }
