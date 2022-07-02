@@ -24,7 +24,7 @@ const usePagesStore = defineStore('pages', {
     pages: [
       {
         name: 'Home',
-        label: 'Home',
+        label: t('Home'),
         id: 'Home',
         query: {},
         params: {},
