@@ -33,15 +33,14 @@ Mock.mock(RegExp('^(/Data/TobeDealWithOrderLine)' + '.*'), () => {
         CustomerName: () => {
           return Mock.mock('@sentence(3, 5)')
         },
-        OrderCategory:
-          /(Methods|InteralProd|ExternalProd|Design|Stock|Trading|Services|SalesAdmin)/
+        OrderCategory: /(Methods|InteralProd|ExternalProd|Design|Stock|Trading|Services|SalesAdmin)/
       }
     ]
   })
   return list.data
 })
 
-Mock.mock(RegExp('^(/Data/TobeDelivery)' + '.*'), () => {
+Mock.mock(/^(\/Data\/TobeDelivery)/, () => {
   console.debug('\u001b[35m' + '[Mocking] ', 'TobeDelivery')
   // list = {data:[{},{}]}
 
@@ -170,6 +169,215 @@ Mock.mock(RegExp('^(/Data/TobeClosedWO)' + '.*'), () => {
         'Qty|1-100': 1,
         OrderDate: () => {
           return Mock.mock('@date("yyyy-MM-dd")')
+        }
+      }
+    ]
+  })
+  return list.data
+})
+
+Mock.mock(RegExp('^(/Data/TobeTracking)' + '.*'), () => {
+  console.debug('\u001b[35m' + '[Mocking] ', 'TrackingProject')
+  // list = {data:[{},{}]}
+  const list = Mock.mock({
+    'data|200-500': [
+      {
+        ItemNO: /\d{1,2}/,
+        OrderNO: /(Z|H|S|T|M)CC\d{6}/,
+        OrderLine: /\d{1,2}/,
+        TrackingNO: /(Z|H|S|T|M)CC\d{6}-\d{1,2}/,
+        OrderProjectNO: /(Z|H|S|T|M)CC\d{6}-\d{1,2}/,
+        OrderType: /(NOR|REP)-(Services|Trading|ExternalProd|Services|Methods|Methods|Trading)/,
+        OrderPN: /([A-Z]){6}/,
+        OrderPNDesc: () => {
+          return Mock.mock('@sentence(3, 5)')
+        },
+        OrderQTY: () => {
+          return Mock.mock('@integer(1, 100)')
+        },
+        OrderPrice: () => {
+          return Mock.mock('@integer(20, 100000)')
+        },
+        OrderCurrency: /(RMB|USD|EUR|HKD)/,
+        CustomerCode: /0000\d{1}/,
+        CustomerName: () => {
+          return Mock.mock('@sentence(3, 5)')
+        },
+        OrderDate: () => {
+          return Mock.mock('@date("yyyy-MM-dd")')
+        },
+        OrderRequestDate: () => {
+          return Mock.mock('@date("yyyy-MM-dd")')
+        },
+        OrderPlanedDate: () => {
+          return Mock.mock('@date("yyyy-MM-dd")')
+        },
+        OrderSADFlag: /(1|2)/,
+        OrderProductFlag: /(1|2)/,
+        OrderDeliveryFlag: /(1|2)/,
+        DaysLeft: () => {
+          return Mock.mock('@integer(-300, 100)')
+        },
+        BomProjectNO: /(Z|H|S|T|M)CC\d{6}-\d{1,2}/,
+        WorkOrderNO: /(Z|H|S|T|M)OF\d{6}/,
+        BomSeq: /\d{1,2}000/,
+        BomPN: /([A-Z]){6}/,
+        BomDesc: () => {
+          return Mock.mock('@sentence(3, 5)')
+        },
+        BomQTY: () => {
+          return Mock.mock('@integer(1, 100)')
+        },
+        BomUnit: 'UN',
+        ShortQty: () => {
+          return Mock.mock('@integer(1, 100)')
+        },
+        AllQty: () => {
+          return Mock.mock('@integer(1, 100)')
+        },
+        BomRequestDate: () => {
+          return Mock.mock('@date("yyyy-MM-dd")')
+        },
+        StockPN: /([A-Z]){6}/,
+        AvaQty: () => {
+          return Mock.mock('@integer(1, 100)')
+        },
+        PurchaseNO: /(Z|H|S|T|M)CF\d{6}/,
+        PurchaseLine: /\d{1,2}/,
+        PurchaseProjectNO: /(Z|H|S|T|M)CC\d{6}-\d{1,2}/,
+        PurchasePN: /([A-Z]){6}/,
+        PurchasePNDesc: () => {
+          return Mock.mock('@sentence(3, 5)')
+        },
+        PurchaseQTY: () => {
+          return Mock.mock('@integer(1, 100)')
+        },
+        PurchaseUnit: 'UN',
+        VendorCode: /0000\d{1}/,
+        VendorName: () => {
+          return Mock.mock('@sentence(3, 5)')
+        },
+        PurchaseAckDate: () => {
+          return Mock.mock('@date("yyyy-MM-dd")')
+        },
+        PurchaseExpectDate: () => {
+          return Mock.mock('@date("yyyy-MM-dd")')
+        },
+        PurchaseDate: () => {
+          return Mock.mock('@date("yyyy-MM-dd")')
+        },
+        PurchaseUser: /0000[A-Z]{1}/,
+        ReceiptNO: /(Z|H|S|T|M)RA\d{6}/,
+        ReceiptLine: /\d{1,2}000/,
+        ReceiptPurchaseNO: /(Z|H|S|T|M)CF\d{6}/,
+        ReceiptPurchaseLine: /\d{1,2}000/,
+        ReceiptDate: () => {
+          return Mock.mock('@date("yyyy-MM-dd")')
+        },
+        Receipter: /0000[A-Z]{1}/,
+        ReceiptQty: () => {
+          return Mock.mock('@integer(1, 100)')
+        },
+        ClaimProjectNO: /(Z|H|S|T|M)CC\d{6}-\d{1,2}/,
+        ClaimNO: /(Z|H|S|T|M)(DSRE|DSRP|DSRC)\d{6}/,
+        ClaimNote: () => {
+          return Mock.mock('@sentence(3, 5)')
+        },
+        ClaimNC0Cri: /(0|1|2)/,
+        ClaimNC0Type: /([A-Z]){2}/,
+        ClaimNC0Date: () => {
+          return Mock.mock('@date("yyyy-MM-dd")')
+        },
+        ClaimNC0Desc: () => {
+          return Mock.mock('@sentence(3, 5)')
+        },
+        ClaimNC1Cri: /(0|1|2)/,
+        ClaimNC1Type: /([A-Z]){2}/,
+        ClaimNC1Date: () => {
+          return Mock.mock('@date("yyyy-MM-dd")')
+        },
+        ClaimNC1Desc: () => {
+          return Mock.mock('@sentence(3, 5)')
+        },
+        ClaimNC2Cri: /(0|1|2)/,
+        ClaimNC2Type: /([A-Z]){2}/,
+        ClaimNC2Date: () => {
+          return Mock.mock('@date("yyyy-MM-dd")')
+        },
+        ClaimNC2Desc: () => {
+          return Mock.mock('@sentence(3, 5)')
+        },
+        ClaimNC3Cri: /(0|1|2)/,
+        ClaimNC3Type: /([A-Z]){2}/,
+        ClaimNC3Date: () => {
+          return Mock.mock('@date("yyyy-MM-dd")')
+        },
+        ClaimNC3Desc: () => {
+          return Mock.mock('@sentence(3, 5)')
+        },
+        ClaimNC4Cri: /(0|1|2)/,
+        ClaimNC4Type: /([A-Z]){2}/,
+        ClaimNC4Date: () => {
+          return Mock.mock('@date("yyyy-MM-dd")')
+        },
+        ClaimNC4Desc: () => {
+          return Mock.mock('@sentence(3, 5)')
+        },
+        ClaimNC5Cri: /(0|1|2)/,
+        ClaimNC5Type: /([A-Z]){2}/,
+        ClaimNC5Date: () => {
+          return Mock.mock('@date("yyyy-MM-dd")')
+        },
+        ClaimNC5Desc: () => {
+          return Mock.mock('@sentence(3, 5)')
+        },
+        ClaimNC6Cri: /(0|1|2)/,
+        ClaimNC6Type: /([A-Z]){2}/,
+        ClaimNC6Date: () => {
+          return Mock.mock('@date("yyyy-MM-dd")')
+        },
+        ClaimNC6Desc: () => {
+          return Mock.mock('@sentence(3, 5)')
+        },
+        ClaimNC7Cri: /(0|1|2)/,
+        ClaimNC7Type: /([A-Z]){2}/,
+        ClaimNC7Date: () => {
+          return Mock.mock('@date("yyyy-MM-dd")')
+        },
+        ClaimNC7Desc: () => {
+          return Mock.mock('@sentence(3, 5)')
+        },
+        ClaimNC8Cri: /(0|1|2)/,
+        ClaimNC8Type: /([A-Z]){2}/,
+        ClaimNC8Date: () => {
+          return Mock.mock('@date("yyyy-MM-dd")')
+        },
+        ClaimNC8Desc: () => {
+          return Mock.mock('@sentence(3, 5)')
+        },
+        ClaimNC9Cri: /(0|1|2)/,
+        ClaimNC9Type: /([A-Z]){2}/,
+        ClaimNC9Date: () => {
+          return Mock.mock('@date("yyyy-MM-dd")')
+        },
+        ClaimNC9Desc: () => {
+          return Mock.mock('@sentence(3, 5)')
+        },
+        ClaimNC10Cri: /(0|1|2)/,
+        ClaimNC10Type: /([A-Z]){2}/,
+        ClaimNC10Date: () => {
+          return Mock.mock('@date("yyyy-MM-dd")')
+        },
+        ClaimNC10Desc: () => {
+          return Mock.mock('@sentence(3, 5)')
+        },
+        ClaimNC11Cri: /(0|1|2)/,
+        ClaimNC11Type: /([A-Z]){2}/,
+        ClaimNC11Date: () => {
+          return Mock.mock('@date("yyyy-MM-dd")')
+        },
+        ClaimNC11Desc: () => {
+          return Mock.mock('@sentence(3, 5)')
         }
       }
     ]

@@ -9,16 +9,20 @@
       indicator-color="primary"
       narrow-indicator
     >
-      <q-tab name="Delivery" label="Delivery" />
-      <q-tab name="Receive" label="Receive" />
-      <q-tab name="New-Order" label="New-Order" />
-      <q-tab name="Short-Bom" label="Short-Bom" />
-      <q-tab name="Orphan-WO" label="Orphan-WO" />
+      <q-tab name="Tracking" :label="$t('Tracking')" />
+      <q-tab name="Delivery" :label="$t('Delivery')" />
+      <q-tab name="Receive" :label="$t('Receive')" />
+      <q-tab name="New-Order" :label="$t('New-Order')" />
+      <q-tab name="Short-Bom" :label="$t('Short-Bom')" />
+      <q-tab name="Orphan-WO" :label="$t('Orphan-WO')" />
     </q-tabs>
 
     <q-separator />
 
     <q-tab-panels v-model="tab" animated keep-alive :style="tabPanelHeight">
+      <q-tab-panel name="Tracking" class="q-pa-none">
+        <OpenSaleItems :site="site" :style="tabPanelMinHeight" />
+      </q-tab-panel>
       <q-tab-panel name="Delivery" class="q-pa-none">
         <echart-todo-delivery
           :site="site"
@@ -68,13 +72,14 @@
 <script setup>
 import { isAuthorised } from '@/assets/auth'
 import { ebus } from '@/assets/ebus'
-import { getCookies } from '@/assets/storage'
 import EchartTodoClosedWO from '@/components/echarts/EchartTodoClosedWO.vue'
 import EchartTodoDealWithOrderLine from '@/components/echarts/EchartTodoDealWithOrderLine.vue'
 import EchartTodoDelivery from '@/components/echarts/EchartTodoDelivery.vue'
 import EchartTodoPurchaseBom from '@/components/echarts/EchartTodoPurchaseBom.vue'
 import EchartTodoReceive from '@/components/echarts/EchartTodoReceive.vue'
 import ExceptionLottie from '@/components/lottie/ExceptionLottie.vue'
+import OpenSaleItems from '@/components/todo/OpenSaleItems.vue'
+import { LocalStorage } from 'quasar'
 import { computed, onBeforeUnmount, ref } from 'vue'
 
 /* eslint-disable */
@@ -84,8 +89,8 @@ const props = defineProps({
 })
 
 // page vars
-const tab = ref('Delivery')
-const site = ref(getCookies('site'))
+const tab = ref('Tracking')
+const site = ref(LocalStorage.getItem('site'))
 
 // computed vars
 const tabPanelHeight = computed(() => {
