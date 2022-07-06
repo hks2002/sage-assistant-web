@@ -4,7 +4,12 @@
     <thead style="position: sticky; top: 0px; z-index: 1">
       <tr>
         <td :colspan="colspan" class="bg-teal text-h6 text-white shadow-2">
-          AccountNO: {{ accountNO }} Balance of {{ year }}
+          {{
+            $t('AccountNO: {accountNO} Balance of {year}', {
+              accountNO: accountNO,
+              year: year
+            })
+          }}
           <q-btn dense flat icon="fas fa-download" @click="download()" />
         </td>
       </tr>
@@ -103,15 +108,7 @@ const doUpdate = () => {
   colspan.value = props.showMovement ? colspan.value + 13 : colspan.value
   colspan.value = props.showBalance ? colspan.value + 13 : colspan.value
 
-  axiosGet(
-    '/Data/FinancialBalance' +
-      '?Site=' +
-      props.site +
-      '&AccountNO=' +
-      props.accountNO +
-      '&Year=' +
-      props.year
-  )
+  axiosGet('/Data/FinancialBalance' + '?Site=' + props.site + '&AccountNO=' + props.accountNO + '&Year=' + props.year)
     .then((response) => {
       balanceItems.value = response
     })
@@ -122,7 +119,7 @@ const doUpdate = () => {
 
 const download = () => {
   const header = ['Site', 'AccountNO', 'Currency']
-  for (idx = 0; idx <= 12; idx++) {
+  for (let idx = 0; idx <= 12; idx++) {
     if (props.showBalance) {
       header.push('B' + idx)
     }
@@ -137,11 +134,7 @@ const download = () => {
     }
   }
 
-  jsonToExcel(
-    header,
-    balanceItems.value,
-    'AccountNO:' + props.accountNO + ' Balance of ' + props.year
-  )
+  jsonToExcel(header, balanceItems.value, 'AccountNO:' + props.accountNO + ' Balance of ' + props.year)
 }
 
 // events

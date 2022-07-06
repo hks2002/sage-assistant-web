@@ -10,7 +10,7 @@
         outlined
         debounce="1000"
         :label="$t('AccountNO')"
-        hint="such as: 1001000 or 1001000,1001001,1001002"
+        :hint="$t('such as: 1001000 or 1001000,1001001,1001002')"
         hide-hint
         hide-bottom-space
         input-style="font-weight:bolder;font-size:25px;text-transform:uppercase"
@@ -24,10 +24,25 @@
         :label="$t('Year')"
         class="col-1"
       />
-      <q-toggle v-model="showBalance" dense label="Balance" class="col-1" />
-      <q-toggle v-model="showDebit" dense label="Debit" class="col-1" />
-      <q-toggle v-model="showCredit" dense label="Credit" class="col-1" />
-      <q-toggle v-model="showMovement" dense label="Movement" class="col-1" />
+      <q-toggle
+        v-model="showBalance"
+        dense
+        :label="$t('Balance')"
+        class="col-1"
+      />
+      <q-toggle v-model="showDebit" dense :label="$t('Debit')" class="col-1" />
+      <q-toggle
+        v-model="showCredit"
+        dense
+        :label="$t('Credit')"
+        class="col-1"
+      />
+      <q-toggle
+        v-model="showMovement"
+        dense
+        :label="$t('Movement')"
+        class="col-1"
+      />
     </div>
     <q-list class="q-pa-sm" v-if="accountNO">
       <div class="row" style="padding: 0px; height: 250px">
@@ -86,16 +101,15 @@ import EchartFiancialAccountBalanceVue from '@/components/echarts/EchartAccountB
 import QMarkupTableBalanceVue from '@/components/Financials/QMarkupTableBalance.vue'
 import ExceptionLottieVue from '@/components/lottie/ExceptionLottie.vue'
 import WaitInputLottieVue from '@/components/lottie/WaitInputLottie.vue'
-import { date } from 'quasar'
+import { date, LocalStorage } from 'quasar'
 import { computed, onBeforeUnmount, ref } from 'vue'
-
 /* eslint-disable */
 const props = defineProps({
   pageHeight: { type: Number, default: 0 /* not passing  */ }
 })
 
 // common vars
-const site = ref(getCookies('site'))
+const site = ref(LocalStorage.getItem('site'))
 
 // page vars
 const accountNO = ref(null)

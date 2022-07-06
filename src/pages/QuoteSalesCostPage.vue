@@ -82,8 +82,8 @@
       indicator-color="primary"
       narrow-indicator
     >
-      <q-tab name="YourSite" label="Your-Site" />
-      <q-tab name="AllSites" label="All-Sites" />
+      <q-tab name="YourSite" :label="$t('Your-Site')" />
+      <q-tab name="AllSites" :label="$t('All-Sites')" />
     </q-tabs>
 
     <q-tab-panels v-model="tab" keep-alive>
@@ -103,8 +103,18 @@
           <template v-slot:top>
             <q-toolbar class="bg-teal text-white shadow-2">
               <q-toolbar-title class="text-left"
-                >Products of group2 [{{ categoryCode }}] and PN [{{ pnRoot }}]
-                in {{ site }} from {{ dateFrom }} to {{ dateTo }}
+                >{{
+                  $t(
+                    'Products of group2 {categoryCode} and PN {pnRoot} in {site} from {dateFrom} to {dateTo}',
+                    {
+                      categoryCode: categoryCode,
+                      pnRoot: pnRoot,
+                      site: site,
+                      dateFrom: dateFrom,
+                      dateTo: dateTo
+                    }
+                  )
+                }}
                 <q-btn dense flat icon="fas fa-download" @click="download()" />
               </q-toolbar-title>
             </q-toolbar>
@@ -132,8 +142,17 @@
           <template v-slot:top>
             <q-toolbar class="bg-teal text-white shadow-2">
               <q-toolbar-title class="text-left"
-                >Products of group2 [{{ categoryCode }}] and PN [{{ pnRoot }}]
-                in all sites from {{ dateFrom }} to {{ dateTo }}
+                >{{
+                  $t(
+                    'Products of group2 {categoryCode} and PN {pnRoot} in all sites from {dateFrom} to {dateTo}',
+                    {
+                      categoryCode: categoryCode,
+                      pnRoot: pnRoot,
+                      dateFrom: dateFrom,
+                      dateTo: dateTo
+                    }
+                  )
+                }}
                 <q-btn
                   dense
                   flat

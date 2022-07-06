@@ -106,8 +106,7 @@ const setEchart = () => {
   eChart.setOption(
     {
       title: {
-        text:
-          t('Total Amount') + '(' + props.dateFrom + '-->' + props.dateTo + ')',
+        text: `${t('Total Amount')} ( ${props.dateFrom}-->${props.dateTo})`,
         subtext: '',
         left: 'center'
       },
@@ -115,7 +114,7 @@ const setEchart = () => {
       toolbox: defaultToolbox(
         dimensions,
         data,
-        t('Total Amount') + '(' + props.dateFrom + '-->' + props.dateTo + ')'
+        `${t('Total Amount')} ( ${props.dateFrom}-->${props.dateTo})`
       ),
       tooltip: defaultTooltip,
       xAxis: {

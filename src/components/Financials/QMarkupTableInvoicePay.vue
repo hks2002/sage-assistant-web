@@ -4,8 +4,12 @@
     <thead style="position: sticky; top: 0px; z-index: 1">
       <tr>
         <td :colspan="colspan" class="bg-teal text-h6 text-white shadow-2">
-          Invoice Pay of customer {{ customerCode }} from {{ dateFrom }} to
-          {{ dateTo }}
+          {{
+            $t(
+              'Invoice Pay of customer {customerCode} from {dateFrom} to {dateTo}',
+              { customerCode: customerCode, dateFrom: dateFrom, dateTo: dateTo }
+            )
+          }}
           <q-btn dense flat icon="fas fa-download" @click="download()" />
         </td>
       </tr>

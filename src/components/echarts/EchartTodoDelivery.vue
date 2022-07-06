@@ -2,7 +2,7 @@
  * @Author         : Robert Huang<56649783@qq.com>
  * @Date           : 2022-03-25 11:01:23
  * @LastEditors    : Robert Huang<56649783@qq.com>
- * @LastEditTime   : 2022-05-29 03:39:26
+ * @LastEditTime   : 2022-06-02 11:45:51
  * @FilePath       : \web2\src\components\echarts\EchartTodoDelivery.vue
  * @CopyRight      : Dedienne Aerospace China ZhuHai
 -->
@@ -78,7 +78,9 @@ const dimensions = [
 
 // computed vars
 const title = computed(() => {
-  return t('Products to be deliveried to customers') + ' [' + props.site + ']'
+  return t('Products to be deliveried to customers [{site}]', {
+    site: props.site
+  })
 })
 
 // actions

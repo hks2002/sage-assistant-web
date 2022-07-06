@@ -98,7 +98,7 @@ const download = () => {
   jsonToExcel(
     header,
     customerOpenItems.value,
-    props.customerCode + '-' + t('OpenItems')
+    t('{customerCode} OpenItems', { customerCode: props.customerCode })
   )
 }
 

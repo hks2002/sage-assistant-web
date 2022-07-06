@@ -138,13 +138,10 @@ const setEchart = () => {
   // data is ready,set echart option
   eChart.setOption({
     title: {
-      text:
-        t('Delivery History') +
-        '(' +
-        props.dateFrom +
-        '-->' +
-        props.dateTo +
-        ')',
+      text: t('Delivery History ({dateFrom}-->{dateTo})', {
+        dateFrom: props.dateFrom,
+        dateTo: props.dateTo
+      }),
       subtext: '',
       left: 'center'
     },
@@ -152,7 +149,10 @@ const setEchart = () => {
     toolbox: defaultToolbox(
       dimensions,
       data,
-      t('Delivery History') + '(' + props.dateFrom + '-->' + props.dateTo + ')'
+      t('Delivery History ({dateFrom}-->{dateTo})', {
+        dateFrom: props.dateFrom,
+        dateTo: props.dateTo
+      })
     ),
     tooltip: defaultTooltip,
     dataZoom: defaultDataZoom('x'),

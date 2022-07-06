@@ -3,12 +3,10 @@
     <thead style="position: sticky; top: 0px; z-index: 1">
       <tr>
         <td colspan="2" class="bg-teal text-white shadow-2 col-grow">
-          {{ $t('Stock count result of') }} {{ site }}, {{ $t('Total Qty') }}:{{
-            S2N(sumQty, 0)
-          }}
-          {{ $t('Total cost') }}:{{ S2N(sumCost) }}, {{ $t('Products Qty') }}:{{
-            S2N(sumProductQty, 0)
-          }}
+          {{ $t('Stock count result of {site}', { site: site }) }},
+          {{ $t('Total Qty') }}:{{ S2N(sumQty, 0) }} {{ $t('Total cost') }}:{{
+            S2N(sumCost)
+          }}, {{ $t('Products Qty') }}:{{ S2N(sumProductQty, 0) }}
           {{ $t('Products cost') }}:{{ S2N(sumProductCost) }},
           {{ $t('Others Qty') }}:{{ S2N(sumOtherQty, 0) }}
           {{ $t('Others cost') }}:{{ S2N(sumOtherCost) }}
@@ -65,14 +63,12 @@
 import { axiosGet } from '@/assets/axiosActions'
 import { ebus } from '@/assets/ebus'
 import { jsonToExcel, jsonToTable } from 'assets/dataUtils'
-import { getCookies } from 'assets/storage'
 import _forEach from 'lodash/forEach'
 import _groupBy from 'lodash/groupBy'
 import _sumBy from 'lodash/sumBy'
-import { date, Dialog } from 'quasar'
+import { date, Dialog, LocalStorage } from 'quasar'
 import { onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
-
 const props = defineProps({
   PNfilter: {
     type: String,
@@ -84,7 +80,7 @@ const props = defineProps({
 // common vars
 const { t } = useI18n()
 const showLoading = ref(false)
-const site = ref(getCookies('site'))
+const site = ref(LocalStorage.getItem('site'))
 
 // component vars
 let data = []
@@ -155,7 +151,7 @@ const showHistory = (pn) => {
       const message = jsonToTable(
         header,
         history,
-        pn + t(' Stock History at ') + site.value
+        t('{pn} Stock History at {site}', { pn: pn, site: site.value })
       )
 
       Dialog.create({
@@ -193,7 +189,11 @@ const download = () => {
   _forEach(strPNData, (value) => {
     value.PN = '#' + value.PN
   })
-  jsonToExcel(header, strPNData, site.value + ' Stock Count-' + nowTime)
+  jsonToExcel(
+    header,
+    strPNData,
+    t('{site} Stock Count {nowTime})', { site: site.value, nowTime: nowTime })
+  )
 }
 
 const S2N = (S, n) => {

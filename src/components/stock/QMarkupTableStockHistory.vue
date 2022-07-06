@@ -2,7 +2,7 @@
  * @Author         : Robert Huang<56649783@qq.com>
  * @Date           : 2022-04-01 16:30:58
  * @LastEditors    : Robert Huang<56649783@qq.com>
- * @LastEditTime   : 2022-05-29 03:12:44
+ * @LastEditTime   : 2022-07-06 13:53:52
  * @FilePath       : \web2\src\components\stock\QMarkupTableStockHistory.vue
  * @CopyRight      : Dedienne Aerospace China ZhuHai
 -->
@@ -11,8 +11,7 @@
     <thead style="position: sticky; top: 0px; z-index: 1">
       <tr>
         <td colspan="17" class="bg-teal text-white shadow-2">
-          {{ site }} {{ $t('Stock History') }}
-          <span v-if="PnOrName">of {{ PnOrName }} </span> {{ $t('from') }}
+          {{ site }} {{ $t('Stock History') }} <span v-if="PnOrName">of {{ PnOrName }} </span> {{ $t('from') }}
           {{ dateFrom }} {{ $t('to') }}
           {{ dateTo }}
           <q-btn dense flat icon="fas fa-download" @click="download()" />
@@ -65,7 +64,7 @@
 import { axiosGet } from '@/assets/axiosActions'
 import { jsonToExcel } from '@/assets/dataUtils'
 import { ebus } from '@/assets/ebus'
-import { getCookies } from '@/assets/storage'
+import { LocalStorage } from 'quasar'
 import { onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 
@@ -78,7 +77,7 @@ const props = defineProps({
 // common vars
 const { t } = useI18n()
 const showLoading = ref(false)
-const site = ref(getCookies('site'))
+const site = ref(LocalStorage.getItem('site'))
 
 // component vars
 const stockHistory = ref([])
@@ -122,15 +121,19 @@ const download = () => {
     'CreateUser',
     'CreateDate'
   ]
-  const strPNData = data.value
+  const strPNData = stockHistory.value
   // PN with #
-  _forEach(strPNData, (value) => {
+  strPNData.forEach((value) => {
     value.PN = '#' + value.PN
   })
   jsonToExcel(
     header,
     strPNData,
-    site.value + t(' Stock History-') + props.dateFrom + '_' + props.dateTo
+    t('{site} Stock History-{dateFrom}_{dateTo}', {
+      site: site.value,
+      dateFrom: props.dateFrom,
+      dateTo: props.dateTo
+    })
   )
 }
 

@@ -75,7 +75,7 @@ const dimensions = [
 
 // computed vars
 const title = computed(() => {
-  return t('New order lines need to be deal with ') + ' [' + props.site + ']'
+  return t('New order lines need to be deal with {site}', { site: props.site })
 })
 
 // actions

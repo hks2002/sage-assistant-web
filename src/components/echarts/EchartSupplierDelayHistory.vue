@@ -130,13 +130,7 @@ const setEchart = () => {
   eChart.setOption(
     {
       title: {
-        text:
-          t('Delay History') +
-          '(' +
-          props.dateFrom +
-          '-->' +
-          props.dateTo +
-          ')',
+        text: `${t('Delay History')} ( ${props.dateFrom}-->${props.dateTo})`,
         subtext: '',
         left: 'center'
       },
@@ -144,7 +138,7 @@ const setEchart = () => {
       toolbox: defaultToolbox(
         dimensions,
         data,
-        t('Delay History') + '(' + props.dateFrom + '-->' + props.dateTo + ')'
+        `${t('Delay History')} ( ${props.dateFrom}-->${props.dateTo})`
       ),
       tooltip: defaultTooltip,
       dataZoom: defaultDataZoom('x'),

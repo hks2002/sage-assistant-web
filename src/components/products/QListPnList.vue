@@ -4,7 +4,7 @@
       <q-item-label
         class="text-teal"
         style="font-weight: bolder; font-size: 20px"
-        >Part Number Info
+        >{{ $t('Part Number Info') }}
       </q-item-label>
     </q-item>
     <template v-for="Pn in pnsInFamily" :key="Pn.ROWID">

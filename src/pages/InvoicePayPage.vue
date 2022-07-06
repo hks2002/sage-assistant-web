@@ -59,16 +59,15 @@ import QSelectAxios from '@/components/.controls/QSelectAxios.vue'
 import QMarkupTableInvoicePayVue from '@/components/Financials/QMarkupTableInvoicePay.vue'
 import ExceptionLottieVue from '@/components/lottie/ExceptionLottie.vue'
 import WaitInputLottieVue from '@/components/lottie/WaitInputLottie.vue'
-import { date } from 'quasar'
+import { date, LocalStorage } from 'quasar'
 import { computed, onBeforeUnmount, ref } from 'vue'
-
 /* eslint-disable */
 const props = defineProps({
   pageHeight: { type: Number, default: 0 /* not passing  */ }
 })
 
 // common vars
-const site = ref(getCookies('site'))
+const site = ref(LocalStorage.getItem('site'))
 
 // page vars
 const customerCode = ref(null)

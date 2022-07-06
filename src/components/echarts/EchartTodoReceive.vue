@@ -2,7 +2,7 @@
  * @Author         : Robert Huang<56649783@qq.com>
  * @Date           : 2022-03-25 11:01:23
  * @LastEditors    : Robert Huang<56649783@qq.com>
- * @LastEditTime   : 2022-05-29 01:51:59
+ * @LastEditTime   : 2022-06-02 10:26:40
  * @FilePath       : \web2\src\components\echarts\EchartTodoReceive.vue
  * @CopyRight      : Dedienne Aerospace China ZhuHai
 -->
@@ -80,12 +80,9 @@ const dimensions = [
 
 // computed vars
 const title = computed(() => {
-  return (
-    t('BOMs purchased from suppliers and to be received ') +
-    ' [' +
-    props.site +
-    ']'
-  )
+  return t('BOMs purchased from suppliers and to be received [{site}]', {
+    site: props.site
+  })
 })
 
 // actions

@@ -100,7 +100,7 @@ const download = () => {
   jsonToExcel(
     header,
     supplierOpenItems.value,
-    props.supplierCode + '-' + t('OpenItems')
+    t('{supplierCode} OpenItems', { supplierCode: props.supplierCode })
   )
 }
 
