@@ -25,7 +25,9 @@ const isAuthorised = (fun) => {
     return true
   }
   const authorizations = SessionStorage.getItem('authorizations')
-  const index = authorizations.findIndex(fun)
+  const index = authorizations.findIndex((auth) => {
+    return auth === fun
+  })
   if (index > -1) {
     return true
   } else {
@@ -37,58 +39,39 @@ const doReLogin = async () => {
   const token = SessionStorage.getItem('authorization')
   if (!token) return Promise.resolve(false)
 
-  return axios
-    .post(
-      '/auth/login/submit',
-      {},
-      { headers: { authorization: token, accept: 'application/json' } }
-    )
-    .then(
-      (response) => {
-        return response.status === 200 ? true : false
-      },
-      (error) => {
-        notifyError(error.response.data.$diagnoses[0].$message)
-        return false
-      }
-    )
+  return axios.post('/auth/login/submit', {}, { headers: { authorization: token, accept: 'application/json' } }).then(
+    (response) => {
+      return response.status === 200 ? true : false
+    },
+    (error) => {
+      notifyError(error.response.data.$diagnoses[0].$message)
+      return false
+    }
+  )
 }
 
 const fetchUserProfiles = async () => {
   // post must have {}, if data is empty, otherwise forbidden
   // sage return 201 status, don't use axiosPost
-  axios
-    .post(
-      '/api1/syracuse/collaboration/syracuse/userProfiles/$template/$workingCopies',
-      {}
-    )
-    .then((response) => {
-      const data = response.data
-      const userProfiles = {}
-      userProfiles.userName = `${data.user.firstName} ${data.user.lastName}`
-      userProfiles.userInfo = `${data.user.firstName} ${data.user.lastName}(${data.user.email})`
-      userProfiles.sageInfo = `${data.productName} ${data.selectedEndpoint.description}`
-      userProfiles.userId = data.user.$uuid
-      userProfiles.roleId = data.selectedRole.$uuid
-      userProfiles.locale = data.selectedLocale.code
-      userProfiles.localeDesc = data.selectedLocale.description
-      userProfiles.endpointId = data.selectedEndpoint.$uuid
-      SessionStorage.set('userProfiles', userProfiles)
-    })
+  axios.post('/api1/syracuse/collaboration/syracuse/userProfiles/$template/$workingCopies', {}).then((response) => {
+    const data = response.data
+    const userProfiles = {}
+    userProfiles.userName = `${data.user.firstName} ${data.user.lastName}`
+    userProfiles.userInfo = `${data.user.firstName} ${data.user.lastName}(${data.user.email})`
+    userProfiles.sageInfo = `${data.productName} ${data.selectedEndpoint.description}`
+    userProfiles.userId = data.user.$uuid
+    userProfiles.roleId = data.selectedRole.$uuid
+    userProfiles.locale = data.selectedLocale.code
+    userProfiles.localeDesc = data.selectedLocale.description
+    userProfiles.endpointId = data.selectedEndpoint.$uuid
+    SessionStorage.set('userProfiles', userProfiles)
+  })
 }
 
 const fetchAuthorityData = async () => {
-  axiosGet(
-    "/api1/syracuse/collaboration/syracuse/pages('x3.erp.EXPLOIT.home.$navigation')"
-  ).then((response) => {
+  axiosGet("/api1/syracuse/collaboration/syracuse/pages('x3.erp.EXPLOIT.home.$navigation')").then((response) => {
     setAuthority(response)
   })
 }
 
-export {
-  setAuthority,
-  isAuthorised,
-  doReLogin,
-  fetchUserProfiles,
-  fetchAuthorityData
-}
+export { setAuthority, isAuthorised, doReLogin, fetchUserProfiles, fetchAuthorityData }

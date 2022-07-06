@@ -21,7 +21,12 @@
 
     <q-tab-panels v-model="tab" animated keep-alive :style="tabPanelHeight">
       <q-tab-panel name="Tracking" class="q-pa-none">
-        <OpenSaleItems :site="site" :style="tabPanelMinHeight" />
+        <OpenSaleItems
+          :site="site"
+          :style="tabPanelMinHeight"
+          v-if="isAuthorised('GESPOH') || isAuthorised('GESSOH')"
+        />
+        <ExceptionLottie :ErrorCode="403" v-else />
       </q-tab-panel>
       <q-tab-panel name="Delivery" class="q-pa-none">
         <echart-todo-delivery
@@ -58,11 +63,7 @@
         <ExceptionLottie :ErrorCode="403" v-else />
       </q-tab-panel>
       <q-tab-panel name="Orphan-WO" class="q-pa-none">
-        <echart-todo-closed-w-o
-          :site="site"
-          :style="tabPanelHeight"
-          v-if="isAuthorised('GESMFG')"
-        />
+        <echart-todo-closed-w-o :site="site" :style="tabPanelHeight" v-if="isAuthorised('GESMFG')" />
         <ExceptionLottie :ErrorCode="403" v-else />
       </q-tab-panel>
     </q-tab-panels>
@@ -95,15 +96,11 @@ const site = ref(LocalStorage.getItem('site'))
 // computed vars
 const tabPanelHeight = computed(() => {
   /** for q-tab-panels */
-  return props.pageHeight > 0
-    ? { height: props.pageHeight - props.tabHeaderHeight + 'px' }
-    : null
+  return props.pageHeight > 0 ? { height: props.pageHeight - props.tabHeaderHeight + 'px' } : null
 })
 const tabPanelMinHeight = computed(() => {
   /** for element in q-tab-panel, it's not fixed height */
-  return props.pageHeight > 0
-    ? { minHeight: props.pageHeight - props.tabHeaderHeight + 'px' }
-    : null
+  return props.pageHeight > 0 ? { minHeight: props.pageHeight - props.tabHeaderHeight + 'px' } : null
 })
 
 // events
