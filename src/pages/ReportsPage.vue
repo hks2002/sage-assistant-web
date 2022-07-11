@@ -330,6 +330,7 @@
 </template>
 
 <script setup>
+import { isAuthorised } from '@/assets/auth'
 import { validateInput } from '@/assets/reportUtils'
 import {
   doActsForSagePrint,
@@ -373,7 +374,8 @@ onMounted(() => {
   getSageSessionUrl('GESSOH2~1')
   getSageSessionUrl('GESSOH2~2')
   getSageSessionUrl('GESSDH')
-  getSageSessionUrl('GESSIH')
+  getSageSessionUrl('GESSIH2~2')
+  getSageSessionUrl('GESSIH2~3')
   getSageSessionUrl('GESPOH3~1')
 })
 
@@ -530,13 +532,19 @@ const getSageAssistantUrl = (rpt, vals, type) => {
 }
 
 const getSageUrl = async (rpt, val, val2) => {
+  const fnc = rptFncMap[rpt]
+  let trans = ''
+
+  if (!isAuthorised(fnc)) {
+    return '/#/Exception/403'
+  }
+
   $q.loading.show({
     message: 'Preparing to print report...',
     spinner: QSpinnerGears,
     spinnerColor: 'indigo-1'
   })
 
-  let trans = null
   if (rpt === 'SA') {
     trans = getSalesOrderTransaction(val)
   } else if (rpt === 'Invoice') {

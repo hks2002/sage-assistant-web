@@ -5,10 +5,7 @@
         <!-- horizontal=true make col inactive -->
         <q-card-section class="col-8">
           <!-- horizontal true make col doesn't works -->
-          <Vue3Lottie
-            animationLink="/json/working-on-laptop-in-office.json"
-            background="transparent"
-          />
+          <Vue3Lottie animationLink="/json/working-on-laptop-in-office.json" background="transparent" />
         </q-card-section>
         <q-separator v-if="isLgXs" vertical inset />
         <q-card-section align="center" class="col-4">
@@ -16,11 +13,7 @@
           <div class="text-h3 text-primary">
             {{ $t('Sage Assistant') }}
           </div>
-          <q-banner
-            dense
-            class="bg-white text-red text-subtitle1"
-            style="min-height: 100px"
-          >
+          <q-banner dense class="bg-white text-red text-subtitle1" style="min-height: 100px">
             {{ $t(loginMessage) }}
           </q-banner>
           <q-form>
@@ -104,6 +97,8 @@ const loginMessage = ref('')
 
 onMounted(() => {
   SessionStorage.remove('authorization')
+  SessionStorage.remove('authorizations')
+  SessionStorage.remove('userProfiles')
 })
 
 // This function is from Sage login page, login.js
@@ -115,18 +110,11 @@ const authToken = (type, login, password) => {
     const c = s.charCodeAt(i)
     if (c > 127) {
       if (c < 2047) {
-        s =
-          s.substr(0, i) +
-          String.fromCharCode(192 | (c >> 6), 128 | (c & 0x3f)) +
-          s.substr(i + 1)
+        s = s.substr(0, i) + String.fromCharCode(192 | (c >> 6), 128 | (c & 0x3f)) + s.substr(i + 1)
       } else {
         s =
           s.substr(0, i) +
-          String.fromCharCode(
-            224 | (c >> 12),
-            128 | ((c >> 6) & 0x3f),
-            128 | (c & 0x3f)
-          ) +
+          String.fromCharCode(224 | (c >> 12), 128 | ((c >> 6) & 0x3f), 128 | (c & 0x3f)) +
           s.substr(i + 1)
       }
     }
@@ -153,11 +141,7 @@ const doLogin = async () => {
   const token = authToken('basic', username.value, password.value)
 
   await axios
-    .post(
-      '/auth/login/submit',
-      {},
-      { headers: { authorization: token, accept: 'application/json' } }
-    )
+    .post('/auth/login/submit', {}, { headers: { authorization: token, accept: 'application/json' } })
     .then(
       (response) => {
         if (response.status === 200) {

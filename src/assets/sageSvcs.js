@@ -13,7 +13,7 @@ import { ACT, actData, doAct, noRevise, selData, setData, sSData, tgt } from '@/
 import { date, SessionStorage } from 'quasar'
 import { v4 as uuidv4 } from 'uuid'
 
-const srvEnv = process.env.DEV ? 'EXPLOITEST' : 'EXPLOIT'
+const srvEnv = process.env.DEV ? 'EXPLOIT' : 'EXPLOIT'
 
 /**
  * Every action needs get session first.
@@ -83,7 +83,8 @@ const transPageDefaultVal = {
   'GESSOH2~2': 'TLC110001',
   'GESPOH3~1': 'TCF100001',
   GESSDH: 'TBL100001',
-  GESSIH: 'TFC100001'
+  'GESSIH2~2': 'TFC100001',
+  'GESSIH2~3': 'TPC100006'
 }
 
 /**
@@ -105,7 +106,7 @@ const getSalesOrderTransaction = (orderNO) => {
 const getInvoiceTransaction = (invoiceNO) => {
   const reg1 = /[A-Z]FC.*/
   const reg2 = /[A-Z]PC.*/
-  return reg1.test(invoiceNO) ? '3~2' : reg2.test(invoiceNO) ? '3~3' : '3~2'
+  return reg1.test(invoiceNO) ? '2~2' : reg2.test(invoiceNO) ? '2~3' : '2~2'
 }
 
 /**
@@ -248,27 +249,24 @@ const doActsForSagePrint = async (url, rpt, val, val2) => {
     case 'SA': {
       const transPage = 'GESSOH' + getSalesOrderTransaction(val)
 
+      await doActGo(url, transPage, 'AA5', val)
       let rtn = await doActPrint(url, transPage, 'AA5', val)
-      // call it, let system do not lock record
-      await doActGo(url, transPage, 'AA5', transPageDefaultVal[transPage])
 
       return rtn
     }
     case 'Delivery': {
       const transPage = 'GESSDH'
 
+      await doActGo(url, transPage, 'AA6', val)
       let rtn = await doActPrint(url, 'GESSDH', 'AA6', val, '7~1:BONLIV!1')
-      // call it, let system do not lock record
-      await doActGo(url, transPage, 'AA6', transPageDefaultVal[transPage])
 
       return rtn
     }
     case 'Invoice': {
       const transPage = 'GESSIH' + getInvoiceTransaction(val)
 
-      let rtn = await doActPrint(url, transPage, 'AA6', val)
-      // call it, let system do not lock record
-      await doActGo(url, transPage, 'AA6', transPageDefaultVal[transPage])
+      await doActGo(url, transPage, 'AA5', val)
+      let rtn = await doActPrint(url, transPage, 'AA5', val)
 
       return rtn
     }
@@ -279,9 +277,8 @@ const doActsForSagePrint = async (url, rpt, val, val2) => {
       // select report code true= tax include
       const select = val2 ? '7~1:BONTTC2!1' : '7~1:BONCDE2!1'
 
+      await doActGo(url, transPage, 'AA5', val)
       let rtn = await doActPrint(url, transPage, 'AA5', val, select)
-      // call it, let system do not lock record
-      await doActGo(url, transPage, 'AA5', transPageDefaultVal[transPage])
 
       return rtn
     }

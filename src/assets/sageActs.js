@@ -210,6 +210,7 @@ const doAct = async (url, transPage, data) => {
           response.data.phase === 'Tracking' &&
           response.data.reply.sap
         ) {
+          await doAct(url, transPage, data)
           return true
         }
 
@@ -221,6 +222,17 @@ const doAct = async (url, transPage, data) => {
         ) {
           SessionStorage.remove(transPage)
           notifyError(response.data.reply.session.close.$diagnoses[0].message)
+          return false
+        }
+
+        // no authrity will case this
+        if (
+          response.status === 200 &&
+          response.data.sap &&
+          response.data.sap.target &&
+          response.data.sap.target.type === 'portal'
+        ) {
+          SessionStorage.remove(transPage)
           return false
         }
 
