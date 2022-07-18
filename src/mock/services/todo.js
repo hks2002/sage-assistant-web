@@ -215,6 +215,14 @@ Mock.mock(RegExp('^(/Data/TobeTracking)' + '.*'), () => {
         OrderSADFlag: /(1|2)/,
         OrderProductFlag: /(1|2)/,
         OrderDeliveryFlag: /(1|2)/,
+        ProjectStatus: /(1|2|3|4)/,
+        ProjectBlockReason: /(1|2|3|4|5|6)/,
+        ProjectComment: () => {
+          return Mock.mock('@sentence(3, 5)')
+        },
+        ProjectAction: () => {
+          return Mock.mock('@sentence(3, 5)')
+        },
         DaysLeft: () => {
           return Mock.mock('@integer(-300, 100)')
         },

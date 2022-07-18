@@ -60,7 +60,7 @@ const fld = (setTgt, val) => {
 }
 
 const noRevise = {
-  act: ACT.SELECT_LIST,
+  act: ACT.INPUT_TAB,
   fld: { ist: null, fmtKind: 'SHOW', notModified: false, v: 3 },
   param: {},
   tech: {}
@@ -175,6 +175,9 @@ const sSData = (act, setTgt, val, selectTgt, sel) => {
  * @returns
  */
 const doAct = async (url, transPage, data) => {
+  // check if url is false
+  if (!url) return false
+
   return axios
     .put(`${url}/requestSvc?act=${data.act}&trackngId=${uuidv4()}`, data)
     .then(
@@ -203,20 +206,10 @@ const doAct = async (url, transPage, data) => {
           return true
         }
 
-        // mostly is elapsedSeconds over the threshold value
-        if (
-          response.status === 202 &&
-          response.data.phase &&
-          response.data.phase === 'Tracking' &&
-          response.data.reply.sap
-        ) {
-          await doAct(url, transPage, data)
-          return true
-        }
-
         // having session close message
         if (
           response.status === 202 &&
+          response.data.phase &&
           response.data.phase === 'Tracking' &&
           response.data.reply.session.close.$diagnoses[0].message
         ) {

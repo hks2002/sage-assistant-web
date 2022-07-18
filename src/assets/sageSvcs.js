@@ -59,19 +59,15 @@ const getSageSessionUrl = async (transPage) => {
           if (rtn) return getSageSessionUrl(transPage)
         }
 
-        // unmatch above knonw condition, always return false
-        SessionStorage.remove(transPage)
         return false
       },
       (error) => {
         console.log(error)
-        SessionStorage.remove(transPage)
         return false
       }
     )
     .catch((error) => {
       console.log(error)
-      SessionStorage.remove(transPage)
       return false
     })
 
@@ -233,7 +229,7 @@ const doActPrint = async (url, transPage, xid, val, rpt) => {
  * @param {*} val
  */
 const doActGo = async (url, transPage, xid, val) => {
-  return await doAct(url, transPage, setData(ACT.INPUT_ENTER, tgt('B', xid, 0), val))
+  return doAct(url, transPage, setData(ACT.INPUT_ENTER, tgt('B', xid, 0), val))
 }
 
 /**
@@ -301,9 +297,9 @@ const updateSageField = async (transPage, mainTgt, mainVal, modLine, modTgt, mod
   const url = await getSageSessionUrl(transPage)
   let rtn = false
 
-  // input target, here must await,
   // ***DO NOT DELETE***
-  // be confirmed, without it, the first call will be failed.
+  // Without it, the first call will be failed.
+  // input target, here must await,
   rtn = await doActGo(url, transPage, mainTgt, mainVal)
   if (!rtn) return false
 
@@ -314,6 +310,7 @@ const updateSageField = async (transPage, mainTgt, mainVal, modLine, modTgt, mod
     rtn = await doAct(url, transPage, sSData(ACT.REVISE_SUB, tgt('B', mainTgt, 0), mainVal, tgt('B', modTgt, modLine)))
   }
 
+  // If someone else opened target, edit mode will return false.
   if (!rtn) {
     // here could not await, make response time less to user
     doActGo(url, transPage, mainTgt, transPageDefaultVal[transPage])
@@ -382,6 +379,51 @@ const updateSageProductReady = async (orderno, line, ready) => {
 }
 
 /**
+ * Set project status
+ * @param {*} orderno
+ * @param {*} line
+ * @param {*} status
+ * @returns
+ */
+const updateSageProjectStatus = async (orderno, line, status) => {
+  const transPage = 'GESSOH' + getSalesOrderTransaction(orderno)
+  return await updateSageField(transPage, 'AA5', orderno, line, 'EA72', parseInt(status))
+}
+/**
+ * Update project block reason
+ * @param {*} orderno
+ * @param {*} line
+ * @param {*} reason
+ * @returns
+ */
+const updateSageProjectBlockReason = async (orderno, line, reason) => {
+  const transPage = 'GESSOH' + getSalesOrderTransaction(orderno)
+  return await updateSageField(transPage, 'AA5', orderno, line, 'EA73', parseInt(reason))
+}
+/**
+ * Update project comment
+ * @param {*} orderno
+ * @param {*} line
+ * @param {*} comment
+ * @returns
+ */
+const updateSageProjectComment = async (orderno, line, comment) => {
+  const transPage = 'GESSOH' + getSalesOrderTransaction(orderno)
+  return await updateSageField(transPage, 'AA5', orderno, line, 'EA77', comment)
+}
+/**
+ * Update project action
+ * @param {*} orderno
+ * @param {*} line
+ * @param {*} action
+ * @returns
+ */
+const updateSageProjectAction = async (orderno, line, action) => {
+  const transPage = 'GESSOH' + getSalesOrderTransaction(orderno)
+  return await updateSageField(transPage, 'AA5', orderno, line, 'EA78', action)
+}
+
+/**
  * Update planed delivey date for order line
  * @param {*} orderno
  * @param {*} line
@@ -406,6 +448,17 @@ const updateSagePurchaseAckDate = async (orderno, line, ackDate) => {
   const fmtStr = date.formatDate(ackDate, 'YYYYMMDD')
   return await updateSageField(transPage, 'AA5', orderno, line, 'CA66', fmtStr)
 }
+/**
+ * Update purchse line comment
+ * @param {*} orderno
+ * @param {*} line
+ * @param {*} comment
+ * @returns
+ */
+const updateSagePurchaseComment = async (orderno, line, comment) => {
+  const transPage = 'GESPOH' + '3~1'
+  return await updateSageField(transPage, 'AA5', orderno, line, 'CA68', comment)
+}
 
 export {
   getSageSessionUrl,
@@ -417,5 +470,10 @@ export {
   updateSageProductReady,
   updateSageDeliveryReady,
   updateSageDeliveryPlanDate,
-  updateSagePurchaseAckDate
+  updateSageProjectStatus,
+  updateSageProjectBlockReason,
+  updateSageProjectComment,
+  updateSageProjectAction,
+  updateSagePurchaseAckDate,
+  updateSagePurchaseComment
 }

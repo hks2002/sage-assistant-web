@@ -6,7 +6,9 @@
       flat
       bordered
       virtual-scroll
-      virtual-scroll-slice-size="100"
+      virtual-scroll-slice-size="10"
+      virtual-scroll-slice-ratio-before="10"
+      virtual-scroll-slice-ratio-after="10"
       :rows="rows"
       :columns="columns"
       :visible-columns="visibleColumns"
@@ -19,6 +21,7 @@
       <template v-slot:top>
         <div class="q-gutter-sm row">
           <q-toggle dense v-model="showSODetail" :label="$t('Show Sales Details')" />
+          <q-toggle dense v-model="showSOComment" :label="$t('Show Sales Comment')" />
           <q-toggle dense v-model="showBomDetail" :label="$t('Show Bom Details')" />
           <q-toggle dense v-model="showPODetail" :label="$t('Show Purchase Details')" />
           <q-separator vertical />
@@ -61,268 +64,505 @@
       <!-- tabel body ---------------------------------------------------------------------------------->
       <template v-slot:body="props">
         <q-tr :props="props">
-          <q-td
-            class="text-center bg-white frezon"
-            style="min-width: 25px"
-            v-show="props.row.showso"
-            :rowspan="props.row.rowspanso"
-          >
+          <q-td class="text-center bg-white frezon" v-show="props.row.showso" :rowspan="props.row.rowspanso">
             {{ props.row.ItemNO }}
           </q-td>
-          <template v-if="props.row.showso">
-            <!-- order ------------------------------------------>
-            <q-td :class="soClass(props.row.OrderDeliveryFlag, 'frezon')" :rowspan="props.row.rowspanso">
-              {{ props.row.TrackingNO }}
-              <q-tooltip>
-                {{ $t('OrderNO') }}:{{ props.row.OrderNO }}<br />
-                {{ $t('OrderLine') }}:{{ props.row.OrderLine }}<br />
-                {{ $t('ProjectNO') }}:{{ props.row.OrderProjectNO }}<br />
-              </q-tooltip>
+          <!-- order ------------------------------------------>
+          <q-td
+            :class="mergeCls(targetCondCls('bg-indigo-1', 'bg-green', props.row.OrderDeliveryFlag, '2'), 'frezon')"
+            :rowspan="props.row.rowspanso"
+            :style="props.row.showso ? '' : 'display: none;'"
+          >
+            {{ props.row.TrackingNO }}
+            <q-tooltip>
+              {{ $t('OrderNO') }}:{{ props.row.OrderNO }}<br />
+              {{ $t('OrderLine') }}:{{ props.row.OrderLine }}<br />
+              {{ $t('ProjectNO') }}:{{ props.row.OrderProjectNO }}<br />
+            </q-tooltip>
+          </q-td>
+          <q-td
+            :class="mergeCls(targetCondCls('bg-indigo-1', 'bg-green', props.row.OrderDeliveryFlag, '2'), '')"
+            :rowspan="props.row.rowspanso"
+            :style="props.row.showso ? '' : 'display: none;'"
+          >
+            {{ props.row.OrderType }}
+          </q-td>
+          <q-td
+            :class="mergeCls(targetCondCls('bg-indigo-1', 'bg-green', props.row.OrderDeliveryFlag, '2'), '')"
+            :rowspan="props.row.rowspanso"
+            :style="props.row.showso ? '' : 'display: none;'"
+          >
+            {{ props.row.OrderPN }}
+            <q-tooltip>
+              {{ props.row.OrderPNDesc }}
+            </q-tooltip>
+          </q-td>
+          <template v-if="showSODetail">
+            <q-td
+              :class="mergeCls(targetCondCls('bg-indigo-1', 'bg-green', props.row.OrderDeliveryFlag, '2'), '')"
+              :rowspan="props.row.rowspanso"
+              :style="props.row.showso ? '' : 'display: none;'"
+            >
+              {{ props.row.OrderPNDesc }}
             </q-td>
-            <q-td :class="soClass(props.row.OrderDeliveryFlag)" :rowspan="props.row.rowspanso">
-              {{ props.row.OrderType }}
-            </q-td>
-            <q-td :class="soClass(props.row.OrderDeliveryFlag)" :rowspan="props.row.rowspanso">
-              {{ props.row.OrderPN }}
-              <q-tooltip>
-                {{ props.row.OrderPNDesc }}
-              </q-tooltip>
-            </q-td>
-            <template v-if="showSODetail">
-              <q-td :class="soClass(props.row.OrderDeliveryFlag)" :rowspan="props.row.rowspanso">
-                {{ props.row.OrderPNDesc }}
-              </q-td>
-            </template>
-            <q-td :class="soClass(props.row.OrderDeliveryFlag, 'text-center')" :rowspan="props.row.rowspanso">
-              {{ props.row.OrderQTY }}
-            </q-td>
-            <template v-if="showSODetail">
-              <q-td :class="soClass(props.row.OrderDeliveryFlag, 'text-right')" :rowspan="props.row.rowspanso">
-                {{ props.row.OrderPrice }}
-              </q-td>
-              <q-td :class="soClass(props.row.OrderDeliveryFlag, 'text-center')" :rowspan="props.row.rowspanso">
-                {{ props.row.OrderCurrency }}
-              </q-td>
-              <q-td :class="soClass(props.row.OrderDeliveryFlag, 'text-center')" :rowspan="props.row.rowspanso">
-                {{ props.row.CustomerCode }}
-                <q-tooltip>
-                  {{ props.row.CustomerName }}
-                </q-tooltip>
-              </q-td>
-              <q-td :class="soClass(props.row.OrderDeliveryFlag, 'text-center')" :rowspan="props.row.rowspanso">
-                {{ props.row.OrderDate }}
-              </q-td>
-            </template>
-            <q-td :class="soClass(props.row.OrderDeliveryFlag, 'text-center')" :rowspan="props.row.rowspanso">
-              {{ props.row.OrderRequestDate }}
+          </template>
+          <q-td
+            :class="mergeCls(targetCondCls('bg-indigo-1', 'bg-green', props.row.OrderDeliveryFlag, '2'), 'text-center')"
+            :rowspan="props.row.rowspanso"
+            :style="props.row.showso ? '' : 'display: none;'"
+          >
+            {{ props.row.OrderQTY }}
+          </q-td>
+          <template v-if="showSODetail">
+            <q-td
+              :class="
+                mergeCls(targetCondCls('bg-indigo-1', 'bg-green', props.row.OrderDeliveryFlag, '2'), 'text-center')
+              "
+              :rowspan="props.row.rowspanso"
+              :style="props.row.showso ? '' : 'display: none;'"
+            >
+              {{ props.row.OrderPrice }}
             </q-td>
             <q-td
-              :class="soClass(props.row.OrderDeliveryFlag, 'text-center', props.row.DaysLeft)"
+              :class="
+                mergeCls(targetCondCls('bg-indigo-1', 'bg-green', props.row.OrderDeliveryFlag, '2'), 'text-center')
+              "
               :rowspan="props.row.rowspanso"
+              :style="props.row.showso ? '' : 'display: none;'"
             >
-              {{ props.row.DaysLeft }}
+              {{ props.row.OrderCurrency }}
             </q-td>
-            <q-td :class="soClass(props.row.OrderDeliveryFlag, 'text-center')" :rowspan="props.row.rowspanso">
-              <q-input
-                v-model="props.row.OrderPlanedDate"
+            <q-td
+              :class="
+                mergeCls(targetCondCls('bg-indigo-1', 'bg-green', props.row.OrderDeliveryFlag, '2'), 'text-center')
+              "
+              :rowspan="props.row.rowspanso"
+              :style="props.row.showso ? '' : 'display: none;'"
+            >
+              {{ props.row.CustomerCode }}
+              <q-tooltip>
+                {{ props.row.CustomerName }}
+              </q-tooltip>
+            </q-td>
+            <q-td
+              :class="
+                mergeCls(targetCondCls('bg-indigo-1', 'bg-green', props.row.OrderDeliveryFlag, '2'), 'text-center')
+              "
+              :rowspan="props.row.rowspanso"
+              :style="props.row.showso ? '' : 'display: none;'"
+            >
+              {{ props.row.OrderDate }}
+            </q-td>
+          </template>
+          <q-td
+            :class="mergeCls(targetCondCls('bg-indigo-1', 'bg-green', props.row.OrderDeliveryFlag, '2'), 'text-center')"
+            :rowspan="props.row.rowspanso"
+            :style="props.row.showso ? '' : 'display: none;'"
+          >
+            {{ props.row.OrderRequestDate }}
+          </q-td>
+          <q-td
+            :class="
+              mergeCls(
+                targetCondCls(
+                  level3CondCls(
+                    'bg-indigo-1',
+                    'bg-yellow',
+                    'bg-red',
+                    props.row.DaysLeft > 7,
+                    props.row.DaysLeft > 3 && props.row.DaysLeft < 7,
+                    props.row.DaysLeft < 3
+                  ),
+                  'bg-green',
+                  props.row.OrderDeliveryFlag,
+                  '2'
+                ),
+                'text-center'
+              )
+            "
+            :rowspan="props.row.rowspanso"
+            :style="props.row.showso ? '' : 'display: none;'"
+          >
+            {{ props.row.DaysLeft }}
+          </q-td>
+          <q-td
+            :class="
+              mergeCls(
+                targetCondCls(
+                  condCls('bg-indigo-1', 'bg-yellow', props.row.OrderPlanedDate > props.row.OrderRequestDate),
+                  'bg-green',
+                  props.row.OrderDeliveryFlag,
+                  '2'
+                ),
+                'text-center'
+              )
+            "
+            :rowspan="props.row.rowspanso"
+            :style="props.row.showso ? '' : 'display: none;'"
+          >
+            <q-input
+              v-model="props.row.OrderPlanedDate"
+              debounce="2000"
+              dense
+              type="date"
+              style="width: 85px"
+              @update:model-value="updateplanDate(props.row.OrderNO, props.row.OrderLine, props.row.OrderPlanedDate)"
+            />
+          </q-td>
+          <q-td
+            :class="mergeCls(targetCondCls('bg-indigo-1', 'bg-green', props.row.OrderDeliveryFlag, '2'), 'text-center')"
+            :rowspan="props.row.rowspanso"
+            :style="props.row.showso ? '' : 'display: none;'"
+          >
+            <q-checkbox
+              v-model="props.row.OrderDeliveryFlag"
+              true-value="2"
+              false-value="1"
+              dense
+              class="text-center"
+              @update:model-value="
+                updateDeliveryReady(props.row.OrderNO, props.row.OrderLine, props.row.OrderDeliveryFlag)
+              "
+            />
+          </q-td>
+          <q-td
+            :class="mergeCls(targetCondCls('bg-indigo-1', 'bg-green', props.row.OrderDeliveryFlag, '2'), 'text-left')"
+            :rowspan="props.row.rowspanso"
+            :style="props.row.showso ? '' : 'display: none;'"
+          >
+            <q-select
+              v-model="props.row.ProjectStatus"
+              :options="optionsProjectStatus"
+              map-options
+              debounce="2000"
+              dense
+              options-dense
+              input-style="font-size:12px"
+              popup-content-style="font-size:12px"
+              :disable="!props.row.TrackingNO"
+              @update:model-value="updateProjectStatus(props.row.OrderNO, props.row.OrderLine, props.row.ProjectStatus)"
+            />
+          </q-td>
+          <template v-if="showSOComment">
+            <q-td
+              :class="mergeCls(targetCondCls('bg-indigo-1', 'bg-green', props.row.OrderDeliveryFlag, '2'), 'text-left')"
+              :rowspan="props.row.rowspanso"
+              :style="props.row.showso ? '' : 'display: none;'"
+            >
+              <q-select
+                v-model="props.row.ProjectBlockReason"
+                :options="optionsProjectBlockReason"
+                map-options
                 debounce="2000"
                 dense
-                borderless
-                type="date"
-                style="width: 85px"
-                @update:model-value="updateplanDate(props.row.OrderNO, props.row.OrderLine, props.row.OrderPlanedDate)"
-              />
-            </q-td>
-            <q-td :class="soClass(props.row.OrderDeliveryFlag, 'text-center')" :rowspan="props.row.rowspanso">
-              <q-checkbox
-                v-model="props.row.OrderDeliveryFlag"
-                true-value="2"
-                false-value="1"
-                dense
-                class="text-center"
+                options-dense
+                input-style="font-size:12px"
+                popup-content-style="font-size:12px"
+                :disable="!props.row.TrackingNO"
                 @update:model-value="
-                  updateDeliveryReady(props.row.OrderNO, props.row.OrderLine, props.row.OrderDeliveryFlag)
+                  updateProjectBlockReason(props.row.OrderNO, props.row.OrderLine, props.row.ProjectBlockReason)
                 "
               />
             </q-td>
-            <q-td :class="soClass(props.row.OrderDeliveryFlag, 'text-left')" :rowspan="props.row.rowspanso">
+            <q-td
+              :class="mergeCls(targetCondCls('bg-indigo-1', 'bg-green', props.row.OrderDeliveryFlag, '2'), 'text-left')"
+              :rowspan="props.row.rowspanso"
+              :style="props.row.showso ? '' : 'display: none;'"
+            >
               <q-input
-                v-model="props.row.ProjectNote"
+                v-model="props.row.ProjectComment"
                 debounce="2000"
                 dense
-                borderless
                 :disable="!props.row.TrackingNO"
-                @update:model-value="updateTrackNote(props.row.TrackingNO, props.row.ProjectNote)"
+                @update:model-value="
+                  updateProjectComment(props.row.OrderNO, props.row.OrderLine, props.row.ProjectComment)
+                "
               />
-              <q-tooltip v-if="props.row.ProjectNote">
-                {{ props.row.ProjectNote }}
+              <q-tooltip v-if="props.row.ProjectComment">
+                {{ props.row.ProjectComment }}
+              </q-tooltip>
+            </q-td>
+            <q-td
+              :class="mergeCls(targetCondCls('bg-indigo-1', 'bg-green', props.row.OrderDeliveryFlag, '2'), 'text-left')"
+              :rowspan="props.row.rowspanso"
+              :style="props.row.showso ? '' : 'display: none;'"
+            >
+              <q-input
+                v-model="props.row.ProjectAction"
+                debounce="2000"
+                dense
+                :disable="!props.row.TrackingNO"
+                @update:model-value="
+                  updateProjectAction(props.row.OrderNO, props.row.OrderLine, props.row.ProjectAction)
+                "
+              />
+              <q-tooltip v-if="props.row.ProjectAction">
+                {{ props.row.ProjectAction }}
               </q-tooltip>
             </q-td>
           </template>
           <!-- bom ------------------------------------------>
-          <template v-if="props.row.showbom">
-            <q-td :class="bomClass(props.row.OrderProductFlag)" :rowspan="props.row.rowspanbom">
-              {{ props.row.BomPN }}
-              <q-tooltip>
-                {{ $t('ProjectNO') }}:{{ props.row.BomProjectNO }}<br />
-                {{ $t('WorkerOrderNO') }}:{{ props.row.WorkOrderNO }}<br />
-                {{ $t('BomSeq') }}:{{ props.row.BomSeq }}<br />
-                {{ $t('BomDesc') }}:{{ props.row.BomDesc }}<br />
-                {{ $t('Unit') }}:{{ props.row.BomUnit }}
-              </q-tooltip>
-            </q-td>
-            <template v-if="showBomDetail">
-              <q-td :class="bomClass(props.row.OrderProductFlag, 'text-center')" :rowspan="props.row.rowspanbom">
-                {{ props.row.BomQTY }}
-              </q-td>
-              <q-td :class="bomClass(props.row.OrderProductFlag, 'text-center')" :rowspan="props.row.rowspanbom">
-                {{ props.row.ShortQty }}
-              </q-td>
-              <q-td :class="bomClass(props.row.OrderProductFlag, 'text-center')" :rowspan="props.row.rowspanbom">
-                {{ props.row.AllQty }}
-              </q-td>
-              <q-td :class="bomClass(props.row.OrderProductFlag, 'text-center')" :rowspan="props.row.rowspanbom">
-                {{ props.row.AvaQty }}
-              </q-td>
-            </template>
-          </template>
-          <!-- purchase ------------------------------------------>
-          <template v-if="props.row.showpo">
-            <q-td :class="poClass(props.row.OrderProductFlag)" :rowspan="props.row.rowspanpo">
-              {{ props.row.PurchaseNO }}
-              <q-tooltip>
-                {{ $t('Line') }}:{{ props.row.PurchaseLine }}<br />
-                {{ $t('Purchaser') }}:{{ props.row.PurchaseUser }}
-              </q-tooltip>
-            </q-td>
-            <template v-if="showPODetail">
-              <q-td :class="poClass(props.row.OrderProductFlag)" :rowspan="props.row.rowspanpo">
-                {{ props.row.PurchasePN }}
-                <q-tooltip>
-                  {{ props.row.PurchasePNDesc }}
-                </q-tooltip>
-              </q-td>
-              <q-td :class="poClass(props.row.OrderProductFlag, 'text-center')" :rowspan="props.row.rowspanpo">
-                {{ props.row.PurchaseQTY }}
-              </q-td>
-              <q-td :class="poClass(props.row.OrderProductFlag, 'text-center')" :rowspan="props.row.rowspanpo">
-                {{ props.row.VendorCode }}
-                <q-tooltip>
-                  {{ props.row.VendorName }}
-                </q-tooltip>
-              </q-td>
-            </template>
-            <q-td :class="poClass(props.row.OrderProductFlag, 'text-center')" :rowspan="props.row.rowspanpo">
-              {{ props.row.PurchaseDate }}
-            </q-td>
-            <q-td :class="poClass(props.row.OrderProductFlag, 'text-center')" :rowspan="props.row.rowspanpo">
-              {{ props.row.PurchaseExpectDate }}
-            </q-td>
-            <q-td :class="poClass(props.row.OrderProductFlag, 'text-center')" :rowspan="props.row.rowspanpo">
-              <q-input
-                v-model="props.row.PurchaseAckDate"
-                debounce="1000"
-                mask="####-##-##"
-                dense
-                borderless
-                type="date"
-                style="width: 85px"
-                v-if="props.row.PurchaseNO"
-                @update:model-value="
-                  updatePurchaseAckDate(props.row.PurchaseAckDate, props.row.PurchaseNO, props.row.PurchaseLine)
-                "
-              />
+          <q-td
+            :class="mergeCls(targetCondCls('bg-blue-grey-1', 'bg-green', props.row.OrderProductFlag, '2'), 'text-left')"
+            :rowspan="props.row.rowspanbom"
+            :style="props.row.showbom ? '' : 'display: none;'"
+          >
+            {{ props.row.BomPN }}
+            <q-tooltip>
+              {{ $t('ProjectNO') }}:{{ props.row.BomProjectNO }}<br />
+              {{ $t('WorkerOrderNO') }}:{{ props.row.WorkOrderNO }}<br />
+              {{ $t('BomSeq') }}:{{ props.row.BomSeq }}<br />
+              {{ $t('BomDesc') }}:{{ props.row.BomDesc }}<br />
+              {{ $t('Unit') }}:{{ props.row.BomUnit }}
+            </q-tooltip>
+          </q-td>
+          <template v-if="showBomDetail">
+            <q-td
+              :class="
+                mergeCls(targetCondCls('bg-blue-grey-1', 'bg-green', props.row.OrderProductFlag, '2'), 'text-center')
+              "
+              :rowspan="props.row.rowspanbom"
+              :style="props.row.showbom ? '' : 'display: none;'"
+            >
+              {{ props.row.BomQTY }}
             </q-td>
             <q-td
-              v-if="props.row.showso"
-              :class="poClass(props.row.OrderProductFlag, 'text-center')"
-              :rowspan="props.row.rowspanso"
+              :class="
+                mergeCls(targetCondCls('bg-blue-grey-1', 'bg-green', props.row.OrderProductFlag, '2'), 'text-center')
+              "
+              :rowspan="props.row.rowspanbom"
+              :style="props.row.showbom ? '' : 'display: none;'"
             >
-              <q-checkbox
-                v-model="props.row.OrderSADFlag"
-                true-value="2"
-                false-value="1"
-                dense
-                class="text-center"
-                @update:model-value="updateSADReady(props.row.OrderNO, props.row.OrderLine, props.row.OrderSADFlag)"
-              />
+              {{ props.row.ShortQty }}
             </q-td>
-            <q-td :class="poClass(props.row.OrderProductFlag, 'text-left')" :rowspan="props.row.rowspanpo">
+            <q-td
+              :class="
+                mergeCls(targetCondCls('bg-blue-grey-1', 'bg-green', props.row.OrderProductFlag, '2'), 'text-center')
+              "
+              :rowspan="props.row.rowspanbom"
+              :style="props.row.showbom ? '' : 'display: none;'"
+            >
+              {{ props.row.AllQty }}
+            </q-td>
+            <q-td
+              :class="
+                mergeCls(targetCondCls('bg-blue-grey-1', 'bg-green', props.row.OrderProductFlag, '2'), 'text-center')
+              "
+              :rowspan="props.row.rowspanbom"
+              :style="props.row.showbom ? '' : 'display: none;'"
+            >
+              {{ props.row.AvaQty }}
+            </q-td>
+          </template>
+          <!-- purchase ------------------------------------------>
+          <q-td
+            :class="mergeCls(targetCondCls('bg-blue-1', 'bg-green', props.row.OrderProductFlag, '2'), 'text-left')"
+            :rowspan="props.row.rowspanpo"
+            :style="props.row.showpo ? '' : 'display: none;'"
+          >
+            {{ props.row.PurchaseNO }}
+            <q-tooltip>
+              {{ $t('Line') }}:{{ props.row.PurchaseLine }}<br />
+              {{ $t('Purchaser') }}:{{ props.row.PurchaseUser }}
+            </q-tooltip>
+          </q-td>
+          <template v-if="showPODetail">
+            <q-td
+              :class="mergeCls(targetCondCls('bg-blue-1', 'bg-green', props.row.OrderProductFlag, '2'), 'text-left')"
+              :rowspan="props.row.rowspanpo"
+              :style="props.row.showpo ? '' : 'display: none;'"
+            >
+              {{ props.row.PurchasePN }}
+              <q-tooltip>
+                {{ props.row.PurchasePNDesc }}
+              </q-tooltip>
+            </q-td>
+            <q-td
+              :class="mergeCls(targetCondCls('bg-blue-1', 'bg-green', props.row.OrderProductFlag, '2'), 'text-center')"
+              :rowspan="props.row.rowspanpo"
+              :style="props.row.showpo ? '' : 'display: none;'"
+            >
+              {{ props.row.PurchaseQTY }}
+            </q-td>
+            <q-td
+              :class="mergeCls(targetCondCls('bg-blue-1', 'bg-green', props.row.OrderProductFlag, '2'), 'text-center')"
+              :rowspan="props.row.rowspanpo"
+              :style="props.row.showpo ? '' : 'display: none;'"
+            >
+              {{ props.row.VendorCode }}
+              <q-tooltip>
+                {{ props.row.VendorName }}
+              </q-tooltip>
+            </q-td>
+          </template>
+          <q-td
+            :class="mergeCls(targetCondCls('bg-blue-1', 'bg-green', props.row.OrderProductFlag, '2'), 'text-center')"
+            :rowspan="props.row.rowspanpo"
+            :style="props.row.showpo ? '' : 'display: none;'"
+          >
+            {{ props.row.PurchaseDate }}
+          </q-td>
+          <q-td
+            :class="mergeCls(targetCondCls('bg-blue-1', 'bg-green', props.row.OrderProductFlag, '2'), 'text-center')"
+            :rowspan="props.row.rowspanpo"
+            :style="props.row.showpo ? '' : 'display: none;'"
+          >
+            {{ props.row.PurchaseExpectDate }}
+          </q-td>
+          <q-td
+            :class="
+              mergeCls(
+                targetCondCls(
+                  condCls(
+                    'bg-blue-1',
+                    'bg-red',
+                    props.row.PurchaseAckDate === '1900-01-01' ||
+                      props.row.PurchaseAckDate > props.row.OrderRequestDate ||
+                      props.row.PurchaseAckDate > props.row.PurchaseExpectDate
+                  ),
+                  'bg-green',
+                  props.row.OrderProductFlag,
+                  '2'
+                ),
+                'text-center'
+              )
+            "
+            :rowspan="props.row.rowspanpo"
+            :style="props.row.showpo ? '' : 'display: none;'"
+          >
+            <q-input
+              v-model="props.row.PurchaseAckDate"
+              debounce="1000"
+              mask="####-##-##"
+              dense
+              type="date"
+              style="width: 85px"
+              v-if="props.row.PurchaseNO"
+              @update:model-value="
+                updatePurchaseAckDate(props.row.PurchaseAckDate, props.row.PurchaseNO, props.row.PurchaseLine)
+              "
+            />
+          </q-td>
+          <q-td
+            v-if="props.row.showso"
+            :class="mergeCls(targetCondCls('bg-blue-1', 'bg-green', props.row.OrderProductFlag, '2'), 'text-center')"
+            :rowspan="props.row.rowspanso"
+            :style="props.row.showpo ? '' : 'display: none;'"
+          >
+            <q-checkbox
+              v-model="props.row.OrderSADFlag"
+              true-value="2"
+              false-value="1"
+              dense
+              class="text-center"
+              @update:model-value="updateSADReady(props.row.OrderNO, props.row.OrderLine, props.row.OrderSADFlag)"
+            >
+              <q-tooltip>
+                {{ props.row.OrderSADDate }}
+              </q-tooltip>
+            </q-checkbox>
+          </q-td>
+          <template v-if="showPODetail">
+            <q-td
+              :class="mergeCls(targetCondCls('bg-blue-1', 'bg-green', props.row.OrderProductFlag, '2'), 'text-left')"
+              :rowspan="props.row.rowspanpo"
+              :style="props.row.showpo ? '' : 'display: none;'"
+            >
               <q-input
-                v-model="props.row.PurchaseNote"
+                v-model="props.row.PurchaseComment"
                 debounce="2000"
                 dense
-                borderless
                 :disable="!props.row.PurchaseNO"
                 @update:model-value="
-                  updateTrackNote(props.row.PurchaseNO + '_' + props.row.PurchaseLine, props.row.PurchaseNote)
+                  updatePurchaseComment(props.row.PurchaseNO + '_' + props.row.PurchaseLine, props.row.PurchaseComment)
                 "
               />
-              <q-tooltip v-if="props.row.PurchaseNote">
-                {{ props.row.PurchaseNote }}
+              <q-tooltip v-if="props.row.PurchaseComment">
+                {{ props.row.PurchaseComment }}
               </q-tooltip>
             </q-td>
           </template>
           <!-- receive ------------------------------------------>
-          <template v-if="props.row.showra">
-            <q-td :class="raClass(props.row.OrderProductFlag, 'text-left')" :rowspan="props.row.rowspanra">
-              {{ props.row.ReceiptNO }}
-              <q-tooltip v-if="props.row.Receipter">{{ $t('Receipter') }}:{{ props.row.Receipter }}<br /> </q-tooltip>
-            </q-td>
-            <q-td :class="raClass(props.row.OrderProductFlag, 'text-center')" :rowspan="props.row.rowspanra">
-              {{ props.row.ReceiptQty }}
-            </q-td>
-            <q-td :class="raClass(props.row.OrderProductFlag, 'text-center')" :rowspan="props.row.rowspanra">
-              {{ props.row.ReceiptDate }}
-            </q-td>
-          </template>
+          <q-td
+            :class="mergeCls(targetCondCls('bg-green-1', 'bg-green', props.row.OrderProductFlag, '2'), 'text-left')"
+            :rowspan="props.row.rowspanra"
+            :style="props.row.showra ? '' : 'display: none;'"
+          >
+            {{ props.row.ReceiptNO }}
+            <q-tooltip v-if="props.row.Receipter">{{ $t('Receipter') }}:{{ props.row.Receipter }}<br /> </q-tooltip>
+          </q-td>
+          <q-td
+            :class="mergeCls(targetCondCls('bg-green-1', 'bg-green', props.row.OrderProductFlag, '2'), 'text-center')"
+            :rowspan="props.row.rowspanra"
+            :style="props.row.showra ? '' : 'display: none;'"
+          >
+            {{ props.row.ReceiptQty }}
+          </q-td>
+          <q-td
+            :class="mergeCls(targetCondCls('bg-green-1', 'bg-green', props.row.OrderProductFlag, '2'), 'text-center')"
+            :rowspan="props.row.rowspanra"
+            :style="props.row.showra ? '' : 'display: none;'"
+          >
+            {{ props.row.ReceiptDate }}
+          </q-td>
+          <!-- QC ------------------------------------------>
+          <q-td
+            :class="mergeCls(targetCondCls('bg-green-3', 'bg-green', props.row.OrderProductFlag, '2'), 'text-center')"
+            :rowspan="props.row.rowspanso"
+            :style="props.row.showso ? '' : 'display: none;'"
+          >
+            <q-checkbox
+              v-model="props.row.OrderProductFlag"
+              true-value="2"
+              false-value="1"
+              dense
+              class="text-center"
+              @update:model-value="
+                updateProductReady(props.row.OrderNO, props.row.OrderLine, props.row.OrderProductFlag)
+              "
+            />
+          </q-td>
+          <q-td
+            :class="mergeCls(targetCondCls('bg-green-3', 'bg-green', props.row.OrderProductFlag, '2'), 'text-center')"
+            :rowspan="props.row.rowspanso"
+            :style="props.row.showso ? '' : 'display: none;'"
+          >
+            {{ props.row.OrderProductDate }}
+          </q-td>
           <!-- NC ------------------------------------------>
-          <template v-if="props.row.showso">
-            <q-td :class="qcClass(props.row.OrderProductFlag, 'text-center')" :rowspan="props.row.rowspanso">
-              <q-checkbox
-                v-model="props.row.OrderProductFlag"
-                true-value="2"
-                false-value="1"
-                dense
-                class="text-center"
-                @update:model-value="
-                  updateProductReady(
-                    props.row.TrackingNO,
-                    props.row.OrderNO,
-                    props.row.OrderLine,
-                    props.row.OrderProductFlag
-                  )
-                "
-              />
-            </q-td>
-          </template>
-          <template v-if="props.row.shownc">
-            <q-td :class="ncClass(props.row.OrderProductFlag)" :rowspan="props.row.rowspannc">
-              {{ props.row.ClaimNO }}
-              <q-tooltip v-if="props.row.ClaimProjectNO">
-                {{ $t('ProjectNO') }}:{{ props.row.ClaimProjectNO }}<br />
-                {{ $t('Comments') }}:{{ props.row.ClaimNote }}<br />
+          <q-td
+            :class="mergeCls(targetCondCls('bg-red-1', 'bg-green', props.row.OrderProductFlag, '2'), 'text-center')"
+            :rowspan="props.row.rowspannc"
+            :style="props.row.shownc ? '' : 'display: none;'"
+          >
+            {{ props.row.ClaimNO }}
+            <q-tooltip v-if="props.row.ClaimProjectNO">
+              {{ $t('ProjectNO') }}:{{ props.row.ClaimProjectNO }}<br />
+              {{ $t('Comments') }}:{{ props.row.ClaimNote }}<br />
+            </q-tooltip>
+          </q-td>
+          <q-td
+            :class="mergeCls(targetCondCls('bg-red-1', 'bg-green', props.row.OrderProductFlag, '2'), 'q-gutter-xs')"
+            :rowspan="props.row.rowspannc"
+            :style="props.row.shownc ? '' : 'display: none;'"
+          >
+            <span
+              v-for="idx in 12"
+              :key="idx"
+              :class="
+                props.row['ClaimNC' + (idx - 1) + 'Cri'] == 2
+                  ? 'text-red'
+                  : props.row['ClaimNC' + (idx - 1) + 'Cri'] == 1
+                  ? 'text-blue'
+                  : ''
+              "
+            >
+              {{ props.row['ClaimNC' + (idx - 1) + 'Type'] }}
+              <q-tooltip>
+                {{ props.row['ClaimNC' + (idx - 1) + 'Date'] }}:{{ props.row['ClaimNC' + (idx - 1) + 'Desc'] }}
               </q-tooltip>
-            </q-td>
-            <q-td :class="ncClass(props.row.OrderProductFlag, 'q-gutter-xs')" :rowspan="props.row.rowspannc">
-              <span
-                v-for="idx in 12"
-                :key="idx"
-                :class="
-                  props.row['ClaimNC' + (idx - 1) + 'Cri'] == 2
-                    ? 'text-red'
-                    : props.row['ClaimNC' + (idx - 1) + 'Cri'] == 1
-                    ? 'text-blue'
-                    : ''
-                "
-              >
-                {{ props.row['ClaimNC' + (idx - 1) + 'Type'] }}
-                <q-tooltip>
-                  {{ props.row['ClaimNC' + (idx - 1) + 'Date'] }}:{{ props.row['ClaimNC' + (idx - 1) + 'Desc'] }}
-                </q-tooltip>
-              </span>
-            </q-td>
-          </template>
+            </span>
+          </q-td>
         </q-tr>
       </template>
     </q-table>
@@ -334,19 +574,25 @@
 
 <script setup>
 import { axiosGet, axiosModify } from '@/assets/axiosActions'
+import { condCls, level3CondCls, mergeCls, targetCondCls } from '@/assets/clsUtils'
 import { ebus } from '@/assets/ebus'
 import {
   updateSageDeliveryPlanDate,
   updateSageDeliveryReady,
   updateSageProductReady,
+  updateSageProjectAction,
+  updateSageProjectBlockReason,
+  updateSageProjectComment,
+  updateSageProjectStatus,
   updateSagePurchaseAckDate,
+  updateSagePurchaseComment,
   updateSageSADReady
 } from '@/assets/sageSvcs'
+import { optionsProjectBlockReason, optionsProjectStatus } from '@/components/todo/OpenSalesItemsSelectOptions'
 import { cloneDeep, filter, map, orderBy, uniq } from 'lodash'
 import { SessionStorage } from 'quasar'
 import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-
 const props = defineProps({
   site: String
 })
@@ -359,11 +605,13 @@ const showLoading = ref(false)
 let data = []
 const rows = ref([])
 const columns = ref([])
-const showSODetail = ref(false)
+const showSODetail = ref(true)
+const showSOComment = ref(true)
 const showBomDetail = ref(true)
-const showPODetail = ref(false)
+const showPODetail = ref(true)
 const filterCustomer = ref('')
 const filterSupplier = ref('')
+
 const pagination = ref({
   sortBy: 'daysleft',
   descending: false,
@@ -383,30 +631,25 @@ const visibleColumns = computed(() => {
     'daysleft',
     'ordersadflag',
     'orderplaneddate',
-    'projectnote',
     'orderdeliveryflag',
+    'projectstatus',
     'bompn',
     'purchaseno',
     'purchasedate',
     'purchaseexpectdate',
     'purchaseackdate',
-    'purchasenote',
     'receiptno',
     'receiptqty',
     'receiptdate',
     'orderproductflag',
+    'orderproductdate',
     'claimno',
     'ncdetail'
   ]
-  if (showSODetail.value) {
-    cols.push('orderpndesc', 'orderprice', 'ordercurrency', 'customercode', 'orderdate')
-  }
-  if (showBomDetail.value) {
-    cols.push('bomqty', 'shortqty', 'allqty', 'avaqty')
-  }
-  if (showPODetail.value) {
-    cols.push('purchasepn', 'purchaseqty', 'vendorcode')
-  }
+  showSODetail.value ? cols.push('orderpndesc', 'orderprice', 'ordercurrency', 'customercode', 'orderdate') : ''
+  showSOComment.value ? cols.push('projectblockreason', 'projectcomment', 'projectaction') : ''
+  showBomDetail.value ? cols.push('bomqty', 'shortqty', 'allqty', 'avaqty') : ''
+  showPODetail.value ? cols.push('purchasepn', 'purchaseqty', 'vendorcode', 'purchasecomment') : ''
 
   return cols
 })
@@ -493,25 +736,6 @@ const sortData = () => {
 const reloadColumns = async () => {
   delete require.cache[require.resolve('@/components/todo/OpenSalesItemsColumns')]
   columns.value = require('@/components/todo/OpenSalesItemsColumns').default
-}
-
-const soClass = (val, cls, val2) => {
-  return val === '2' ? (cls ? `bg-green ${cls}` : 'bg-green') : cls ? `bg-indigo-1 ${cls}` : 'bg-indigo-1'
-}
-const bomClass = (val, cls) => {
-  return val === '2' ? (cls ? `bg-green ${cls}` : 'bg-green') : cls ? `bg-blue-grey-1 ${cls}` : 'bg-blue-grey-1'
-}
-const poClass = (val, cls) => {
-  return val === '2' ? (cls ? `bg-green ${cls}` : 'bg-green') : cls ? `bg-blue-1 ${cls}` : 'bg-blue-1'
-}
-const raClass = (val, cls) => {
-  return val === '2' ? (cls ? `bg-green ${cls}` : 'bg-green') : cls ? `bg-green-1 ${cls}` : 'bg-green-1'
-}
-const qcClass = (val, cls) => {
-  return val === '2' ? (cls ? `bg-green ${cls}` : 'bg-green') : cls ? `bg-green-3 ${cls}` : 'bg-green-3'
-}
-const ncClass = (val, cls) => {
-  return val === '2' ? (cls ? `bg-green ${cls}` : 'bg-green') : cls ? `bg-red-1 ${cls}` : 'bg-red-1'
 }
 
 const spanRows = () => {
@@ -676,19 +900,42 @@ const updateDeliveryReady = async (orderno, line, ready) => {
     : resetData('OrderNO', orderno, 'OrderLine', line, 'OrderDeliveryFlag')
 }
 
-const updateProductReady = async (trackingno, orderno, line, ready) => {
+const updateProductReady = async (orderno, line, ready) => {
   const rtn = await updateSageProductReady(orderno, line, ready)
   rtn
     ? updateSpanRowData('OrderNO', orderno, 'OrderLine', line, 'OrderProductFlag')
     : resetData('OrderNO', orderno, 'OrderLine', line, 'OrderProductFlag')
-
-  // sage doesn't have field for update name, so save to other database
-  if (rtn) {
-    const Note = ready === '2' ? 'QC PASS' : ''
-    updateTrackNote(trackingno, Note)
-  }
 }
-
+const updateProjectStatus = async (orderno, line, status) => {
+  const rtn = await updateSageProjectStatus(orderno, line, status)
+  rtn
+    ? updateSpanRowData('OrderNO', orderno, 'OrderLine', line, 'ProjectStatus')
+    : resetData('OrderNO', orderno, 'OrderLine', line, 'ProjectStatus')
+}
+const updateProjectBlockReason = async (orderno, line, reason) => {
+  const rtn = await updateSageProjectBlockReason(orderno, line, reason)
+  rtn
+    ? updateSpanRowData('OrderNO', orderno, 'OrderLine', line, 'ProjectBlockReason')
+    : resetData('OrderNO', orderno, 'OrderLine', line, 'ProjectBlockReason')
+}
+const updateProjectComment = async (orderno, line, comment) => {
+  const rtn = await updateSageProjectComment(orderno, line, comment)
+  rtn
+    ? updateSpanRowData('OrderNO', orderno, 'OrderLine', line, 'ProjectComment')
+    : resetData('OrderNO', orderno, 'OrderLine', line, 'ProjectComment')
+}
+const updateProjectAction = async (orderno, line, action) => {
+  const rtn = await updateSageProjectAction(orderno, line, action)
+  rtn
+    ? updateSpanRowData('OrderNO', orderno, 'OrderLine', line, 'ProjectAction')
+    : resetData('OrderNO', orderno, 'OrderLine', line, 'ProjectAction')
+}
+const updatePurchaseComment = async (orderno, line, comment) => {
+  const rtn = await updateSagePurchaseComment(orderno, line, comment)
+  rtn
+    ? updateSpanRowData('OrderNO', orderno, 'OrderLine', line, 'PurchaseComment')
+    : resetData('OrderNO', orderno, 'OrderLine', line, 'PurchaseComment')
+}
 const updateplanDate = async (orderno, line, planDate) => {
   const rtn = await updateSageDeliveryPlanDate(orderno, line, planDate)
   rtn
@@ -715,6 +962,7 @@ onMounted(() => {
   columns.value = require('@/components/todo/OpenSalesItemsColumns').default
   doUpdate()
 })
+
 ebus.on('changeLanguage', reloadColumns)
 onBeforeUnmount(() => {
   ebus.off('changeLanguage', reloadColumns)
@@ -781,5 +1029,20 @@ tbody tr td:nth-child(2).frezon {
 .q-table--dense .q-table td:first-child,
 .q-table--dense .q-table th:first-child {
   padding-left: 2px;
+}
+
+// select input
+.q-field--auto-height.q-field--dense .q-field__control,
+.q-field--auto-height.q-field--dense .q-field__native {
+  min-height: 18px;
+}
+.q-field--dense .q-field__control,
+.q-field--dense .q-field__marginal {
+  height: 18px;
+}
+.q-table--dense .q-table thead tr,
+.q-table--dense .q-table tbody tr,
+.q-table--dense .q-table tbody td {
+  height: 24px;
 }
 </style>
