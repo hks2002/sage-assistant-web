@@ -2,7 +2,7 @@
  * @Author         : Robert Huang<56649783@qq.com>
  * @Date           : 2022-03-25 11:01:23
  * @LastEditors    : Robert Huang<56649783@qq.com>
- * @LastEditTime   : 2022-05-28 23:10:40
+ * @LastEditTime   : 2022-07-18 16:08:29
  * @FilePath       : \web2\src\css\app.scss
  * @CopyRight      : Dedienne Aerospace China ZhuHai
  */
@@ -35,7 +35,7 @@ $sampleColor: #ff7875;
 
 ::-webkit-scrollbar {
   width: 4px;
-  height: 4px;
+  height: 8px;
   contain: strict;
 }
 ::-webkit-scrollbar-thumb {
@@ -62,11 +62,11 @@ $sampleColor: #ff7875;
 
 .q-scrollarea__bar {
   width: 4px;
-  height: 4px;
+  height: 8px;
 }
 .q-scrollarea__thumb {
   width: 4px;
-  height: 4px;
+  height: 8px;
   opacity: 1;
   border-radius: 2px;
   background-color: #f90;
