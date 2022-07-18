@@ -20,6 +20,27 @@
       <!-- tabel top ---------------------------------------------------------------------------------->
       <template v-slot:top>
         <div class="q-gutter-sm row">
+          <q-checkbox
+            dense
+            v-model="showNormalOrder"
+            :label="$t('Normal Order')"
+            @update:model-value="
+              updatePage({
+                pagination: pagination
+              })
+            "
+          />
+          <q-checkbox
+            dense
+            v-model="showOtherOrder"
+            :label="$t('Other Order')"
+            @update:model-value="
+              updatePage({
+                pagination: pagination
+              })
+            "
+          />
+          <q-separator vertical />
           <q-toggle dense v-model="showSODetail" :label="$t('Show Sales Details')" />
           <q-toggle dense v-model="showSOComment" :label="$t('Show Sales Comment')" />
           <q-toggle dense v-model="showBomDetail" :label="$t('Show Bom Details')" />
@@ -605,6 +626,8 @@ const showLoading = ref(false)
 let data = []
 const rows = ref([])
 const columns = ref([])
+const showNormalOrder = ref(true)
+const showOtherOrder = ref(true)
 const showSODetail = ref(true)
 const showSOComment = ref(true)
 const showBomDetail = ref(true)
@@ -691,6 +714,19 @@ const getPageData = (startRow, count, sortBy, descending) => {
   if (filterSupplier.value.trim().length > 0) {
     fdata = filter(fdata, { VendorCode: filterSupplier.value.trim() })
   }
+
+  fdata = filter(fdata, (element) => {
+    if (showOtherOrder.value && showNormalOrder.value) {
+      return true
+    }
+    if (showNormalOrder.value && !showOtherOrder.value) {
+      return element.OrderType.slice(0, 3) === 'NOR'
+    }
+    if (showOtherOrder.value && !showNormalOrder.value) {
+      return element.OrderType.slice(0, 3) !== 'NOR'
+    }
+    return false
+  })
 
   //return fdata.slice(startRow, startRow + count)
   let aa = filter(fdata, (element) => {
