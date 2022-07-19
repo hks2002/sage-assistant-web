@@ -22,8 +22,24 @@ const srvEnv = process.env.DEV ? 'EXPLOIT' : 'EXPLOIT'
  */
 const getSageSessionUrl = async (transPage) => {
   // reuse last session url
-  const url = SessionStorage.getItem(transPage)
-  if (url) return url
+  let urlWithTimeStamp = SessionStorage.getItem(transPage)
+
+  if (urlWithTimeStamp) {
+    const url = urlWithTimeStamp.split('?')[0]
+    const timeStr = urlWithTimeStamp.split('?')[1]
+
+    if (!timeStr) {
+      SessionStorage.remove(transPage)
+    } else {
+      const lastTime = new Date(timeStr)
+      const nowTime = new Date()
+      const diff = date.getDateDiff(nowTime, lastTime, 'minutes')
+      // if diff > 5 minutes get new session url
+      if (diff < 5) {
+        return url
+      }
+    }
+  }
 
   const fnc = transPage.substring(0, 6)
   const trans = transPage.substring(6)
@@ -38,12 +54,15 @@ const getSageSessionUrl = async (transPage) => {
         // Having  headers.location means success
         if (response.status === 200 && response.headers.location) {
           const url = response.headers.location
+          const timeStamp = new Date()
+          const formattedString = date.formatDate(timeStamp, 'YYYY-MM-DD HH:mm:ss')
+
           // if provide transaction
           if (trans) {
             const rtn = await doAct(url, transPage, selData(ACT.SELECT_LIST, tgt('B', 'bA', 0), trans))
             if (!rtn) return false
           }
-          SessionStorage.set(transPage, url)
+          SessionStorage.set(transPage, url + '?' + formattedString)
           return url
         }
 
