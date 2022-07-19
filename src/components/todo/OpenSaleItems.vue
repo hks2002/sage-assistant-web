@@ -594,7 +594,7 @@
 </template>
 
 <script setup>
-import { axiosGet, axiosModify } from '@/assets/axiosActions'
+import { axiosGet } from '@/assets/axiosActions'
 import { condCls, level3CondCls, mergeCls, targetCondCls } from '@/assets/clsUtils'
 import { ebus } from '@/assets/ebus'
 import {
@@ -611,8 +611,7 @@ import {
 } from '@/assets/sageSvcs'
 import { optionsProjectBlockReason, optionsProjectStatus } from '@/components/todo/OpenSalesItemsSelectOptions'
 import { cloneDeep, filter, map, orderBy, uniq } from 'lodash'
-import { SessionStorage } from 'quasar'
-import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
+import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 const props = defineProps({
   site: String
@@ -676,14 +675,7 @@ const visibleColumns = computed(() => {
 
   return cols
 })
-import { date } from 'quasar'
 
-const date1 = new Date('2017-04-12:00:05:00')
-const date2 = new Date('2017-04-12:00:00:00')
-const unit = 'minutes'
-
-const diff = date.getDateDiff(date1, date2, unit)
-console.log(diff)
 // actions
 const doUpdate = () => {
   if (!props.site) return
@@ -996,13 +988,6 @@ const updatePurchaseAckDate = async (orderno, line, ackDate) => {
     : resetData('PurchaseNO', orderno, 'PurchaseLine', line, 'PurchaseAckDate')
 }
 
-const updateTrackNote = (trackingCode, note) => {
-  const name = SessionStorage.getItem('userProfiles').userName
-  if (trackingCode) {
-    axiosModify('/Data/TrackingNotes', { TrackCode: trackingCode }, { Note: note, NoteBy: name })
-  }
-}
-
 // events
 onMounted(() => {
   columns.value = require('@/components/todo/OpenSalesItemsColumns').default
@@ -1013,6 +998,18 @@ ebus.on('changeLanguage', reloadColumns)
 onBeforeUnmount(() => {
   ebus.off('changeLanguage', reloadColumns)
 })
+
+watch(
+  // Don't use watchEffect, it run before Mounted.
+  () => [props.site],
+  (...newAndold) => {
+    // newAndold[1]:old
+    // newAndold[0]:new
+    console.debug('watch:' + newAndold[1] + ' ---> ' + newAndold[0])
+
+    doUpdate()
+  }
+)
 </script>
 
 <style lang="scss" scopped>
