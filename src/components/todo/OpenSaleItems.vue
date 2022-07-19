@@ -676,7 +676,14 @@ const visibleColumns = computed(() => {
 
   return cols
 })
+import { date } from 'quasar'
 
+const date1 = new Date('2017-04-12:00:05:00')
+const date2 = new Date('2017-04-12:00:00:00')
+const unit = 'minutes'
+
+const diff = date.getDateDiff(date1, date2, unit)
+console.log(diff)
 // actions
 const doUpdate = () => {
   if (!props.site) return
@@ -723,7 +730,10 @@ const getPageData = (startRow, count, sortBy, descending) => {
       return element.OrderType.slice(0, 3) === 'NOR'
     }
     if (showOtherOrder.value && !showNormalOrder.value) {
-      return element.OrderType.slice(0, 3) !== 'NOR'
+      return (
+        element.OrderType.slice(0, 3) !== 'NOR' ||
+        (element.OrderType.slice(0, 3) === 'NOR' && element.OrderType.slice(4) === 'Services')
+      )
     }
     return false
   })
