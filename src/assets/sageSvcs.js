@@ -267,6 +267,7 @@ const doActsForSagePrint = async (url, rpt, val, val2) => {
       await doActGo(url, transPage, 'AA5', val)
       let rtn = await doActPrint(url, transPage, 'AA5', val)
 
+      doActGo(url, transPage, 'AA5', transPageDefaultVal[transPage])
       return rtn
     }
     case 'Delivery': {
@@ -275,6 +276,7 @@ const doActsForSagePrint = async (url, rpt, val, val2) => {
       await doActGo(url, transPage, 'AA6', val)
       let rtn = await doActPrint(url, 'GESSDH', 'AA6', val, '7~1:BONLIV!1')
 
+      doActGo(url, transPage, 'AA6', transPageDefaultVal[transPage])
       return rtn
     }
     case 'Invoice': {
@@ -283,6 +285,7 @@ const doActsForSagePrint = async (url, rpt, val, val2) => {
       await doActGo(url, transPage, 'AA5', val)
       let rtn = await doActPrint(url, transPage, 'AA5', val)
 
+      doActGo(url, transPage, 'AA5', transPageDefaultVal[transPage])
       return rtn
     }
 
@@ -295,6 +298,7 @@ const doActsForSagePrint = async (url, rpt, val, val2) => {
       await doActGo(url, transPage, 'AA5', val)
       let rtn = await doActPrint(url, transPage, 'AA5', val, select)
 
+      doActGo(url, transPage, 'AA5', transPageDefaultVal[transPage])
       return rtn
     }
     default:
