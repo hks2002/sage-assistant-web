@@ -218,6 +218,17 @@ const doAct = async (url, transPage, data) => {
           return false
         }
 
+        // If response times greater than 4000
+        if (
+          response.status === 202 &&
+          response.data &&
+          response.data.phase === 'tracking' &&
+          response.data.elapsedSeconds > 4000
+        ) {
+          notifyError('Server performance low')
+          return false
+        }
+
         // no authrity will case this
         if (
           response.status === 200 &&

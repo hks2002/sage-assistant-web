@@ -71,6 +71,16 @@ const getSageSessionUrl = async (transPage) => {
           notifyError(response.data.sap.target.box.li)
           return false
         }
+        // If response times greater than 4000
+        if (
+          response.status === 202 &&
+          response.data &&
+          response.data.phase === 'tracking' &&
+          response.data.elapsedSeconds > 4000
+        ) {
+          notifyError('Server performance low')
+          return false
+        }
 
         // If return data is not application/json, means false, mostly is login page
         if (response.status === 200 && response.headers['content-type'] !== 'application/json') {
