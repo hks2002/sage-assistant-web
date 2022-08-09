@@ -3,20 +3,11 @@
     <thead style="position: sticky; top: 0px; z-index: 1">
       <tr>
         <td colspan="2" class="bg-teal text-white shadow-2 col-grow">
-          {{ $t('Stock count result of {site}', { site: site }) }},
-          {{ $t('Total Qty') }}:{{ S2N(sumQty, 0) }} {{ $t('Total cost') }}:{{
-            S2N(sumCost)
-          }}, {{ $t('Products Qty') }}:{{ S2N(sumProductQty, 0) }}
-          {{ $t('Products cost') }}:{{ S2N(sumProductCost) }},
-          {{ $t('Others Qty') }}:{{ S2N(sumOtherQty, 0) }}
+          {{ $t('Stock count result of {site}', { site: site }) }}, {{ $t('Total Qty') }}:{{ S2N(sumQty, 0) }}
+          {{ $t('Total cost') }}:{{ S2N(sumCost) }}, {{ $t('Products Qty') }}:{{ S2N(sumProductQty, 0) }}
+          {{ $t('Products cost') }}:{{ S2N(sumProductCost) }}, {{ $t('Others Qty') }}:{{ S2N(sumOtherQty, 0) }}
           {{ $t('Others cost') }}:{{ S2N(sumOtherCost) }}
-          <q-btn
-            dense
-            flat
-            text-color="indigo-7"
-            icon="fas fa-download"
-            @click="download()"
-          />
+          <q-btn dense flat text-color="indigo-7" icon="fas fa-download" @click="download()" />
         </td>
       </tr>
     </thead>
@@ -39,14 +30,9 @@
             >
               <q-tooltip>
                 {{ subitem['Description'] }}
-                <div v-if="subitem['OptionPN']">
-                  {{ $t('Option PN') }}:{{ subitem['OptionPN'] }}
-                </div>
+                <div v-if="subitem['OptionPN']">{{ $t('Option PN') }}:{{ subitem['OptionPN'] }}</div>
               </q-tooltip>
-              <span
-                >{{ subitem['PN'] }}[{{ subitem['Location'] }}:{{
-                  subitem['Qty']
-                }}]</span
+              <span>{{ subitem['PN'] }}[{{ subitem['Location'] }}:{{ subitem['Qty'] }}]</span
               ><span v-if="false">{{ [subitem['Cost']] }}</span>
             </div>
           </div>
@@ -132,68 +118,50 @@ const doUpdate = () => {
 }
 
 const showHistory = (pn) => {
-  axiosGet('/Data/StockHistory?Site=' + site.value + '&PnOrName=' + pn).then(
-    (response) => {
-      const history = response
-      const header = [
-        'Location',
-        'Seq',
-        'Qty',
-        'Cost',
-        'ProjectNO',
-        'SourceNO',
-        'SourceLine',
-        'EntryNO',
-        'EntryLine',
-        'CreateUser',
-        'CreateDate'
-      ]
-      const message = jsonToTable(
-        header,
-        history,
-        t('{pn} Stock History at {site}', { pn: pn, site: site.value })
-      )
+  axiosGet('/Data/StockHistory?Site=' + site.value + '&PnOrName=' + pn).then((response) => {
+    const history = response
+    const header = [
+      'Location',
+      'Seq',
+      'Qty',
+      'Cost',
+      'ProjectNO',
+      'SourceNO',
+      'SourceLine',
+      'EntryNO',
+      'EntryLine',
+      'CreateUser',
+      'CreateDate'
+    ]
+    const message = jsonToTable(header, history, t('{pn} Stock History at {site}', { pn: pn, site: site.value }))
 
-      Dialog.create({
-        message: message,
-        html: true,
-        fullWidth: true
+    Dialog.create({
+      message: message,
+      html: true,
+      fullWidth: true
+    })
+      .onOk(() => {
+        // console.log('OK')
       })
-        .onOk(() => {
-          // console.log('OK')
-        })
-        .onCancel(() => {
-          // console.log('Cancel')
-        })
-        .onDismiss(() => {
-          // console.log('I am triggered on both OK and Cancel')
-        })
-    }
-  )
+      .onCancel(() => {
+        // console.log('Cancel')
+      })
+      .onDismiss(() => {
+        // console.log('I am triggered on both OK and Cancel')
+      })
+  })
 }
 
 const download = () => {
   const nowTimeStamp = Date.now()
   const nowTime = formatDate(nowTimeStamp, 'YYYY-MM-DD')
-  const header = [
-    'G',
-    'Location',
-    'PN',
-    'Description',
-    'OptionPN',
-    'Qty',
-    'Cost'
-  ]
+  const header = ['G', 'Location', 'PN', 'Description', 'OptionPN', 'Qty', 'Cost']
   const strPNData = data
   // PN with #
   _forEach(strPNData, (value) => {
     value.PN = '#' + value.PN
   })
-  jsonToExcel(
-    header,
-    strPNData,
-    t('{site} Stock Count {nowTime})', { site: site.value, nowTime: nowTime })
-  )
+  jsonToExcel(header, strPNData, t('{site} Stock Count {nowTime}', { site: site.value, nowTime: nowTime }))
 }
 
 const S2N = (S, n) => {

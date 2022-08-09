@@ -1,4 +1,4 @@
- {
+{
   "About": "About",
   "AccountNO": "AccountNO",
   "AccountNO: {accountNO} Balance of {year}": "AccountNO: {accountNO} Balance of {year}",
@@ -97,6 +97,6 @@
   "such as: 1001000 or 1001000,1001001,1001002": "such as: 1001000 or 1001000,1001001,1001002",
   "to": "to",
   "{pn} Stock History at {site}": "{pn} Stock History at {site}",
-  "{site} Stock Count  {nowTime}": "{site} Stock Count  {nowTime}",
+  "{site} Stock Count {nowTime}": "{site} Stock Count {nowTime}",
   "{supplierCode} OpenItems": "{supplierCode} OpenItems"
 }

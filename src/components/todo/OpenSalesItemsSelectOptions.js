@@ -8,7 +8,7 @@
  */
 const optionsProjectStatus = [
   {
-    value: '0',
+    /** */ value: '0',
     label: '',
     disable: true
   },
