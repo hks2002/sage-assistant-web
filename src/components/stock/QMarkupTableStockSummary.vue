@@ -118,38 +118,40 @@ const doUpdate = () => {
 }
 
 const showHistory = (pn) => {
-  axiosGet('/Data/StockHistory?Site=' + site.value + '&PnOrName=' + pn).then((response) => {
-    const history = response
-    const header = [
-      'Location',
-      'Seq',
-      'Qty',
-      'Cost',
-      'ProjectNO',
-      'SourceNO',
-      'SourceLine',
-      'EntryNO',
-      'EntryLine',
-      'CreateUser',
-      'CreateDate'
-    ]
-    const message = jsonToTable(header, history, t('{pn} Stock History at {site}', { pn: pn, site: site.value }))
+  axiosGet('/Data/StockHistory?Site=' + site.value + '&PnOrName=' + pn + '&DateFrom=2000-01-01&DateTo=2099-12-31').then(
+    (response) => {
+      const history = response
+      const header = [
+        'Location',
+        'Seq',
+        'Qty',
+        'Cost',
+        'ProjectNO',
+        'SourceNO',
+        'SourceLine',
+        'EntryNO',
+        'EntryLine',
+        'CreateUser',
+        'CreateDate'
+      ]
+      const message = jsonToTable(header, history, t('{pn} Stock History at {site}', { pn: pn, site: site.value }))
 
-    Dialog.create({
-      message: message,
-      html: true,
-      fullWidth: true
-    })
-      .onOk(() => {
-        // console.log('OK')
+      Dialog.create({
+        message: message,
+        html: true,
+        fullWidth: true
       })
-      .onCancel(() => {
-        // console.log('Cancel')
-      })
-      .onDismiss(() => {
-        // console.log('I am triggered on both OK and Cancel')
-      })
-  })
+        .onOk(() => {
+          // console.log('OK')
+        })
+        .onCancel(() => {
+          // console.log('Cancel')
+        })
+        .onDismiss(() => {
+          // console.log('I am triggered on both OK and Cancel')
+        })
+    }
+  )
 }
 
 const download = () => {
