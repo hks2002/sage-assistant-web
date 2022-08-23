@@ -126,19 +126,19 @@ module.exports = configure(function (ctx) {
       // please using nignx to provide proxy first, then let devServer proxy to nignx
       proxy: {
         '/Data': {
-          target: 'http://192.168.0.246'
+          target: 'http://192.168.10.12'
         },
         '/auth': {
-          target: 'http://192.168.0.246'
+          target: 'http://192.168.10.12'
         },
         '/trans': {
-          target: 'http://192.168.0.246'
+          target: 'http://192.168.10.12'
         },
         '/api1': {
-          target: 'http://192.168.0.246'
+          target: 'http://192.168.10.12'
         },
         '/print': {
-          target: 'http://192.168.0.246'
+          target: 'http://192.168.10.12'
         }
       }
     },

@@ -2,7 +2,7 @@
  * @Author         : Robert Huang<56649783@qq.com>
  * @Date           : 2022-03-25 11:01:23
  * @LastEditors    : Robert Huang<56649783@qq.com>
- * @LastEditTime   : 2022-05-29 01:23:01
+ * @LastEditTime   : 2022-08-26 10:29:56
  * @FilePath       : \web2\src\layouts\MenuLink.vue
  * @CopyRight      : Dedienne Aerospace China ZhuHai
 -->
@@ -10,28 +10,18 @@
   <div>
     <q-separator v-if="split" />
     <!-- with sub menu items -->
-    <q-expansion-item
-      v-if="enable && expansion"
-      expand-separator
-      expand-icon-toggle
-      header-class="q-pa-sm"
-    >
+    <q-expansion-item v-if="enable && expansion" expand-separator expand-icon-toggle header-class="q-pa-sm">
       <template v-slot:header>
-        <q-item-section
-          v-if="icon"
-          avatar
-          class="p-pa-sm"
-          @click="showPages(children)"
-        >
+        <q-item-section v-if="icon" avatar class="p-pa-sm" @click="showPages(children)">
           <q-icon :name="icon" color="primary" />
         </q-item-section>
 
         <q-item-section @click="showPages(children)">
           <q-item-label class="text-primary text-bold">
-            {{ title }}
+            {{ $t(title) }}
           </q-item-label>
           <q-item-label class="text-primary" caption>
-            {{ caption }}
+            {{ $t(caption) }}
           </q-item-label>
         </q-item-section>
       </template>
@@ -50,32 +40,27 @@
 
         <q-item-section>
           <q-item-label class="text-primary text-bold">
-            {{ child.title }}
+            {{ $t(child.title) }}
           </q-item-label>
           <q-item-label class="text-primary" caption>
-            {{ child.caption }}
+            {{ $t(child.caption) }}
           </q-item-label>
         </q-item-section>
       </q-item>
     </q-expansion-item>
 
     <!-- without sub menu items -->
-    <q-item
-      v-if="enable && !expansion"
-      clickable
-      @click="showPage(name)"
-      class="q-pa-none q-pl-sm"
-    >
+    <q-item v-if="enable && !expansion" clickable @click="showPage(name)" class="q-pa-none q-pl-sm">
       <q-item-section v-if="icon" avatar class="q-pa-none">
         <q-icon :name="icon" color="primary" />
       </q-item-section>
 
       <q-item-section>
         <q-item-label class="text-primary text-bold">
-          {{ title }}
+          {{ $t(title) }}
         </q-item-label>
         <q-item-label class="text-primary" caption>
-          {{ caption }}
+          {{ $t(caption) }}
         </q-item-label>
       </q-item-section>
     </q-item>

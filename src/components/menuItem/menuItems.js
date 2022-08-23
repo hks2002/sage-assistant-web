@@ -22,7 +22,7 @@ export default [
   {
     path: '/',
     name: 'Dashboard',
-    title: t('Dashboard'),
+    title: 'Dashboard',
     caption: '',
     icon: 'fas fa-chalkboard-teacher',
     split: false,
@@ -32,7 +32,7 @@ export default [
   {
     path: '/Todo',
     name: 'Todo',
-    title: t('Todo'),
+    title: 'Todo',
     caption: '',
     icon: 'fas fa-tasks',
     split: false,
@@ -42,7 +42,7 @@ export default [
   {
     path: '/Products',
     name: 'Products',
-    title: t('Products'),
+    title: 'Products',
     caption: '',
     icon: 'fas fa-cubes',
     split: false,
@@ -51,7 +51,7 @@ export default [
   },
   {
     name: 'Stock',
-    title: t('Stock'),
+    title: 'Stock',
     caption: '',
     icon: 'fas fa-th',
     split: false,
@@ -61,7 +61,7 @@ export default [
       {
         path: '/Stock',
         name: 'Stock Summary',
-        title: t('Summary'),
+        title: 'Summary',
         caption: '',
         icon: 'fas fa-th',
         split: false,
@@ -70,7 +70,7 @@ export default [
       {
         path: '/Stock',
         name: 'Stock History',
-        title: t('History'),
+        title: 'History',
         caption: '',
         icon: 'fas fa-th',
         split: false,
@@ -81,7 +81,7 @@ export default [
   {
     path: '/Customers',
     name: 'Customers',
-    title: t('Customers'),
+    title: 'Customers',
     caption: '',
     icon: 'fas fa-users',
     split: false,
@@ -91,7 +91,7 @@ export default [
   {
     path: '/Sales',
     name: 'Sales',
-    title: t('Sales'),
+    title: 'Sales',
     caption: '',
     icon: 'fas fa-trophy',
     split: false,
@@ -101,7 +101,7 @@ export default [
   {
     path: '/Suppliers',
     name: 'Suppliers',
-    title: t('Suppliers'),
+    title: 'Suppliers',
     caption: '',
     icon: 'fas fa-puzzle-piece',
     split: false,
@@ -111,7 +111,7 @@ export default [
   {
     path: '/Purchases',
     name: 'Purchases',
-    title: t('Purchases'),
+    title: 'Purchases',
     caption: '',
     icon: 'fas fa-shopping-cart',
     split: false,
@@ -121,7 +121,7 @@ export default [
   {
     path: '/Logistics',
     name: 'Logistics',
-    title: t('Logistics'),
+    title: 'Logistics',
     caption: '',
     icon: 'fas fa-truck',
     split: false,
@@ -130,7 +130,7 @@ export default [
   },
   {
     name: 'Financials',
-    title: t('Financials'),
+    title: 'Financials',
     caption: '',
     icon: 'fas fa-dollar-sign',
     split: false,
@@ -140,7 +140,7 @@ export default [
       {
         path: '/Fapiao',
         name: 'Fapiao',
-        title: t('Fapiao'),
+        title: 'Fapiao',
         caption: '',
         icon: 'fas fa-dollar-sign',
         split: false,
@@ -149,7 +149,7 @@ export default [
       {
         path: '/InvoicePay',
         name: 'Invoice Pay',
-        title: t('InvoicePay'),
+        title: 'InvoicePay',
         caption: '',
         icon: 'fas fa-dollar-sign',
         split: false,
@@ -158,7 +158,7 @@ export default [
       {
         path: '/Balance',
         name: 'Balance',
-        title: t('Balance'),
+        title: 'Balance',
         caption: '',
         icon: 'fas fa-dollar-sign',
         split: false,
@@ -168,7 +168,7 @@ export default [
   },
   {
     name: 'Analysis',
-    title: t('Analysis'),
+    title: 'Analysis',
     caption: '',
     icon: 'fas fa-search-dollar',
     split: false,
@@ -178,7 +178,7 @@ export default [
       {
         path: '/QuoteSalesCost',
         name: 'Quote Sales Cost',
-        title: t('Quote Sales Cost'),
+        title: 'Quote Sales Cost',
         caption: '',
         icon: 'fas fa-search-dollar',
         split: false,
@@ -189,7 +189,7 @@ export default [
   {
     path: '/Reports',
     name: 'Reports',
-    title: t('Reports'),
+    title: 'Reports',
     caption: '',
     icon: 'fas fa-print',
     split: false,
@@ -199,7 +199,7 @@ export default [
   {
     path: '/About',
     name: 'About',
-    title: t('About'),
+    title: 'About',
     caption: '',
     icon: 'fas fa-info-circle',
     split: true,

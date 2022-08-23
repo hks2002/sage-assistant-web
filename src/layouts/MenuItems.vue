@@ -2,7 +2,7 @@
  * @Author         : Robert Huang<56649783@qq.com>
  * @Date           : 2022-03-25 11:01:23
  * @LastEditors    : Robert Huang<56649783@qq.com>
- * @LastEditTime   : 2022-05-28 22:58:05
+ * @LastEditTime   : 2022-08-26 10:31:27
  * @FilePath       : \web2\src\layouts\MenuItems.vue
  * @CopyRight      : Dedienne Aerospace China ZhuHai
 -->
@@ -15,23 +15,13 @@
 </template>
 
 <script setup>
-import { ebus } from '@/assets/ebus'
 import MenuLink from '@/layouts/MenuLink'
-import { onBeforeUnmount, onMounted, ref } from 'vue'
+import { onMounted, ref } from 'vue'
 
 const Links = ref([])
 
 // events
 onMounted(() => {
   Links.value = require('@/components/menuItem/menuItems').default
-})
-
-ebus.on('changeLanguage', async () => {
-  delete require.cache[require.resolve('@/components/menuItem/menuItems')]
-  Links.value = require('@/components/menuItem/menuItems').default
-})
-
-onBeforeUnmount(() => {
-  ebus.off('changeLanguage')
 })
 </script>
