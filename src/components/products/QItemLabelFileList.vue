@@ -14,35 +14,16 @@
         <q-badge v-else-if="file.Cat === 'Manual'" floating>M</q-badge>
         <q-badge v-else-if="file.Cat === 'Certificate'" floating>C</q-badge>
         <q-badge v-else floating>?</q-badge>
-        <q-tooltip v-if="file.Cat === 'Drawing'" floating
-          >Drawing:{{ file.File }}</q-tooltip
-        >
-        <q-tooltip v-else-if="file.Cat === 'Manual'" floating
-          >Manual:{{ file.File }}</q-tooltip
-        >
-        <q-tooltip v-else-if="file.Cat === 'Certificate'" floating
-          >Certificate:{{ file.File }}</q-tooltip
-        >
+        <q-tooltip v-if="file.Cat === 'Drawing'" floating>Drawing:{{ file.File }}</q-tooltip>
+        <q-tooltip v-else-if="file.Cat === 'Manual'" floating>Manual:{{ file.File }}</q-tooltip>
+        <q-tooltip v-else-if="file.Cat === 'Certificate'" floating>Certificate:{{ file.File }}</q-tooltip>
         <q-tooltip v-else floating>Unknown Category:{{ file.File }}</q-tooltip>
         <q-menu touch-position context-menu>
-          <q-btn
-            icon="fas fa-trash-alt"
-            color="teal"
-            size="sm"
-            @click="doDeleteFile(file.Path)"
-            dense
-          />
+          <q-btn icon="fas fa-trash-alt" color="teal" size="sm" @click="doDeleteFile(file.Path)" dense />
         </q-menu>
       </q-btn>
 
-      <q-btn
-        v-if="pn"
-        icon="fas fa-file-medical"
-        color="teal"
-        size="sm"
-        dense
-        @click="showFileUploader = true"
-      />
+      <q-btn v-if="pn" icon="fas fa-file-medical" color="teal" size="sm" dense @click="showFileUploader = true" />
     </div>
     <q-dialog v-model="showFileUploader">
       <q-card>
@@ -51,11 +32,7 @@
         </q-card-section>
         <q-card-section class="q-pt-none">
           <div class="q-gutter-sm">
-            <q-option-group
-              v-model="upLoadFileCategory"
-              :options="upLoadFileCategoryOptions"
-              color="teal"
-            />
+            <q-option-group v-model="upLoadFileCategory" :options="upLoadFileCategoryOptions" color="teal" />
           </div>
           <q-uploader
             url="/Data/FileUpload"
@@ -106,12 +83,7 @@ const upLoadFileCategoryOptions = ref([
 const getDocIcon = (docType) => {
   if (docType === 'PDF') {
     return 'fas fa-file-pdf'
-  } else if (
-    docType === 'BMP' ||
-    docType === 'TIF' ||
-    docType === 'JPG' ||
-    docType === 'JPEG'
-  ) {
+  } else if (docType === 'BMP' || docType === 'TIF' || docType === 'JPG' || docType === 'JPEG') {
     return 'fas fa-file-image'
   } else if (docType === 'ZIP' || docType === 'RAR' || docType === '7Z') {
     return 'fas fa-file-archive'
@@ -139,7 +111,7 @@ const setUploadParams = (pn, cat) => {
 
 const doDeleteFile = (path) => {
   console.debug('deleteFile:' + path)
-  $axios
+  axios
     .get('/Data/FileDelete?Path=' + path)
     .then((response) => {
       notifySuccess(response.data)

@@ -7,7 +7,7 @@
  * @CopyRight      : Dedienne Aerospace China ZhuHai
  */
 import { ebus } from '@/assets/ebus'
-import { i18n } from '@/assets/i18n'
+import { i18n } from '@/boot/i18n'
 import { defineStore } from 'pinia'
 
 const { t } = i18n.global

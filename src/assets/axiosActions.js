@@ -7,7 +7,7 @@
  * @CopyRight      : Dedienne Aerospace China ZhuHai
  */
 import { axios } from '@/assets/axios'
-import { i18n } from '@/assets/i18n'
+import { i18n } from '@/boot/i18n'
 import { Notify } from 'quasar'
 const { t } = i18n.global
 

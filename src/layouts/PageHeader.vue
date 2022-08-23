@@ -2,30 +2,15 @@
  * @Author         : Robert Huang<56649783@qq.com>
  * @Date           : 2022-03-25 11:01:23
  * @LastEditors    : Robert Huang<56649783@qq.com>
- * @LastEditTime   : 2022-06-24 18:57:49
+ * @LastEditTime   : 2022-08-23 12:39:49
  * @FilePath       : \web2\src\layouts\PageHeader.vue
  * @CopyRight      : Dedienne Aerospace China ZhuHai
 -->
 <template>
   <q-header elevated :style="'height:' + height + 'px'">
     <q-toolbar>
-      <q-btn
-        flat
-        dense
-        round
-        icon="fas fa-outdent"
-        aria-label="Menu"
-        @click="toggleLeftDrawer"
-      />
-      <q-btn
-        v-show="$q.screen.gt.xs"
-        dense
-        flat
-        round
-        size="sm"
-        class="q-mr-xs"
-        @click="goHome"
-      >
+      <q-btn flat dense round icon="fas fa-outdent" aria-label="Menu" @click="toggleLeftDrawer" />
+      <q-btn v-show="$q.screen.gt.xs" dense flat round size="sm" class="q-mr-xs" @click="goHome">
         <q-avatar dense>
           <img src="/imgs/logo.svg" style="background-color: white" />
         </q-avatar>
@@ -62,14 +47,7 @@
             <span class="text-white">{{ opt.label }}</span>
           </template>
         </q-select>
-        <q-btn
-          type="a"
-          target="_blank"
-          size="sm"
-          dense
-          round
-          href="https://srvsyr01"
-        >
+        <q-btn type="a" target="_blank" size="sm" dense round href="https://srvsyr01">
           <q-avatar size="sm">
             <img src="https://srvsyr01/favicon.ico" />
             <q-tooltip v-if="$q.screen.gt.sm">
@@ -77,34 +55,16 @@
             </q-tooltip>
           </q-avatar>
         </q-btn>
-        <q-btn
-          round
-          dense
-          size="sm"
-          icon="fas fa-question-circle"
-          @click="showHelp"
-        >
+        <q-btn round dense size="sm" icon="fas fa-question-circle" @click="showHelp">
           <q-tooltip>{{ $t('Help') }}</q-tooltip>
         </q-btn>
         <q-btn dense round size="sm" icon="fas fa-bell">
-          <q-badge
-            v-if="totalInformCount > 0"
-            color="negative"
-            style="padding: 2px 4px"
-            title-color="white"
-            floating
-          >
+          <q-badge v-if="totalInformCount > 0" color="negative" style="padding: 2px 4px" title-color="white" floating>
             {{ totalInformCount }}
           </q-badge>
         </q-btn>
         <span>{{ userInfo }}</span>
-        <q-btn
-          dense
-          flat
-          size="sm"
-          icon="fas fa-sign-out-alt"
-          @click="doLogout"
-        >
+        <q-btn dense flat size="sm" icon="fas fa-sign-out-alt" @click="doLogout">
           <q-tooltip>{{ $t('Exit') }}</q-tooltip>
         </q-btn>
       </div>
@@ -147,9 +107,7 @@ const totalInformCount = ref(0)
 // languages vars
 // 'fr', 'de'
 const { locale, t } = useI18n()
-const appLanguages = languages.filter((lang) =>
-  ['en-US', 'zh-CN'].includes(lang.isoName)
-)
+const appLanguages = languages.filter((lang) => ['en-US', 'zh-CN'].includes(lang.isoName))
 const langOptions = appLanguages.map((lang) => ({
   label: lang.nativeName,
   value: lang.isoName

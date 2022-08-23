@@ -33,13 +33,7 @@
       height: tabHeight - tabHeaderHeight + 'px'
     }"
   >
-    <q-tab-panel
-      keep-alive
-      class="q-pa-none"
-      v-for="tab in tabs"
-      :key="tab.id"
-      :name="tab.id"
-    >
+    <q-tab-panel keep-alive class="q-pa-none" v-for="tab in tabs" :key="tab.id" :name="tab.id">
       <!-- here use min-height style, it override the default <q-page> min-height, which same to <page-container> -->
       <!-- it could let scroll bar only in tab panel -->
       <component
@@ -85,9 +79,7 @@ const importPage = (tabName) => {
   // The import() must contain at least some information about where the module is located,
   // so bundling can be limited to a specific directory or set of files.
   if (!ComponentMap.hasOwnProperty(tabName)) {
-    ComponentMap[activeName.value] = defineAsyncComponent(() =>
-      import(`/src/pages/${tempLatePage}.vue`)
-    )
+    ComponentMap[activeName.value] = defineAsyncComponent(() => import(`/src/pages/${tempLatePage}.vue`))
   }
 }
 
@@ -129,8 +121,7 @@ pagesStore.$subscribe(() => {
   tabs.value = pagesStore.pages
   activeId.value = pagesStore.activeId
   activeName.value = pagesStore.activeName
-  document.title =
-    require('app/package.json').productName + ' - ' + pagesStore.activeLabel
+  document.title = require('app/package.json').productName + ' - ' + pagesStore.activeLabel
   importPage(activeName.value)
 })
 </script>

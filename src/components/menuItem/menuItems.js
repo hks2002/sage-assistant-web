@@ -6,7 +6,7 @@
  * @FilePath       : \web2\src\components\menuItem\menuItems.js
  * @CopyRight      : Dedienne Aerospace China ZhuHai
  */
-import { i18n } from '@/assets/i18n'
+import { i18n } from '@/boot/i18n'
 
 const { t } = i18n.global
 
