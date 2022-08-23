@@ -51,7 +51,7 @@
             dense
             v-model="filterCustomer"
             outlined
-            class="col-1"
+            class="col-1 mini"
             debounce="500"
             @update:model-value="
               updatePage({
@@ -64,7 +64,7 @@
             dense
             v-model="filterSupplier"
             outlined
-            class="col-1"
+            class="col-1 mini"
             debounce="500"
             @update:model-value="
               updatePage({
@@ -1064,9 +1064,6 @@ tbody tr td:nth-child(2).frezon {
   height: 20px;
   color: black;
 }
-.q-field--dense .q-field__control {
-  height: 20px;
-}
 
 // first td left padding
 .q-table--dense .q-table td:first-child,
@@ -1079,9 +1076,10 @@ tbody tr td:nth-child(2).frezon {
 .q-field--auto-height.q-field--dense .q-field__native {
   min-height: 18px;
 }
-.q-field--dense .q-field__control,
-.q-field--dense .q-field__marginal {
-  height: 18px;
+
+.mini .q-field__inner .q-field__control,
+.mimi .q-field__inner .q-field__marginal {
+  height: 20px;
 }
 .q-table--dense .q-table thead tr,
 .q-table--dense .q-table tbody tr,
