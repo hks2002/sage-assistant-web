@@ -14,6 +14,7 @@ const { configure } = require('quasar/wrappers')
 const fs = require('fs')
 const path = require('path')
 const moment = require('moment')
+const { ContextReplacementPlugin } = require('webpack')
 
 module.exports = configure(function (ctx) {
   return {
@@ -41,7 +42,7 @@ module.exports = configure(function (ctx) {
       // 'line-awesome',
       // 'roboto-font-latin-ext', // this or either 'roboto-font', NEVER both!
 
-      'roboto-font', // optional, you are not bound to it
+      // 'roboto-font', // optional, you are not bound to it
       'material-icons' // optional, you are not bound to it
     ],
 
@@ -49,7 +50,7 @@ module.exports = configure(function (ctx) {
     build: {
       // available values: 'hash', 'history'
       // ❗️❗️❗️ if set to 'history', and have 404 page, please set nginx try_files ❗️❗️❗️
-      // search 'vue history nginx' for more infomation
+      // search 'vue history nginx' for more information
       vueRouterMode: 'hash',
 
       // transpile: false,
@@ -60,9 +61,40 @@ module.exports = configure(function (ctx) {
       // transpileDependencies: [],
 
       // rtl: false, // https://v2.quasar.dev/options/rtl-support
+      preloadChunks: true,
       showProgress: true,
       gzip: true,
-      analyze: false,
+      analyze: true,
+
+      // https://quasar.dev/quasar-cli-webpack/handling-webpack#webpack-v5-compatibility-issues
+      // "chain" is a webpack-chain object https://github.com/neutrinojs/webpack-chain
+      // https://webpack.js.org/plugins/split-chunks-plugin/
+      chainWebpack(chain) {
+        chain.optimization.splitChunks({
+          chunks: 'async',
+          minSize: 20000,
+          minRemainingSize: 0,
+          minChunks: 1,
+          maxAsyncRequests: 30,
+          maxInitialRequests: 30,
+          enforceSizeThreshold: 50000,
+          cacheGroups: {
+            defaultVendors: {
+              test: /[\\/]node_modules[\\/]/,
+              priority: -10,
+              reuseExistingChunk: true
+            },
+            default: {
+              minChunks: 2,
+              priority: -20,
+              reuseExistingChunk: true
+            }
+          }
+        })
+
+        // https://webpack.docschina.org/plugins/conext-replacement-plugin
+        chain.plugin('ContextReplacement').use(ContextReplacementPlugin, [/quasar[/\\]lang$/, /en-US|zh-CN/])
+      },
 
       // Options below are automatically set depending on the env, set them if you want to override
       // extractCSS: false,
@@ -76,6 +108,7 @@ module.exports = configure(function (ctx) {
 
         fs.writeFileSync('package.json', JSON.stringify(pkg, null, 2))
       },
+
       afterBuild() {
         let pkg = fs.readFileSync('package.json')
         pkg = JSON.parse(pkg)
@@ -121,7 +154,7 @@ module.exports = configure(function (ctx) {
         key: fs.readFileSync(path.resolve(__dirname, './https/localhost+2-key.pem'))
       },
       port: 443, // the devServer <port> must same to nginx and srvsyr01, otherwise you will receive some <forbidden> result.
-      open: false, // opens browser window automatically
+      open: true, // opens browser window automatically
 
       // please using nignx to provide proxy first, then let devServer proxy to nignx
       proxy: {
@@ -150,7 +183,7 @@ module.exports = configure(function (ctx) {
       // iconSet: 'material-icons', // Quasar icon set
       // lang: 'en-US', // Quasar language pack
 
-      // For special cases outside of where the auto-import stategy can have an impact
+      // For special cases outside of where the auto-import strategy can have an impact
       // (like functional components as one of the examples),
       // you can manually specify Quasar components/directives to be available everywhere:
       //

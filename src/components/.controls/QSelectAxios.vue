@@ -2,7 +2,7 @@
  * @Author         : Robert Huang<56649783@qq.com>
  * @Date           : 2022-05-20 12:00:06
  * @LastEditors    : Robert Huang<56649783@qq.com>
- * @LastEditTime   : 2022-05-30 01:35:46
+ * @LastEditTime   : 2022-10-09 20:01:26
  * @FilePath       : \web2\src\components\.controls\QSelectAxios.vue
  * @CopyRight      : Dedienne Aerospace China ZhuHai
 -->
@@ -108,12 +108,7 @@ watch(
     // newAndold[1]:old
     // newAndold[0]:new
     if (typeof model.value === 'object') {
-      console.debug(
-        'watch:' +
-          JSON.stringify(newAndold[1]) +
-          ' ---> ' +
-          JSON.stringify(newAndold[0])
-      )
+      console.debug('watch:' + JSON.stringify(newAndold[1]) + ' ---> ' + JSON.stringify(newAndold[0]))
     } else {
       console.debug('watch:' + newAndold[1] + ' ---> ' + newAndold[0])
     }

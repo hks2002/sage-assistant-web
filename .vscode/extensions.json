@@ -11,7 +11,13 @@
     "steoates.autoimport",
     "syler.sass-indented",
     "sibiraj-s.vscode-scss-formatter",
-    "sdras.vue-vscode-snippets"
+    "sdras.vue-vscode-snippets",
+    "lokalise.i18n-ally",
+    "richie5um2.vscode-sort-json",
+    "streetsidesoftware.code-spell-checker",
+    "adpyke.vscode-sql-formatter",
+    "vue.volar",
+    "OBKoro1.korofileheader"
   ],
   "unwantedRecommendations": [
     "misterj.vue-volar-extention-pack",
