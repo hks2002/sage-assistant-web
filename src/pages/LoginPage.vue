@@ -5,7 +5,7 @@
         <!-- horizontal=true make col inactive -->
         <q-card-section class="col-8">
           <!-- horizontal true make col doesn't works -->
-          <Vue3Lottie animationLink="/json/working-on-laptop-in-office.json" background="transparent" />
+          <LottiePlayer animationLink="/json/working-on-laptop-in-office.json" />
         </q-card-section>
         <q-separator v-if="isLgXs" vertical inset />
         <q-card-section align="center" class="col-4">
@@ -76,11 +76,11 @@
 <script setup>
 import { fetchAuthorityData, fetchUserProfiles } from '@/assets/auth'
 import { axios } from '@/assets/axios'
+import LottiePlayer from '@/components/lottie/LottiePlayer.vue'
 import { SessionStorage, useQuasar } from 'quasar'
 import { onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
-import { Vue3Lottie } from 'vue3-lottie'
 
 // common vars
 const $q = useQuasar()

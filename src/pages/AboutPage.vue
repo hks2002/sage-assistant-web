@@ -17,24 +17,16 @@
       <q-separator />
       <div />
       <div class="text-h6 q-pa-sm">
-        {{
-          $t(
-            "It's a tool to get information from sage,to save your time, and increase productivity."
-          )
-        }}
+        {{ $t("It's a tool to get information from sage,to save your time, and increase productivity.") }}
       </div>
       <div class="row">
         <ul>
           <div class="text-bold">Powered by:</div>
-          <li v-for="(ver, dep) in dependencies" :key="dep" class="">
-            {{ dep }} : {{ ver }}
-          </li>
+          <li v-for="(ver, dep) in dependencies" :key="dep" class="">{{ dep }} : {{ ver }}</li>
         </ul>
         <ul>
           <div class="text-bold">Powered by:</div>
-          <li v-for="dep in srvProjectDependencies" :key="dep" class="">
-            {{ dep.artifactId }} : {{ dep.version }}
-          </li>
+          <li v-for="dep in srvProjectDependencies" :key="dep" class="">{{ dep.artifactId }} : {{ dep.version }}</li>
         </ul>
       </div>
     </q-card>
