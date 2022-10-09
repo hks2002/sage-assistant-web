@@ -2,7 +2,7 @@
  * @Author         : Robert Huang<56649783@qq.com>
  * @Date           : 2022-03-25 11:01:23
  * @LastEditors    : Robert Huang<56649783@qq.com>
- * @LastEditTime   : 2022-05-30 01:31:01
+ * @LastEditTime   : 2022-10-09 20:23:57
  * @FilePath       : \web2\src\pages\ProductsPage.vue
  * @CopyRight      : Dedienne Aerospace China ZhuHai
 -->
@@ -15,6 +15,7 @@
       option-value="PNROOT"
       data-url="/Data/PNHelper"
       :label="$t('Search Your Product')"
+      hint='In case of large amount PNs, please use EXCEL formula =webService("https://sageassistant/Data/AnalyseSales") or =webService("https://sageassistant/Data/AnalyseQuote") or =webService("https://sageassistant/Data/AnalysePurchase")'
       input-style="font-weight:bolder;font-size:25px;text-transform:uppercase"
       popup-content-style="font-weight:bold;font-size:25px"
       popup-content-class="text-secondary"
@@ -30,46 +31,23 @@
       </q-card>
       <q-card class="col-grow">
         <q-scroll-area style="height: 150px">
-          <EchartInventoryStock
-            :pnRoot="pnRoot"
-            style="padding: 0px; height: 150px"
-            v-show="isAuthorised('CONSSDE')"
-          />
+          <EchartInventoryStock :pnRoot="pnRoot" style="padding: 0px; height: 150px" v-show="isAuthorised('CONSSDE')" />
         </q-scroll-area>
       </q-card>
       <q-card class="col-4">
         <q-scroll-area style="height: 150px">
-          <EchartDeliveryDuration
-            :pnRoot="pnRoot"
-            style="height: 150px"
-            v-show="isAuthorised('GESSDH')"
-          />
+          <EchartDeliveryDuration :pnRoot="pnRoot" style="height: 150px" v-show="isAuthorised('GESSDH')" />
         </q-scroll-area>
       </q-card>
     </div>
     <div class="row q-px-sm" v-if="pnRoot">
-      <EchartSalesHistory
-        :pnRoot="pnRoot"
-        :style="echartHeight"
-        class="col-grow"
-        v-show="isAuthorised('GESSOH')"
-      />
+      <EchartSalesHistory :pnRoot="pnRoot" :style="echartHeight" class="col-grow" v-show="isAuthorised('GESSOH')" />
     </div>
     <div class="row q-px-sm" v-if="pnRoot">
-      <EchartQuoteHistory
-        :pnRoot="pnRoot"
-        :style="echartHeight"
-        class="col-grow"
-        v-show="isAuthorised('GESSQH')"
-      />
+      <EchartQuoteHistory :pnRoot="pnRoot" :style="echartHeight" class="col-grow" v-show="isAuthorised('GESSQH')" />
     </div>
     <div class="row q-px-sm" v-if="pnRoot">
-      <EchartCostHistory
-        :pnRoot="pnRoot"
-        :style="echartHeight"
-        class="col-grow"
-        v-show="isAuthorised('GESPOH')"
-      />
+      <EchartCostHistory :pnRoot="pnRoot" :style="echartHeight" class="col-grow" v-show="isAuthorised('GESPOH')" />
     </div>
   </q-page>
 </template>
@@ -103,9 +81,7 @@ const pnRoot = ref('')
 const echartHeight = computed(() => {
   /** 56: QSelect height, 150: PnInfo height */
   const echartItemHeight = (props.pageHeight - 56 - 150) / 3
-  return echartItemHeight > 320
-    ? { height: echartItemHeight + 'px' }
-    : { height: 320 + 'px' }
+  return echartItemHeight > 320 ? { height: echartItemHeight + 'px' } : { height: 320 + 'px' }
 })
 
 // actions
