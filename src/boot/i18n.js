@@ -32,7 +32,8 @@ import { createI18n } from 'vue-i18n'
 
 const i18n = createI18n({
   silentTranslationWarn: true,
-  silentFallbackWarn: true
+  silentFallbackWarn: true,
+  legacy: false
 })
 
 export { i18n }
