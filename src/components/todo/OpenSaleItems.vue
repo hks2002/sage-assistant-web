@@ -29,7 +29,8 @@
                 pagination: pagination
               })
             "
-          />
+            ><q-tooltip>{{ $t('All NOR') }}</q-tooltip></q-checkbox
+          >
           <q-checkbox
             dense
             v-model="showOtherOrder"
@@ -39,7 +40,8 @@
                 pagination: pagination
               })
             "
-          />
+            ><q-tooltip>{{ $t('NOR-Services and All NOT NOR') }}</q-tooltip></q-checkbox
+          >
           <q-separator vertical />
           <q-toggle dense v-model="showSODetail" :label="$t('Show Sales Details')" />
           <q-toggle dense v-model="showSOComment" :label="$t('Show Sales Comment')" />
