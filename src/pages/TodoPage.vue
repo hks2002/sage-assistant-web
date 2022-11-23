@@ -24,7 +24,7 @@
         <OpenSaleItems
           :site="site"
           :style="tabPanelMinHeight"
-          v-if="isAuthorised('GESPOH') || isAuthorised('GESSOH')"
+          v-if="isAuthorized('GESPOH') || isAuthorized('GESSOH')"
         />
         <ExceptionLottie :ErrorCode="403" v-else />
       </q-tab-panel>
@@ -32,7 +32,7 @@
         <echart-todo-delivery
           :site="site"
           :style="tabPanelHeight"
-          v-if="isAuthorised('GESPOH') || isAuthorised('GESSOH')"
+          v-if="isAuthorized('GESPOH') || isAuthorized('GESSOH')"
         />
         <ExceptionLottie :ErrorCode="403" v-else />
       </q-tab-panel>
@@ -41,7 +41,7 @@
         <echart-todo-receive
           :site="site"
           :style="tabPanelHeight"
-          v-if="isAuthorised('GESPOH') || isAuthorised('GESSOH')"
+          v-if="isAuthorized('GESPOH') || isAuthorized('GESSOH')"
         />
         <ExceptionLottie :ErrorCode="403" v-else />
       </q-tab-panel>
@@ -50,7 +50,7 @@
         <echart-todo-deal-with-order-line
           :site="site"
           :style="tabPanelHeight"
-          v-if="isAuthorised('GESPOH') || isAuthorised('GESSOH')"
+          v-if="isAuthorized('GESPOH') || isAuthorized('GESSOH')"
         />
         <ExceptionLottie :ErrorCode="403" v-else />
       </q-tab-panel>
@@ -58,12 +58,12 @@
         <echart-todo-purchase-bom
           :site="site"
           :style="tabPanelHeight"
-          v-if="isAuthorised('GESPOH') || isAuthorised('GESSOH')"
+          v-if="isAuthorized('GESPOH') || isAuthorized('GESSOH')"
         />
         <ExceptionLottie :ErrorCode="403" v-else />
       </q-tab-panel>
       <q-tab-panel name="Orphan-WO" class="q-pa-none">
-        <echart-todo-closed-w-o :site="site" :style="tabPanelHeight" v-if="isAuthorised('GESMFG')" />
+        <echart-todo-closed-w-o :site="site" :style="tabPanelHeight" v-if="isAuthorized('GESMFG')" />
         <ExceptionLottie :ErrorCode="403" v-else />
       </q-tab-panel>
     </q-tab-panels>
@@ -71,7 +71,7 @@
 </template>
 
 <script setup>
-import { isAuthorised } from '@/assets/auth'
+import { isAuthorized } from '@/assets/auth'
 import { ebus } from '@/assets/ebus'
 import EchartTodoClosedWO from '@/components/echarts/EchartTodoClosedWO.vue'
 import EchartTodoDealWithOrderLine from '@/components/echarts/EchartTodoDealWithOrderLine.vue'
