@@ -2,16 +2,16 @@
  * @Author         : Robert Huang<56649783@qq.com>
  * @Date           : 2022-04-08 09:36:21
  * @LastEditors    : Robert Huang<56649783@qq.com>
- * @LastEditTime   : 2022-05-30 12:41:15
+ * @LastEditTime   : 2022-11-17 15:59:01
  * @FilePath       : \web2\src\pages\CustomersPage.vue
  * @CopyRight      : Dedienne Aerospace China ZhuHai
 -->
 <template>
   <q-page>
-    <ExceptionLottie :ErrorCode="403" v-if="!isAuthorised('GESSOH')" />
-    <WaitInputLottieVue v-if="!customerCode && isAuthorised('GESSOH')" />
+    <ExceptionLottie :ErrorCode="403" v-if="!isAuthorized('GESSOH')" />
+    <WaitInputLottieVue v-if="!customerCode && isAuthorized('GESSOH')" />
 
-    <div class="row q-gutter-sm q-pa-sm" v-if="isAuthorised('GESSOH')">
+    <div class="row q-gutter-sm q-pa-sm" v-if="isAuthorized('GESSOH')">
       <QSelectAxiosVue
         option-label="CustomerName"
         option-value="CustomerCode"
@@ -44,11 +44,7 @@
         v-model="dateTo"
       />
     </div>
-    <QCardCustomerInfoVue
-      :customerCode="customerCode"
-      class="q-mx-sm q-pt-sm"
-      v-if="customerCode"
-    />
+    <QCardCustomerInfoVue :customerCode="customerCode" class="q-mx-sm q-pt-sm" v-if="customerCode" />
     <QMarkupTableCustomerOpenItemsVue
       :customerCode="customerCode"
       :dateFrom="dateFrom"
@@ -108,7 +104,7 @@
 </template>
 
 <script setup>
-import { isAuthorised } from '@/assets/auth'
+import { isAuthorized } from '@/assets/auth'
 import QSelectAxiosVue from '@/components/.controls/QSelectAxios.vue'
 import QCardCustomerInfoVue from '@/components/customers/QCardCustomerInfo.vue'
 import QMarkupTableCustomerOpenItemsVue from '@/components/customers/QMarkupTableCustomerOpenItems.vue'

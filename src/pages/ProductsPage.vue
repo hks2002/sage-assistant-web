@@ -2,14 +2,14 @@
  * @Author         : Robert Huang<56649783@qq.com>
  * @Date           : 2022-03-25 11:01:23
  * @LastEditors    : Robert Huang<56649783@qq.com>
- * @LastEditTime   : 2022-10-09 20:23:57
+ * @LastEditTime   : 2022-11-17 16:03:32
  * @FilePath       : \web2\src\pages\ProductsPage.vue
  * @CopyRight      : Dedienne Aerospace China ZhuHai
 -->
 <template>
   <q-page>
-    <WaitInputLottieVue v-if="!pnRoot && isAuthorised('GESITM')" />
-    <ExceptionLottie :ErrorCode="403" v-if="!isAuthorised('GESITM')" />
+    <WaitInputLottieVue v-if="!pnRoot && isAuthorized('GESITM')" />
+    <ExceptionLottie :ErrorCode="403" v-if="!isAuthorized('GESITM')" />
     <QSelectAxios
       option-label="PN"
       option-value="PNROOT"
@@ -20,7 +20,7 @@
       popup-content-style="font-weight:bold;font-size:25px"
       popup-content-class="text-secondary"
       class="q-pa-sm"
-      v-if="isAuthorised('GESITM')"
+      v-if="isAuthorized('GESITM')"
       @update:model-value="update"
     />
     <div class="row q-gutter-sm q-px-sm" style="height: 150px" v-if="pnRoot">
@@ -31,29 +31,29 @@
       </q-card>
       <q-card class="col-grow">
         <q-scroll-area style="height: 150px">
-          <EchartInventoryStock :pnRoot="pnRoot" style="padding: 0px; height: 150px" v-show="isAuthorised('CONSSDE')" />
+          <EchartInventoryStock :pnRoot="pnRoot" style="padding: 0px; height: 150px" v-show="isAuthorized('CONSSDE')" />
         </q-scroll-area>
       </q-card>
       <q-card class="col-4">
         <q-scroll-area style="height: 150px">
-          <EchartDeliveryDuration :pnRoot="pnRoot" style="height: 150px" v-show="isAuthorised('GESSDH')" />
+          <EchartDeliveryDuration :pnRoot="pnRoot" style="height: 150px" v-show="isAuthorized('GESSDH')" />
         </q-scroll-area>
       </q-card>
     </div>
     <div class="row q-px-sm" v-if="pnRoot">
-      <EchartSalesHistory :pnRoot="pnRoot" :style="echartHeight" class="col-grow" v-show="isAuthorised('GESSOH')" />
+      <EchartSalesHistory :pnRoot="pnRoot" :style="echartHeight" class="col-grow" v-show="isAuthorized('GESSOH')" />
     </div>
     <div class="row q-px-sm" v-if="pnRoot">
-      <EchartQuoteHistory :pnRoot="pnRoot" :style="echartHeight" class="col-grow" v-show="isAuthorised('GESSQH')" />
+      <EchartQuoteHistory :pnRoot="pnRoot" :style="echartHeight" class="col-grow" v-show="isAuthorized('GESSQH')" />
     </div>
     <div class="row q-px-sm" v-if="pnRoot">
-      <EchartCostHistory :pnRoot="pnRoot" :style="echartHeight" class="col-grow" v-show="isAuthorised('GESPOH')" />
+      <EchartCostHistory :pnRoot="pnRoot" :style="echartHeight" class="col-grow" v-show="isAuthorized('GESPOH')" />
     </div>
   </q-page>
 </template>
 
 <script setup>
-import { isAuthorised } from '@/assets/auth'
+import { isAuthorized } from '@/assets/auth'
 import QSelectAxios from '@/components/.controls/QSelectAxios.vue'
 import EchartCostHistory from '@/components/echarts/EchartCostHistory.vue'
 import EchartDeliveryDuration from '@/components/echarts/EchartDeliveryDuration.vue'

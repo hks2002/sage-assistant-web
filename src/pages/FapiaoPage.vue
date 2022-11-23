@@ -1,10 +1,7 @@
 <template>
   <q-page class="row q-gutter-sm q-pa-sm">
     <q-card flat class="col-6">
-      <q-card-section
-        class="row q-gutter-sm q-px-sm"
-        v-if="isAuthorised('GESSIH')"
-      >
+      <q-card-section class="row q-gutter-sm q-px-sm" v-if="isAuthorized('GESSIH')">
         <QSelectAxiosVue
           data-url="/Fapiao/Lbdm?Lbdm="
           :label="$t('发票代码')"
@@ -72,25 +69,14 @@
             <q-item-section> 合计金额 </q-item-section>
             <q-item-section
               :class="
-                notMatchClass(
-                  NMN(
-                    InvoiceHeader.AmountTaxNotInclude,
-                    InvoiceHeader.CurrRate
-                  ),
-                  S2N(FapiaoHeader.hjje)
-                )
+                notMatchClass(NMN(InvoiceHeader.AmountTaxNotInclude, InvoiceHeader.CurrRate), S2N(FapiaoHeader.hjje))
               "
             >
               {{ S2N(FapiaoHeader.hjje) }}
             </q-item-section>
             <q-item-section> 合计税额 </q-item-section>
             <q-item-section
-              :class="
-                notMatchClass(
-                  NMN(InvoiceHeader.AmountTax, InvoiceHeader.CurrRate),
-                  S2N(FapiaoHeader.hjse)
-                )
-              "
+              :class="notMatchClass(NMN(InvoiceHeader.AmountTax, InvoiceHeader.CurrRate), S2N(FapiaoHeader.hjse))"
             >
               {{ S2N(FapiaoHeader.hjse) }}
             </q-item-section>
@@ -115,10 +101,7 @@
 
           <q-separator inset />
 
-          <q-item
-            v-ripple
-            v-if="FapiaoHeader.gfmc != '珠海德定安航空地面设备有限公司'"
-          >
+          <q-item v-ripple v-if="FapiaoHeader.gfmc != '珠海德定安航空地面设备有限公司'">
             <q-item-section side> 购方名称 </q-item-section>
             <q-item-section>
               {{ FapiaoHeader.gfmc }}
@@ -132,23 +115,14 @@
           </q-item>
           <q-item
             v-ripple
-            v-if="
-              FapiaoHeader.gfdzdh.replace(' ', '') !=
-              '珠海市金湾区红旗镇金粮路5号厂房A一楼东侧0756-8818892'
-            "
+            v-if="FapiaoHeader.gfdzdh.replace(' ', '') != '珠海市金湾区红旗镇金粮路5号厂房A一楼东侧0756-8818892'"
           >
             <q-item-section side> 购方地址电话 </q-item-section>
             <q-item-section>
               {{ FapiaoHeader.gfdzdh }}
             </q-item-section>
           </q-item>
-          <q-item
-            v-ripple
-            v-if="
-              FapiaoHeader.gfsh.replace(' ', '') !=
-              '中国银行珠海拱北支行678257743778'
-            "
-          >
+          <q-item v-ripple v-if="FapiaoHeader.gfsh.replace(' ', '') != '中国银行珠海拱北支行678257743778'">
             <q-item-section side> 购方银行账号 </q-item-section>
             <q-item-section>
               {{ FapiaoHeader.gfyhzh }}
@@ -157,49 +131,25 @@
 
           <q-separator inset />
 
-          <q-item
-            v-ripple
-            v-if="
-              FapiaoHeader.xfsh != '914404006981669765' &&
-              FapiaoHeader.xfsh != ''
-            "
-          >
+          <q-item v-ripple v-if="FapiaoHeader.xfsh != '914404006981669765' && FapiaoHeader.xfsh != ''">
             <q-item-section side> 销方名称 </q-item-section>
             <q-item-section>
               {{ FapiaoHeader.xfmc }}
             </q-item-section>
           </q-item>
-          <q-item
-            v-ripple
-            v-if="
-              FapiaoHeader.xfsh != '914404006981669765' &&
-              FapiaoHeader.xfsh != ''
-            "
-          >
+          <q-item v-ripple v-if="FapiaoHeader.xfsh != '914404006981669765' && FapiaoHeader.xfsh != ''">
             <q-item-section side> 销方税号 </q-item-section>
             <q-item-section>
               {{ FapiaoHeader.xfsh }}
             </q-item-section>
           </q-item>
-          <q-item
-            v-ripple
-            v-if="
-              FapiaoHeader.xfsh != '914404006981669765' &&
-              FapiaoHeader.xfsh != ''
-            "
-          >
+          <q-item v-ripple v-if="FapiaoHeader.xfsh != '914404006981669765' && FapiaoHeader.xfsh != ''">
             <q-item-section side> 销方地址电话 </q-item-section>
             <q-item-section>
               {{ FapiaoHeader.xfdzdh }}
             </q-item-section>
           </q-item>
-          <q-item
-            v-ripple
-            v-if="
-              FapiaoHeader.xfsh != '914404006981669765' &&
-              FapiaoHeader.xfsh != ''
-            "
-          >
+          <q-item v-ripple v-if="FapiaoHeader.xfsh != '914404006981669765' && FapiaoHeader.xfsh != ''">
             <q-item-section side> 销方银行账号 </q-item-section>
             <q-item-section>
               {{ FapiaoHeader.xfyhzh }}
@@ -237,10 +187,7 @@
                 class="text-right"
                 :class="
                   notMatchClass(
-                    NMN(
-                      ANN(InvoiceBody, index, 'AmountNoTax'),
-                      ANN(InvoiceBody, index, 'TaxRate')
-                    ),
+                    NMN(ANN(InvoiceBody, index, 'AmountNoTax'), ANN(InvoiceBody, index, 'TaxRate')),
                     S2N(item.je)
                   )
                 "
@@ -252,10 +199,7 @@
                 class="text-right"
                 :class="
                   notMatchClass(
-                    NMN(
-                      ANN(InvoiceBody, index, 'AmountTax'),
-                      ANN(InvoiceBody, index, 'TaxRate')
-                    ),
+                    NMN(ANN(InvoiceBody, index, 'AmountTax'), ANN(InvoiceBody, index, 'TaxRate')),
                     S2N(item.se)
                   )
                 "
@@ -272,7 +216,7 @@
     </q-card>
 
     <q-card flat class="col-grow">
-      <q-card-section class="row" v-if="isAuthorised('GESSIH')">
+      <q-card-section class="row" v-if="isAuthorized('GESSIH')">
         <QSelectAxiosVue
           data-url="/Data/InvoiceNO?InvoiceNO="
           :label="$t('InvoiceNO')"
@@ -320,25 +264,14 @@
             <q-item-section> AmountNoTax </q-item-section>
             <q-item-section
               :class="
-                notMatchClass(
-                  NMN(
-                    InvoiceHeader.AmountTaxNotInclude,
-                    InvoiceHeader.CurrRate
-                  ),
-                  S2N(FapiaoHeader.hjje)
-                )
+                notMatchClass(NMN(InvoiceHeader.AmountTaxNotInclude, InvoiceHeader.CurrRate), S2N(FapiaoHeader.hjje))
               "
             >
               {{ S2N(InvoiceHeader.AmountTaxNotInclude) }}
             </q-item-section>
             <q-item-section> AmountTax </q-item-section>
             <q-item-section
-              :class="
-                notMatchClass(
-                  NMN(InvoiceHeader.AmountTax, InvoiceHeader.CurrRate),
-                  S2N(FapiaoHeader.hjse)
-                )
-              "
+              :class="notMatchClass(NMN(InvoiceHeader.AmountTax, InvoiceHeader.CurrRate), S2N(FapiaoHeader.hjse))"
             >
               {{ S2N(InvoiceHeader.AmountTax) }}
             </q-item-section>
@@ -410,24 +343,14 @@
               <td class="text-right">{{ S2N(item.NetPrice) }}</td>
               <td
                 class="text-right"
-                :class="
-                  notMatchClass(
-                    NMN(item.AmountNoTax, InvoiceHeader.CurrRate),
-                    S2N(ANN(FapiaoBody, index, 'je'))
-                  )
-                "
+                :class="notMatchClass(NMN(item.AmountNoTax, InvoiceHeader.CurrRate), S2N(ANN(FapiaoBody, index, 'je')))"
               >
                 {{ S2N(item.AmountNoTax) }}
               </td>
               <td class="text-center">{{ item.TaxRate }}</td>
               <td
                 class="text-right"
-                :class="
-                  notMatchClass(
-                    NMN(item.AmountTax, InvoiceHeader.CurrRate),
-                    S2N(ANN(FapiaoBody, index, 'se'))
-                  )
-                "
+                :class="notMatchClass(NMN(item.AmountTax, InvoiceHeader.CurrRate), S2N(ANN(FapiaoBody, index, 'se')))"
               >
                 {{ S2N(item.AmountTax) }}
               </td>
@@ -443,7 +366,7 @@
 </template>
 
 <script setup>
-import { isAuthorised } from '@/assets/auth'
+import { isAuthorized } from '@/assets/auth'
 import { axiosGet } from '@/assets/axiosActions'
 import QSelectAxiosVue from '@/components/.controls/QSelectAxios.vue'
 import { computed, ref, toRaw } from 'vue'
@@ -618,7 +541,7 @@ const S2N = (S, n) => {
     return N
   }
 }
-// renturn N1 plus N2
+// return N1 plus N2
 const NPN = (N1, N2, n) => {
   let N3 = 0
   if (n) {
@@ -687,9 +610,7 @@ const searchInvoice = async () => {
 const searchFapiao = async () => {
   if (Fphm.value !== '') {
     await doUpdateFapiaoHeader() // top lbdm, only one
-    Lbdm.value !== ''
-      ? doUpdateFapiaoBody('withLbdm')
-      : doUpdateFapiaoBody('notWithLbdm')
+    Lbdm.value !== '' ? doUpdateFapiaoBody('withLbdm') : doUpdateFapiaoBody('notWithLbdm')
 
     await doUpdateInvoiceHeader('byFapiao')
     InvoiceNO.value = InvoiceHeader.value.InvoiceNO

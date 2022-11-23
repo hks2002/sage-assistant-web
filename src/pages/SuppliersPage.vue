@@ -2,16 +2,16 @@
  * @Author         : Robert Huang<56649783@qq.com>
  * @Date           : 2022-04-08 09:36:21
  * @LastEditors    : Robert Huang<56649783@qq.com>
- * @LastEditTime   : 2022-05-30 12:45:20
+ * @LastEditTime   : 2022-11-17 19:33:12
  * @FilePath       : \web2\src\pages\SuppliersPage.vue
  * @CopyRight      : Dedienne Aerospace China ZhuHai
 -->
 <template>
   <q-page>
-    <ExceptionLottie :ErrorCode="403" v-if="!isAuthorised('GESPOH')" />
-    <WaitInputLottieVue v-if="!supplierCode && isAuthorised('GESPOH')" />
+    <ExceptionLottie :ErrorCode="403" v-if="!isAuthorized('GESPOH')" />
+    <WaitInputLottieVue v-if="!supplierCode && isAuthorized('GESPOH')" />
 
-    <div class="row q-gutter-sm q-pa-sm" v-if="isAuthorised('GESPOH')">
+    <div class="row q-gutter-sm q-pa-sm" v-if="isAuthorized('GESPOH')">
       <QSelectAxiosVue
         option-label="SupplierName"
         option-value="SupplierCode"
@@ -44,11 +44,7 @@
         v-model="dateTo"
       />
     </div>
-    <QCardSupplierInfoVue
-      :supplierCode="supplierCode"
-      class="q-mx-sm q-pt-sm"
-      v-if="supplierCode"
-    />
+    <QCardSupplierInfoVue :supplierCode="supplierCode" class="q-mx-sm q-pt-sm" v-if="supplierCode" />
     <QMarkupTableSupplierOpenItemsVue
       :supplierCode="supplierCode"
       :dateFrom="dateFrom"
@@ -108,7 +104,7 @@
 </template>
 
 <script setup>
-import { isAuthorised } from '@/assets/auth'
+import { isAuthorized } from '@/assets/auth'
 import QSelectAxiosVue from '@/components/.controls/QSelectAxios.vue'
 import EchartSupplierDelayHistoryVue from '@/components/echarts/EchartSupplierDelayHistory.vue'
 import EchartSupplierDeliveryHistoryVue from '@/components/echarts/EchartSupplierDeliveryHistory.vue'

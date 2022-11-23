@@ -1,9 +1,9 @@
 <template>
   <q-page>
-    <WaitInputLottieVue v-if="!customerCode && isAuthorised('GESSIH')" />
-    <ExceptionLottieVue :ErrorCode="403" v-if="!isAuthorised('GESSIH')" />
+    <WaitInputLottieVue v-if="!customerCode && isAuthorized('GESSIH')" />
+    <ExceptionLottieVue :ErrorCode="403" v-if="!isAuthorized('GESSIH')" />
 
-    <div class="row q-gutter-sm q-px-sm q-pt-sm" v-if="isAuthorised('GESSIH')">
+    <div class="row q-gutter-sm q-px-sm q-pt-sm" v-if="isAuthorized('GESSIH')">
       <QSelectAxios
         option-label="CustomerName"
         option-value="CustomerCode"
@@ -52,11 +52,11 @@
 </template>
 
 <script setup>
-import { isAuthorised } from '@/assets/auth'
+import { isAuthorized } from '@/assets/auth'
 import { ebus } from '@/assets/ebus'
 import { getCookies } from '@/assets/storage'
 import QSelectAxios from '@/components/.controls/QSelectAxios.vue'
-import QMarkupTableInvoicePayVue from '@/components/Financials/QMarkupTableInvoicePay.vue'
+import QMarkupTableInvoicePayVue from '@/components/Financial/QMarkupTableInvoicePay.vue'
 import ExceptionLottieVue from '@/components/lottie/ExceptionLottie.vue'
 import WaitInputLottieVue from '@/components/lottie/WaitInputLottie.vue'
 import { date, LocalStorage } from 'quasar'

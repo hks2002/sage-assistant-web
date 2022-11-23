@@ -1,10 +1,7 @@
 <template>
   <q-page>
-    <ExceptionLottie :ErrorCode="403" v-if="!isAuthorised('CONSSAR')" />
-    <q-list
-      class="row q-gutter-sm q-pt-sm q-px-sm"
-      v-if="isAuthorised('CONSSAR')"
-    >
+    <ExceptionLottie :ErrorCode="403" v-if="!isAuthorized('CONSSAR')" />
+    <q-list class="row q-gutter-sm q-pt-sm q-px-sm" v-if="isAuthorized('CONSSAR')">
       <q-input
         dense
         clearable
@@ -13,37 +10,23 @@
         hide-bottom-space
         debounce="1000"
         class="col-grow"
-        :label="
-          $t(
-            'Input PN (support supplier\'s PN also) to filter-----Click PN to see its history'
-          )
-        "
-        :hint="
-          $t(
-            'All special character (\',\' \'.\' \'/\' \'-\' \'_\') will be ignored to match.'
-          )
-        "
+        :label="$t('Input PN (support supplier\'s PN also) to filter-----Click PN to see its history')"
+        :hint="$t('All special character (\',\' \'.\' \'/\' \'-\' \'_\') will be ignored to match.')"
         input-class="text-uppercase"
         v-model="PNfilter"
       >
       </q-input>
     </q-list>
-    <q-list
-      class="row q-gutter-sm q-pt-sm q-px-sm"
-      v-if="isAuthorised('CONSSAR')"
-    >
-      <QMarkupTableStockSummaryVue
-        :PNfilter="PNfilter"
-        :style="{ height: tableHeight + 'px' }"
-      />
+    <q-list class="row q-gutter-sm q-pt-sm q-px-sm" v-if="isAuthorized('CONSSAR')">
+      <QMarkupTableStockSummaryVue :PNfilter="PNfilter" :style="{ height: tableHeight + 'px' }" />
     </q-list>
   </q-page>
 </template>
 
 <script setup>
-import { isAuthorised } from '@/assets/auth'
-import QMarkupTableStockSummaryVue from '@/components/stock/QMarkupTableStockSummary'
+import { isAuthorized } from '@/assets/auth'
 import ExceptionLottie from '@/components/lottie/ExceptionLottie.vue'
+import QMarkupTableStockSummaryVue from '@/components/stock/QMarkupTableStockSummary'
 import { useQuasar } from 'quasar'
 import { computed, ref } from 'vue'
 

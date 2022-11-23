@@ -1,11 +1,9 @@
 <template>
   <q-page>
-    <WaitInputLottieVue
-      v-if="!categoryCode && !pnRoot && isAuthorised('GESSQH')"
-    />
-    <ExceptionLottieVue :ErrorCode="403" v-if="!isAuthorised('GESSQH')" />
+    <WaitInputLottieVue v-if="!categoryCode && !pnRoot && isAuthorized('GESSQH')" />
+    <ExceptionLottieVue :ErrorCode="403" v-if="!isAuthorized('GESSQH')" />
 
-    <div class="row q-gutter-sm q-pa-sm" v-if="isAuthorised('GESSQH')">
+    <div class="row q-gutter-sm q-pa-sm" v-if="isAuthorized('GESSQH')">
       <q-input
         v-model="categoryCode"
         class="col-grow"
@@ -104,16 +102,13 @@
             <q-toolbar class="bg-teal text-white shadow-2">
               <q-toolbar-title class="text-left"
                 >{{
-                  $t(
-                    'Products of group2 {categoryCode} and PN {pnRoot} in {site} from {dateFrom} to {dateTo}',
-                    {
-                      categoryCode: categoryCode,
-                      pnRoot: pnRoot,
-                      site: site,
-                      dateFrom: dateFrom,
-                      dateTo: dateTo
-                    }
-                  )
+                  $t('Products of group2 {categoryCode} and PN {pnRoot} in {site} from {dateFrom} to {dateTo}', {
+                    categoryCode: categoryCode,
+                    pnRoot: pnRoot,
+                    site: site,
+                    dateFrom: dateFrom,
+                    dateTo: dateTo
+                  })
                 }}
                 <q-btn dense flat icon="fas fa-download" @click="download()" />
               </q-toolbar-title>
@@ -143,22 +138,14 @@
             <q-toolbar class="bg-teal text-white shadow-2">
               <q-toolbar-title class="text-left"
                 >{{
-                  $t(
-                    'Products of group2 {categoryCode} and PN {pnRoot} in all sites from {dateFrom} to {dateTo}',
-                    {
-                      categoryCode: categoryCode,
-                      pnRoot: pnRoot,
-                      dateFrom: dateFrom,
-                      dateTo: dateTo
-                    }
-                  )
+                  $t('Products of group2 {categoryCode} and PN {pnRoot} in all sites from {dateFrom} to {dateTo}', {
+                    categoryCode: categoryCode,
+                    pnRoot: pnRoot,
+                    dateFrom: dateFrom,
+                    dateTo: dateTo
+                  })
                 }}
-                <q-btn
-                  dense
-                  flat
-                  icon="fas fa-download"
-                  @click="downloadAll()"
-                />
+                <q-btn dense flat icon="fas fa-download" @click="downloadAll()" />
               </q-toolbar-title>
             </q-toolbar>
           </template>
@@ -167,55 +154,24 @@
               <q-th class="bg-primary text-white"> </q-th>
               <q-th class="bg-primary text-white"> </q-th>
               <q-th class="bg-primary text-white"> </q-th>
-              <q-th :colspan="siteN" class="bg-light-green text-white">
-                QCnt
-              </q-th>
+              <q-th :colspan="siteN" class="bg-light-green text-white"> QCnt </q-th>
               <q-th :colspan="siteN" class="bg-green text-white"> QQty </q-th>
-              <q-th :colspan="siteN" class="bg-indigo-6 text-white">
-                MinQPrice
-              </q-th>
-              <q-th :colspan="siteN" class="bg-indigo-4 text-white">
-                AvgQPrice
-              </q-th>
-              <q-th :colspan="siteN" class="bg-indigo-2 text-white">
-                MaxQPrice
-              </q-th>
+              <q-th :colspan="siteN" class="bg-indigo-6 text-white"> MinQPrice </q-th>
+              <q-th :colspan="siteN" class="bg-indigo-4 text-white"> AvgQPrice </q-th>
+              <q-th :colspan="siteN" class="bg-indigo-2 text-white"> MaxQPrice </q-th>
               <template v-for="li in limitN" :key="li">
-                <q-th
-                  :colspan="siteN"
-                  :class="'bg-cyan-' + (15 - li) + ' text-white'"
-                >
-                  LastQPrice{{ li }}
-                </q-th>
+                <q-th :colspan="siteN" :class="'bg-cyan-' + (15 - li) + ' text-white'"> LastQPrice{{ li }} </q-th>
               </template>
-              <q-th :colspan="siteN" class="bg-light-green text-white">
-                SCnt
-              </q-th>
+              <q-th :colspan="siteN" class="bg-light-green text-white"> SCnt </q-th>
               <q-th :colspan="siteN" class="bg-green text-white"> SQty </q-th>
-              <q-th :colspan="siteN" class="bg-indigo-6 text-white">
-                MinSPrice
-              </q-th>
-              <q-th :colspan="siteN" class="bg-indigo-4 text-white">
-                AvgSPrice
-              </q-th>
-              <q-th :colspan="siteN" class="bg-indigo-2 text-white">
-                MaxSPrice
-              </q-th>
+              <q-th :colspan="siteN" class="bg-indigo-6 text-white"> MinSPrice </q-th>
+              <q-th :colspan="siteN" class="bg-indigo-4 text-white"> AvgSPrice </q-th>
+              <q-th :colspan="siteN" class="bg-indigo-2 text-white"> MaxSPrice </q-th>
               <template v-for="li in limitN" :key="li">
-                <q-th
-                  :colspan="siteN"
-                  :class="'bg-blue-' + (15 - li) + ' text-white'"
-                >
-                  LastSPrice{{ li }}
-                </q-th>
+                <q-th :colspan="siteN" :class="'bg-blue-' + (15 - li) + ' text-white'"> LastSPrice{{ li }} </q-th>
               </template>
               <template v-for="li in limitN" :key="li">
-                <q-th
-                  :colspan="siteN"
-                  :class="'bg-orange-' + (15 - li) + ' text-white'"
-                >
-                  LastCost{{ li }}
-                </q-th>
+                <q-th :colspan="siteN" :class="'bg-orange-' + (15 - li) + ' text-white'"> LastCost{{ li }} </q-th>
               </template>
             </q-tr>
             <q-tr :props="props">
@@ -240,7 +196,7 @@ import { axiosGet } from '@/assets/axiosActions'
 import { ebus } from '@/assets/ebus'
 import ExceptionLottieVue from '@/components/lottie/ExceptionLottie.vue'
 import WaitInputLottieVue from '@/components/lottie/WaitInputLottie.vue'
-import { isAuthorised } from 'assets/auth'
+import { isAuthorized } from 'assets/auth'
 import { jsonToExcel } from 'assets/dataUtils'
 import { getCookies } from 'assets/storage'
 import _groupBy from 'lodash/groupBy'
@@ -410,9 +366,7 @@ const doUpdateAll = () => {
   )
     .then((response) => {
       analysisQuoteSalesCostAll = response
-      analysisQuoteSalesCostAllKeyed.value = _values(
-        _groupBy(analysisQuoteSalesCostAll, 'PN')
-      )
+      analysisQuoteSalesCostAllKeyed.value = _values(_groupBy(analysisQuoteSalesCostAll, 'PN'))
       analysisQuoteSalesCostAllKeyed.value.forEach((row, index) => {
         row.index = index + 1
       })
@@ -619,8 +573,7 @@ const addColumnsAll = () => {
         label: siteList.value[i],
         align: 'right',
         format: (val) => (isNaN(parseInt(val, 10)) ? '' : parseInt(val, 10)),
-        field: (row) =>
-          getSiteValue(row, siteList.value[i], 'LastQPrice' + (ii + 1)),
+        field: (row) => getSiteValue(row, siteList.value[i], 'LastQPrice' + (ii + 1)),
         headerClasses: 'bg-cyan-' + (14 - ii) + ' text-white'
       }
       columnsAll.push(o)
@@ -692,8 +645,7 @@ const addColumnsAll = () => {
         label: siteList.value[i],
         align: 'right',
         format: (val) => (isNaN(parseInt(val, 10)) ? '' : parseInt(val, 10)),
-        field: (row) =>
-          getSiteValue(row, siteList.value[i], 'LastSPrice' + (ii + 1)),
+        field: (row) => getSiteValue(row, siteList.value[i], 'LastSPrice' + (ii + 1)),
         headerClasses: 'bg-blue-' + (14 - ii) + ' text-white'
       }
       columnsAll.push(o)
@@ -707,8 +659,7 @@ const addColumnsAll = () => {
         label: siteList.value[i],
         align: 'right',
         format: (val) => (isNaN(parseInt(val, 10)) ? '' : parseInt(val, 10)),
-        field: (row) =>
-          getSiteValue(row, siteList.value[i], 'LastCost' + (ii + 1)),
+        field: (row) => getSiteValue(row, siteList.value[i], 'LastCost' + (ii + 1)),
         headerClasses: 'bg-orange-' + (14 - ii) + ' text-white'
       }
       columnsAll.push(o)
@@ -717,16 +668,7 @@ const addColumnsAll = () => {
 }
 
 const downloadAll = () => {
-  const header = [
-    'Site',
-    'PN',
-    'Description',
-    'QCnt',
-    'QQty',
-    'MinQPrice',
-    'AvgQPrice',
-    'MaxQPrice'
-  ]
+  const header = ['Site', 'PN', 'Description', 'QCnt', 'QQty', 'MinQPrice', 'AvgQPrice', 'MaxQPrice']
 
   for (let ii = 0; ii < limitN.value; ++ii) {
     header.push('LastQPrice' + (ii + 1))

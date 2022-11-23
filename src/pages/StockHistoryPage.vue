@@ -1,10 +1,7 @@
 <template>
   <q-page>
-    <ExceptionLottie :ErrorCode="403" v-if="!isAuthorised('CONSSAR')" />
-    <q-list
-      class="row q-gutter-sm q-pt-sm q-px-sm"
-      v-if="isAuthorised('CONSSAR')"
-    >
+    <ExceptionLottie :ErrorCode="403" v-if="!isAuthorized('CONSSAR')" />
+    <q-list class="row q-gutter-sm q-pt-sm q-px-sm" v-if="isAuthorized('CONSSAR')">
       <q-input
         dense
         clearable
@@ -57,7 +54,7 @@
 </template>
 
 <script setup>
-import { isAuthorised } from '@/assets/auth'
+import { isAuthorized } from '@/assets/auth'
 import ExceptionLottie from '@/components/lottie/ExceptionLottie.vue'
 import QMarkupTableStockHistoryVue from '@/components/stock/QMarkupTableStockHistory'
 import { date, useQuasar } from 'quasar'
