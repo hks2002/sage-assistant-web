@@ -182,29 +182,14 @@
     "google-cn"
   ],
   // cspell
-  "cSpell.words": [
-    "appcache",
-    "Axios",
-    "Bleue",
-    "commitlint",
-    "datetime",
-    "dedienne",
-    "ebus",
-    "echarts",
-    "fomeawesome",
-    "fontawesome",
-    "ionicons",
-    "jsons",
-    "lottieplayer",
-    "middlewares",
-    "mockjs",
-    "myapp",
-    "pinia",
-    "roboto",
-    "swatchbook",
-    "themify",
-    "txfr",
-    "webfont",
-    "xmark"
-  ]
+  "cSpell.customDictionaries": {
+    "project-words": {
+      "name": "project-words",
+      "path": "${workspaceRoot}/project-words.txt",
+      "description": "Words used in this project",
+      "addWords": true
+    },
+    "custom": true, // Enable the `custom` dictionary
+    "internal-terms": false // Disable the `internal-terms` dictionary
+  }
 }
