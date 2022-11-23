@@ -9,171 +9,94 @@
 const routes = [
   {
     path: '/',
-    name: 'Home',
-    component: () => import('layouts/MainLayout.vue'),
-    children: [{ path: '', component: () => import('pages/HomePage.vue') }]
-  },
-  {
-    path: '/Login',
-    name: 'Login',
-    component: () => import('layouts/DefaultLayout.vue'),
-    children: [
-      {
-        path: '',
-        component: () => import('pages/LoginPage.vue')
-      }
-    ]
-  },
-  {
-    path: '/About',
-    name: 'About',
+    name: 'MainLayout',
     component: () => import('layouts/MainLayout.vue'),
     children: [
       {
-        path: '',
+        path: 'Home',
+        name: 'Home',
+        component: () => import('pages/HomePage.vue')
+      },
+      {
+        path: 'About',
+        name: 'About',
         component: () => import('pages/AboutPage.vue')
-      }
-    ]
-  },
-  {
-    path: '/Todo',
-    name: 'Todo',
-    component: () => import('layouts/MainLayout.vue'),
-    children: [
+      },
       {
-        path: '',
+        path: 'Todo',
+        name: 'Todo',
         component: () => import('pages/TodoPage.vue')
-      }
-    ]
-  },
-  {
-    path: '/Fapiao',
-    name: 'Fapiao',
-    component: () => import('layouts/MainLayout.vue'),
-    children: [
+      },
       {
-        path: '',
+        path: 'Fapiao',
+        name: 'Fapiao',
         component: () => import('pages/FapiaoPage.vue')
-      }
-    ]
-  },
-  {
-    path: '/InvoicePay',
-    name: 'Invoice Pay',
-    component: () => import('layouts/MainLayout.vue'),
-    children: [
+      },
       {
-        path: '',
+        path: 'InvoicePay',
+        name: 'Invoice Pay',
         component: () => import('pages/InvoicePayPage.vue')
-      }
-    ]
-  },
-  {
-    path: '/Balance',
-    name: 'Balance',
-    component: () => import('layouts/MainLayout.vue'),
-    children: [
+      },
       {
-        path: '',
+        path: 'Balance',
+        name: 'Balance',
         component: () => import('pages/BalancePage.vue')
-      }
-    ]
-  },
-  {
-    path: '/QuoteSalesCost',
-    name: 'Quote Sales Cost',
-    component: () => import('layouts/MainLayout.vue'),
-    children: [
+      },
       {
-        path: '',
+        path: 'QuoteSalesCost',
+        name: 'Quote Sales Cost',
         component: () => import('pages/QuoteSalesCostPage.vue')
-      }
-    ]
-  },
-  {
-    path: '/Reports',
-    name: 'Reports',
-    component: () => import('layouts/MainLayout.vue'),
-    children: [
+      },
       {
-        path: '',
+        path: 'Reports',
+        name: 'Reports',
         component: () => import('pages/ReportsPage.vue')
-      }
-    ]
-  },
-  {
-    path: '/Products',
-    name: 'Products',
-    component: () => import('layouts/MainLayout.vue'),
-    children: [
+      },
       {
-        path: '',
+        path: 'Products',
+        name: 'Products',
         component: () => import('pages/ProductsPage.vue')
-      }
-    ]
-  },
-  {
-    path: '/StockHistory',
-    name: 'Stock History',
-    component: () => import('layouts/MainLayout.vue'),
-    children: [
+      },
       {
-        path: '',
+        path: 'StockHistory',
+        name: 'Stock History',
         component: () => import('pages/StockHistoryPage.vue')
-      }
-    ]
-  },
-  {
-    path: '/StockSummary',
-    name: 'Stock Summary',
-    component: () => import('layouts/MainLayout.vue'),
-    children: [
+      },
       {
-        path: '',
+        path: 'StockSummary',
+        name: 'Stock Summary',
         component: () => import('pages/StockSummaryPage.vue')
-      }
-    ]
-  },
-  {
-    path: '/Suppliers',
-    name: 'Suppliers',
-    component: () => import('layouts/MainLayout.vue'),
-    children: [
+      },
       {
-        path: '',
+        path: 'Suppliers',
+        name: 'Suppliers',
         component: () => import('pages/SuppliersPage.vue')
-      }
-    ]
-  },
-  {
-    path: '/Customers',
-    name: 'Customers',
-    component: () => import('layouts/MainLayout.vue'),
-    children: [
+      },
       {
-        path: '',
+        path: 'Customers',
+        name: 'Customers',
         component: () => import('pages/CustomersPage.vue')
       }
     ]
   },
   {
-    path: '/WaitInput',
-    name: 'WaitInput',
+    path: '/',
+    name: 'DefaultLayout',
     component: () => import('layouts/DefaultLayout.vue'),
     children: [
       {
-        path: '',
+        path: 'Login',
+        name: 'Login',
+        component: () => import('pages/LoginPage.vue')
+      },
+      {
+        path: 'WaitInput',
+        name: 'WaitInput',
         component: () => import('pages/WaitInputPage.vue')
-      }
-    ]
-  },
-  {
-    path: '/Exception',
-    name: 'Exception',
-    component: () => import('layouts/DefaultLayout.vue'),
-    children: [
+      },
       {
-        path: ':ErrorCode',
+        path: 'Exception/:ErrorCode',
+        name: 'Exception',
         component: () => import('pages/ExceptionPage.vue'),
         props: (route) => {
           if (
@@ -181,7 +104,7 @@ const routes = [
             route.params.ErrorCode !== '404' &&
             route.params.ErrorCode !== '500'
           ) {
-            return { ErrorCode: '404' }
+            return { ErrorCode: '500' }
           } else {
             return { ErrorCode: route.params.ErrorCode }
           }
@@ -189,6 +112,7 @@ const routes = [
       }
     ]
   },
+
   // Always leave this as last one,
   // but you can also remove it
   {
