@@ -33,7 +33,8 @@ import { createI18n } from 'vue-i18n'
 const i18n = createI18n({
   silentTranslationWarn: true,
   silentFallbackWarn: true,
-  legacy: false
+  legacy: false,
+  fallbackLocale: 'en-US'
 })
 
 export { i18n }
@@ -41,8 +42,7 @@ export { i18n }
 export default boot(({ app } /* { app, router, ... } */) => {
   const langIso = Cookies.get('locale') || 'en-US'
   console.debug('\u001b[35m' + '[Boot] ', 'i18n', langIso)
-  // Set i18n instance on app
-  app.use(i18n)
+
   // Set Quasar lang pack
   Promise.resolve(require(`quasar/lang/${langIso}.js`))
     .then((lang) => {
@@ -56,16 +56,26 @@ export default boot(({ app } /* { app, router, ... } */) => {
 
   const i18nFiles = require.context('@/i18n', true, /.json$/)
   i18nFiles.keys().forEach(async (key) => {
-    const file = key.slice(2)
-    const lang = file.split('/')[0]
+    const lang = key.split('/')[1]
+    const context = key.split('/')[2].split('.')[0]
 
-    console.debug('\u001b[35m' + '[Load] ', 'i18n', lang)
-    i18n.global.mergeLocaleMessage(
-      lang,
-      await import(`@/i18n/${lang}/${lang}.json`).then((m) => {
-        console.debug(m)
-        return m
+    console.debug('\u001b[35m' + '[Boot] ', 'i18n', lang, context)
+
+    Promise.resolve(require(`@/i18n/${lang}/${context}.json`))
+      .then((i18nText) => {
+        const messages = {}
+        messages[context] = i18nText
+        i18n.global.mergeLocaleMessage(lang, messages)
       })
-    )
+      .catch((err) => {
+        // Requested i18n file does not exist,
+        // let's not break the app, so catching error
+        console.debug(err)
+      })
   })
+  // Set i18n lang pack
+  i18n.global.locale = langIso
+
+  // Set i18n instance on app
+  app.use(i18n)
 })
