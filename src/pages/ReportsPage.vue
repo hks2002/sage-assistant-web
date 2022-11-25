@@ -330,11 +330,12 @@
 </template>
 
 <script setup>
-import { isAuthorised } from '@/assets/auth'
+import { isAuthorized } from '@/assets/auth'
 import { validateInput } from '@/assets/reportUtils'
 import {
   doActsForSagePrint,
   getInvoiceTransaction,
+  getPurchaseTransaction,
   getSageReportUrl,
   getSageSessionUrl,
   getSalesOrderTransaction
@@ -358,6 +359,7 @@ const ReceiptNO = ref('')
 const PurchaseSiteVendorCodeDuration = ref('')
 const ProjectOrWorkOrderNO = ref('')
 const SiteAndBPCode = ref('')
+
 const rptFncMap = {
   SA: 'GESSOH',
   Delivery: 'GESSDH',
@@ -376,7 +378,7 @@ onMounted(() => {
   getSageSessionUrl('GESSDH')
   getSageSessionUrl('GESSIH2~2')
   getSageSessionUrl('GESSIH2~3')
-  getSageSessionUrl('GESPOH3~1')
+  //getSageSessionUrl('GESPOH3~1')
 })
 
 /**
@@ -387,7 +389,7 @@ const onSubFrameLoad = () => {
 }
 
 /**
- * listen to Enter event and triggle click
+ * listen to Enter event and trigger click
  * @param {*} evt
  * @param {*} clickTarget
  */
@@ -406,7 +408,7 @@ const clickTarget = (evt, clickTarget) => {
 /**
  * get rpt input value.
  * @param {*} rpt  report
- * @return Uppercased value
+ * @return UpperCased value
  */
 const getInputValue = (rpt) => {
   let vals = { val: '', val2: '' }
@@ -461,14 +463,17 @@ const showPdf = async (rpt, fromWhere) => {
   $q.loadingBar.start()
 
   if (fromWhere === 'sage') {
-    UrlShow.value = await getSageUrl(rpt, vals.val, vals.val2)
-    UrlShow.value += `?disposition=inline&filename=${vals.val}.pdf`
+    getSageUrl(rpt, vals.val, vals.val2).then((res) => {
+      UrlShow.value = res
+      UrlShow.value += `?disposition=inline&filename=${vals.val}.pdf`
+      $q.loadingBar.stop()
+      $q.loading.hide()
+    })
   } else {
     UrlShow.value = getSageAssistantUrl(rpt, vals, 'showPdf')
+    $q.loadingBar.stop()
+    $q.loading.hide()
   }
-
-  $q.loadingBar.stop()
-  $q.loading.hide()
 }
 
 const exportWord = (rpt) => {
@@ -532,63 +537,56 @@ const getSageAssistantUrl = (rpt, vals, type) => {
 }
 
 const getSageUrl = async (rpt, val, val2) => {
-  const fnc = rptFncMap[rpt]
-  let trans = ''
-
-  if (!isAuthorised(fnc)) {
-    return '/#/Exception/403'
-  }
-
   $q.loading.show({
     message: 'Preparing to print report...',
     spinner: QSpinnerGears,
-    spinnerColor: 'indigo-1'
+    spinnerColor: 'indigo-5'
   })
+
+  const fnc = rptFncMap[rpt]
+  let trans = ''
+
+  if (!isAuthorized(fnc)) {
+    return Promise.resolve('/#/Exception/403')
+  }
 
   if (rpt === 'SA') {
     trans = getSalesOrderTransaction(val)
   } else if (rpt === 'Invoice') {
     trans = getInvoiceTransaction(val)
+  } else if (rpt === 'PurchaseOrder') {
+    trans = getPurchaseTransaction(val)
   }
 
-  const sageSessionUrl = await getSageSessionUrl(rptFncMap[rpt] + trans)
-  if (!sageSessionUrl) {
-    return '/#/Exception/500'
-  }
-
-  $q.loading.show({
-    message: 'Setting report data...',
-    spinner: QSpinnerGears,
-    spinnerColor: 'indigo-5'
-  })
-
-  const rtn = await doActsForSagePrint(sageSessionUrl, rpt, val, val2)
-  if (!rtn) {
-    return '/#/Exception/500'
-  }
-
-  function process(cnt) {
-    $q.loading.show({
-      message: `Printing report in server ${cnt}...`,
-      messageColor: 'light-green',
-      spinner: QSpinnerGears,
-      spinnerColor: 'light-green',
-      spinnerSize: Math.log2(cnt) * 20
-    })
-  }
-  process(1)
-  // passing process loading function
-  const reportUrl = await getSageReportUrl(null, process)
-
-  // hide loading
-  $q.loading.hide()
-
-  return reportUrl
+  return getSageSessionUrl(rptFncMap[rpt] + trans).then(
+    async (url) => {
+      return doActsForSagePrint(url, trans, rpt, val, val2).then(
+        async (printUUID) => {
+          function process(cnt) {
+            $q.loading.show({
+              message: `Printing report in server ${cnt}...`,
+              messageColor: 'light-green',
+              spinner: QSpinnerGears,
+              spinnerColor: 'light-green',
+              spinnerSize: Math.log2(cnt) * 20
+            })
+          }
+          process(1)
+          // // passing process loading function
+          const reportUrl = await getSageReportUrl(printUUID, process)
+          return reportUrl
+        },
+        () => {
+          return '/#/Exception/500'
+        }
+      )
+    },
+    // get session failed
+    () => {
+      return '/#/Exception/500'
+    }
+  )
 }
 </script>
 
-<style lang="scss" scoped>
-.q-item__section--side {
-  padding-left: 4px;
-}
-</style>
+<style lang="scss" scoped></style>

@@ -2,40 +2,40 @@
  * @Author         : Robert Huang<56649783@qq.com>
  * @Date           : 2022-06-25 19:52:49
  * @LastEditors    : Robert Huang<56649783@qq.com>
- * @LastEditTime   : 2022-06-25 19:52:49
+ * @LastEditTime   : 2022-11-18 00:07:15
  * @FilePath       : \web2\src\assets\sageActs.js
  * @CopyRight      : Dedienne Aerospace China ZhuHai
  */
 import { axios } from '@/assets/axios'
-import { notifyError, notifySuccess } from '@/assets/common'
+import { notifyError, notifyInfo, notifySuccess } from '@/assets/common'
 import { SessionStorage } from 'quasar'
 import { v4 as uuidv4 } from 'uuid'
 
 // Some action codes
 const ACT = {
   // select
-  SELECT_LIST: 1052,
+  SELECT_LIST_1052: 1052,
   // search
-  SEARCH: 782,
+  SEARCH_782: 782,
   // print
-  ENTER_PRINT_PAGE: 2820,
-  GET_PRINT_URL: 2125,
+  ENTER_PRINT_PAGE_2820: 2820,
+  PRINT_2125: 2125,
   // edit
-  REVISE_MAIN: 1044,
-  REVISE_SUB: 774,
-  INPUT_ENTER: 1028,
-  INPUT_TAB: 1025,
-  CANCEL_MODIFY: 2816,
-  REFRESH_PAGE: 2823,
-  EXIT_PAGE: 2845,
-  SAVE: 1116
+  REVISE_MAIN_1044: 1044,
+  JUMP_TO_774: 774,
+  INPUT_ENTER_1028: 1028,
+  INPUT_TAB_1025: 1025,
+  CANCEL_MODIFY_2816: 2816,
+  REFRESH_PAGE_2823: 2823,
+  EXIT_PAGE_2845: 2845,
+  SAVE_1116: 1116
 }
 
 /**
  * Construct action target.
- * @param {*} win 'B','C' ...
- * @param {*} xid 'AA1','AA2' ...
- * @param {*} nl 1,2,3 ...
+ * @param {string} win 'B','C' ...
+ * @param {string} xid 'AA1','AA2' ...
+ * @param {number} nl 1,2,3 ...
  * @returns
  */
 const tgt = (win, xid, nl) => {
@@ -44,13 +44,13 @@ const tgt = (win, xid, nl) => {
 
 /**
  * when change specific field
- * @param {*} setTgt
- * @param {*} val
+ * @param {object} setTgt
+ * @param {string} val
  * @returns
  */
 const fld = (setTgt, val) => {
   const fld = {
-    ist: tgt(setTgt.win, setTgt.xid, setTgt.nl),
+    ist: setTgt,
     fmtKind: 'EDIT',
     ctx: {},
     notModified: false,
@@ -59,37 +59,30 @@ const fld = (setTgt, val) => {
   return fld
 }
 
-const noRevise = {
-  act: ACT.INPUT_TAB,
-  fld: { ist: null, fmtKind: 'SHOW', notModified: false, v: 3 },
-  param: {},
-  tech: {}
-}
-
 /**
  * when do select or go to some field
- * @param {*} act
- * @param {*} selectTgt
- * @param {*} sel
+ * @param {number} act
+ * @param {object} selectTgt
+ * @param {object} sel
  * @returns
  */
 const param = (act, selectTgt, sel) => {
-  // 1052 std select, std: ["2~2"] without input
-  // 782 search filter, sudo: [["v1","v2"],null]
+  // ACT.SELECT_LIST 1052, std: ["2~2"] without input
+  // ACT.SEARCH 782, sudo: [["v1","v2"],null]
   let param = {}
-  if (act === ACT.SELECT_LIST) {
+  if (act === ACT.SELECT_LIST_1052) {
     param = {
-      target: tgt(selectTgt.win, selectTgt.xid, selectTgt.nl),
+      target: selectTgt,
       std: [sel]
     }
-  } else if (act === ACT.FILTE_SEARCH) {
+  } else if (act === ACT.SEARCH_782) {
     param = {
-      target: tgt(selectTgt.win, selectTgt.xid, selectTgt.nl),
+      target: selectTgt,
       sudo: [[sel], null]
     }
   } else {
     param = {
-      target: tgt(selectTgt.win, selectTgt.xid, selectTgt.nl)
+      target: selectTgt
     }
   }
 
@@ -97,12 +90,13 @@ const param = (act, selectTgt, sel) => {
 }
 
 /**
- * Only act, no data
+ * Only for act, such as click some button
+ * If want to change/select before this action, consider use setData/selData
  *
- * @param {*} act
+ * @param {number} act
  * @returns
  */
-const actData = (act) => {
+const aData = (act) => {
   // must have tech:{}
   let data = {
     act: act,
@@ -112,13 +106,13 @@ const actData = (act) => {
 }
 
 /**
- * Only set data
- * @param {*} act
- * @param {*} setTgt
- * @param {*} val
+ * Set target data, then do action
+ * @param {object} setTgt
+ * @param {string} val
+ * @param {number} act
  * @returns
  */
-const setData = (act, setTgt, val) => {
+const staData = (setTgt, val, act) => {
   // must have tech:{}
   let data = {
     act: act,
@@ -130,13 +124,13 @@ const setData = (act, setTgt, val) => {
 }
 
 /**
- * Only select data
- * @param {*} act
- * @param {*} selectTgt
- * @param {*} sel
+ * select target then do action, if want to change value, use setData
+ * @param {object} selectTgt
+ * @param {string} sel
+ * @param {number} act
  * @returns
  */
-const selData = (act, selectTgt, sel) => {
+const slaData = (selectTgt, sel, act) => {
   // must have tech:{}
   let data = {
     act: act,
@@ -149,14 +143,15 @@ const selData = (act, selectTgt, sel) => {
 
 /**
  * val for set value, sel for select options
- * @param {*} act
- * @param {*} setTgt {win:'B', xid:'col code', nl: line} *
- * @param {*} val
- * @param {*} selectTgt {win:'B', xid:'col code', nl: line}
- * @param {*} sel "2~2"
+ * combine set and next select field
+ * @param {object} setTgt {win:'B', xid:'col code', nl: line} *
+ * @param {string} val
+ * @param {object} selectTgt {win:'B', xid:'col code', nl: line}
+ * @param {string} sel "2~2"
+ * @param {number} act
  * @returns
  */
-const sSData = (act, setTgt, val, selectTgt, sel) => {
+const ssaData = (setTgt, val, selectTgt, sel, act) => {
   let data = {
     act: act,
     tech: {}
@@ -167,35 +162,50 @@ const sSData = (act, setTgt, val, selectTgt, sel) => {
   return data
 }
 
+const noRevise = {
+  act: ACT.INPUT_TAB_1025,
+  fld: { ist: null, fmtKind: 'SHOW', notModified: false, v: 3 },
+  param: {},
+  tech: {}
+}
+
+const warningClickOKData = {
+  act: ACT.INPUT_TAB_1025,
+  fld: { ist: null, fmtKind: 'SHOW', notModified: false, v: 5 },
+  param: {},
+  tech: {}
+}
+
 /**
  * Sage action template
- * @param {*} url
- * @param {*} transPage
- * @param {*} data
+ * @param {string} url
+ * @param {string} transPage
+ * @param {object} data
+ * @param {string} preTrackngId
  * @returns
  */
-const doAct = async (url, transPage, data) => {
+const doAct = (url, transPage, data, preTrackngId) => {
   // check if url is false
-  if (!url) return false
+  if (!url) return Promise.reject()
 
+  const trackngId = preTrackngId || uuidv4()
   return axios
-    .put(`${url}/requestSvc?act=${data.act}&trackngId=${uuidv4()}`, data)
+    .put(`${url}/requestSvc?act=${data.act}&trackngId=${trackngId}`, data)
     .then(
       async (response) => {
-        // If server return pop message, type 1,3
-        // type 3 is error
+        // If server return pop message, type 1 is warning
         if (
           response.status === 200 &&
           response.data.sap &&
           response.data.sap.target &&
           response.data.sap.target.type === 'box' &&
-          (response.data.sap.target.box.type === 1 || response.data.sap.target.box.type === 3)
+          response.data.sap.target.box.type === 1
         ) {
-          notifyError(response.data.sap.target.box.tit + '<br/>' + response.data.sap.target.box.li)
-          return false
+          //notifyInfo(response.data.sap.target.box.tit + '<br/>' + response.data.sap.target.box.li)
+          return Promise.resolve()
         }
-        // If server return pop message, type 1,3
-        // type 2 is let you make an choice
+
+        // If server return pop message, type 2 is let you make an choice
         if (
           response.status === 200 &&
           response.data.sap &&
@@ -203,7 +213,31 @@ const doAct = async (url, transPage, data) => {
           response.data.sap.target.type === 'box' &&
           response.data.sap.target.box.type === 2
         ) {
-          return true
+          return Promise.resolve()
+        }
+
+        // If server return pop message, type 3 is error
+        if (
+          response.status === 200 &&
+          response.data.sap &&
+          response.data.sap.target &&
+          response.data.sap.target.type === 'box' &&
+          response.data.sap.target.box.type === 3
+        ) {
+          notifyError(response.data.sap.target.box.tit + '<br/>' + response.data.sap.target.box.li)
+          return Promise.reject()
+        }
+
+        // If response times greater than 4000
+        if (
+          response.status === 202 &&
+          response.data &&
+          response.data.phase === 'Tracking' &&
+          response.data.elapsedSeconds > 4000
+        ) {
+          notifyInfo('Server performance low')
+          //return await doAct(url, transPage, data, trackngId)
+          return Promise.reject()
         }
 
         // having session close message
@@ -215,21 +249,10 @@ const doAct = async (url, transPage, data) => {
         ) {
           SessionStorage.remove(transPage)
           notifyError(response.data.reply.session.close.$diagnoses[0].message)
-          return false
+          return Promise.reject()
         }
 
-        // If response times greater than 4000
-        if (
-          response.status === 202 &&
-          response.data &&
-          response.data.phase === 'tracking' &&
-          response.data.elapsedSeconds > 4000
-        ) {
-          notifyError('Server performance low')
-          return false
-        }
-
-        // no authrity will case this
+        // no authority will case this
         if (
           response.status === 200 &&
           response.data.sap &&
@@ -237,10 +260,10 @@ const doAct = async (url, transPage, data) => {
           response.data.sap.target.type === 'portal'
         ) {
           SessionStorage.remove(transPage)
-          return false
+          return Promise.reject()
         }
 
-        // if have success nofify
+        // if have success notify
         if (
           response.status === 200 &&
           response.data.sap.wins &&
@@ -250,25 +273,25 @@ const doAct = async (url, transPage, data) => {
           notifySuccess(response.data.sap.wins.B.statBar.notify[0].$message)
         }
 
-        // result must have sap and sap.target
-        if (response.status === 200 && response.data.sap && response.data.sap.target) {
-          return true
-        } else {
-          return false
+        // return the response
+        if (response.status === 200 && response.data.sap) {
+          return Promise.resolve(response)
         }
       },
       (error) => {
         // for example 404 page, session not found
         console.log(error)
         SessionStorage.remove(transPage)
-        return false
+        return Promise.reject()
       }
     )
     .catch((error) => {
-      console.log(error)
-      SessionStorage.remove(transPage)
-      return false
+      if (error) {
+        console.log(error)
+        SessionStorage.remove(transPage)
+      }
+      return Promise.reject()
     })
 }
 
-export { ACT, noRevise, tgt, actData, sSData, setData, selData, doAct }
+export { ACT, noRevise, warningClickOKData, tgt, aData, doAct, ssaData, staData, slaData }
