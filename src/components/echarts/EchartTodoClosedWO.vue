@@ -2,7 +2,7 @@
  * @Author         : Robert Huang<56649783@qq.com>
  * @Date           : 2022-03-25 11:01:23
  * @LastEditors    : Robert Huang<56649783@qq.com>
- * @LastEditTime   : 2022-06-02 10:27:34
+ * @LastEditTime   : 2022-12-16 17:09:31
  * @FilePath       : \web2\src\components\echarts\EchartTodoClosedWO.vue
  * @CopyRight      : Dedienne Aerospace China ZhuHai
 -->
@@ -30,15 +30,7 @@ import _groupBy from 'lodash/groupBy'
 import _map from 'lodash/map'
 import _sortBy from 'lodash/sortBy'
 import _uniq from 'lodash/uniq'
-import {
-  computed,
-  onActivated,
-  onBeforeUnmount,
-  onDeactivated,
-  onMounted,
-  ref,
-  watch
-} from 'vue'
+import { onActivated, onBeforeUnmount, onDeactivated, onMounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 const props = defineProps({
@@ -52,8 +44,8 @@ const showLoading = ref(false)
 // echart vars
 let eChart = null
 let data = []
-let lengend = []
-let dataByLengend = []
+let legend = []
+let dataByLegend = []
 let dataset = []
 let series = []
 const dimensions = [
@@ -71,12 +63,6 @@ const dimensions = [
 ]
 
 // computed vars
-const title = computed(() => {
-  return t(
-    'Sales order line is closed but its WorkOrder line is still open [{site}]',
-    { site: props.site }
-  )
-})
 
 // actions
 const doUpdate = () => {
@@ -96,21 +82,14 @@ const doUpdate = () => {
 }
 const prepareData = () => {
   data = _sortBy(data, ['WorkOrderNO'])
-  lengend = _uniq(_map(data, 'ProductionStatus'))
-  dataByLengend = _groupBy(data, 'ProductionStatus')
+  legend = _uniq(_map(data, 'ProductionStatus'))
+  dataByLegend = _groupBy(data, 'ProductionStatus')
   dataset = []
   series = []
 
-  lengend.forEach((value, index) => {
-    dataset[index] = { source: dataByLengend[value] }
-    series[index] = defaultScatterSerial(
-      index,
-      value,
-      '{@WorkOrderNO}',
-      dimensions,
-      'OrderDate',
-      'WorkOrderNO'
-    )
+  legend.forEach((value, index) => {
+    dataset[index] = { source: dataByLegend[value] }
+    series[index] = defaultScatterSerial(index, value, '{@WorkOrderNO}', dimensions, 'OrderDate', 'WorkOrderNO')
   })
 }
 
@@ -119,11 +98,15 @@ const setEchart = () => {
   eChart.setOption(
     {
       title: {
-        text: title.value,
+        text: t('Label.Sales order line is closed but its WorkOrder line is still open') + ` [${props.site}]`,
         left: 'center'
       },
       legend: defaultLegend,
-      toolbox: defaultToolbox(dimensions, data, title.value),
+      toolbox: defaultToolbox(
+        dimensions,
+        data,
+        t('Label.Sales order line is closed but its WorkOrder line is still open') + ` [${props.site}]`
+      ),
       tooltip: defaultTooltip,
       xAxis: defaultXAxisTime,
       grid: [{ left: 40, right: 40 }],

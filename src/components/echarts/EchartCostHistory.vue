@@ -2,7 +2,7 @@
  * @Author         : Robert Huang<56649783@qq.com>
  * @Date           : 2022-03-25 11:01:23
  * @LastEditors    : Robert Huang<56649783@qq.com>
- * @LastEditTime   : 2022-05-29 04:06:41
+ * @LastEditTime   : 2022-12-16 17:49:18
  * @FilePath       : \web2\src\components\echarts\EchartCostHistory.vue
  * @CopyRight      : Dedienne Aerospace China ZhuHai
 -->
@@ -34,14 +34,7 @@ import _groupBy from 'lodash/groupBy'
 import _map from 'lodash/map'
 import _sumBy from 'lodash/sumBy'
 import _uniq from 'lodash/uniq'
-import {
-  onActivated,
-  onBeforeUnmount,
-  onDeactivated,
-  onMounted,
-  ref,
-  watch
-} from 'vue'
+import { onActivated, onBeforeUnmount, onDeactivated, onMounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 const props = defineProps({
@@ -55,8 +48,8 @@ const showLoading = ref(false)
 // echart vars
 let eChart = null
 let data = []
-let lengend = []
-let dataByLengend = []
+let legend = []
+let dataByLegend = []
 let dataBySiteProject = []
 let dataSumBySiteProject = []
 let dataset = []
@@ -78,13 +71,7 @@ const dimensions = [
   'USD',
   'Rate'
 ]
-const miniDemensions = [
-  'PurchaseSite',
-  'ProjectNO',
-  'OrderPN',
-  'OrderDate',
-  'USD'
-]
+const miniDimensions = ['PurchaseSite', 'ProjectNO', 'OrderPN', 'OrderDate', 'USD']
 let dataZoomStartValue = '1900-01-01'
 
 // actions
@@ -146,19 +133,12 @@ const prepareData = () => {
     })
     dataSumBySiteProject.push(o)
   })
-  lengend = _uniq(_map(data, 'PurchaseSite'))
-  dataByLengend = _groupBy(dataSumBySiteProject, 'PurchaseSite')
+  legend = _uniq(_map(data, 'PurchaseSite'))
+  dataByLegend = _groupBy(dataSumBySiteProject, 'PurchaseSite')
 
-  _forEach(lengend, (value, index) => {
-    dataset[index] = { source: dataByLengend[value] }
-    series[index] = defaultLineSerial(
-      index,
-      value,
-      '{@USD} USD',
-      miniDemensions,
-      'OrderDate',
-      'USD'
-    )
+  _forEach(legend, (value, index) => {
+    dataset[index] = { source: dataByLegend[value] }
+    series[index] = defaultLineSerial(index, value, '{@USD} USD', miniDimensions, 'OrderDate', 'USD')
   })
 }
 
@@ -167,15 +147,13 @@ const setEchart = () => {
   eChart.setOption(
     {
       title: {
-        text: t('Sales Order Cost History'),
-        subtext: t(
-          'Currency Rate Data From State Administration of Foreign Exchange'
-        ),
+        text: t('Label.Sales Order Cost History'),
+        // subtext: t('Label.Currency Rate Data From State Administration of Foreign Exchange'),
         left: 'center'
       },
       legend: defaultLegend,
       grid: [{ left: '5%', right: '25%' }],
-      toolbox: defaultToolbox(dimensions, data, t('Cost History')),
+      toolbox: defaultToolbox(dimensions, data, t('Label.Sales Order Cost History')),
       tooltip: defaultTooltip,
       dataZoom: defaultDataZoom(dataZoomStartValue),
       xAxis: defaultXAxisTime,

@@ -9,25 +9,12 @@
 
 <script setup>
 import { axiosGet } from '@/assets/axiosActions'
-import {
-  defaultBarStackedSerial,
-  defaultLegend,
-  defaultToolbox,
-  defaultTooltip,
-  echarts
-} from '@/assets/echartsCfg.js'
+import { defaultBarStackedSerial, defaultLegend, defaultToolbox, defaultTooltip, echarts } from '@/assets/echartsCfg.js'
 import _forEach from 'lodash/forEach'
 import _groupBy from 'lodash/groupBy'
 import _map from 'lodash/map'
 import _uniq from 'lodash/uniq'
-import {
-  onActivated,
-  onBeforeUnmount,
-  onDeactivated,
-  onMounted,
-  ref,
-  watch
-} from 'vue'
+import { onActivated, onBeforeUnmount, onDeactivated, onMounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 const props = defineProps({
@@ -43,8 +30,8 @@ const showLoading = ref(false)
 // echart vars
 let eChart = null
 let data = []
-let lengend = []
-let dataByLengend = []
+let legend = []
+let dataByLegend = []
 let sites = []
 let dataset = []
 let series = []
@@ -68,22 +55,15 @@ const doUpdate = () => {
 }
 
 const prepareData = () => {
-  lengend = _uniq(_map(data, 'Currency'))
-  dataByLengend = _groupBy(data, 'Currency')
+  legend = _uniq(_map(data, 'Currency'))
+  dataByLegend = _groupBy(data, 'Currency')
   sites = _uniq(_map(data, 'Site'))
   dataset = []
   series = []
 
-  _forEach(lengend, (value, index) => {
-    dataset[index] = { source: dataByLengend[value] }
-    series[index] = defaultBarStackedSerial(
-      index,
-      value,
-      '{@USD}',
-      dimensions,
-      'Site',
-      'USD'
-    )
+  _forEach(legend, (value, index) => {
+    dataset[index] = { source: dataByLegend[value] }
+    series[index] = defaultBarStackedSerial(index, value, '{@USD}', dimensions, 'Site', 'USD')
   })
 }
 
@@ -92,12 +72,12 @@ const setEchart = () => {
   eChart.setOption(
     {
       title: {
-        text: t('Open Amount(All)'),
+        text: t('Label.Open Amount(All)'),
         subtext: '',
         left: 'center'
       },
       legend: defaultLegend,
-      toolbox: defaultToolbox(dimensions, data, t('Open Amount(All)')),
+      toolbox: defaultToolbox(dimensions, data, t('Label.Open Amount(All)')),
       tooltip: defaultTooltip,
       xAxis: {
         type: 'category',

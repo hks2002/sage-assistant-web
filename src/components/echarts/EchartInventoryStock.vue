@@ -2,7 +2,7 @@
  * @Author         : Robert Huang<56649783@qq.com>
  * @Date           : 2022-03-25 11:01:23
  * @LastEditors    : Robert Huang<56649783@qq.com>
- * @LastEditTime   : 2022-05-29 01:00:54
+ * @LastEditTime   : 2022-12-16 17:47:22
  * @FilePath       : \web2\src\components\echarts\EchartInventoryStock.vue
  * @CopyRight      : Dedienne Aerospace China ZhuHai
 -->
@@ -17,13 +17,7 @@
 
 <script setup>
 import { axiosGet } from '@/assets/axiosActions'
-import {
-  defaultBarStackedSerial,
-  defaultLegend,
-  defaultToolbox,
-  defaultTooltip,
-  echarts
-} from '@/assets/echartsCfg.js'
+import { defaultBarStackedSerial, defaultLegend, defaultToolbox, defaultTooltip, echarts } from '@/assets/echartsCfg.js'
 import _forEach from 'lodash/forEach'
 import _groupBy from 'lodash/groupBy'
 import _map from 'lodash/map'
@@ -42,8 +36,8 @@ const showLoading = ref(false)
 // echart vars
 let eChart = null
 let data = []
-let lengend = []
-let dataByLengend = []
+let legend = []
+let dataByLegend = []
 let bars = []
 let dataset = []
 let series = []
@@ -68,21 +62,14 @@ const doUpdate = (pnRoot) => {
 
 const prepareData = () => {
   bars = _uniq(_map(data, 'StockSite'))
-  lengend = _uniq(_map(data, 'PN'))
-  dataByLengend = _groupBy(data, 'PN')
+  legend = _uniq(_map(data, 'PN'))
+  dataByLegend = _groupBy(data, 'PN')
   dataset = []
   series = []
 
-  _forEach(lengend, (value, index) => {
-    dataset[index] = { source: dataByLengend[value] }
-    series[index] = defaultBarStackedSerial(
-      index,
-      value,
-      '{@Qty}',
-      dimensions,
-      'StockSite',
-      'Qty'
-    )
+  _forEach(legend, (value, index) => {
+    dataset[index] = { source: dataByLegend[value] }
+    series[index] = defaultBarStackedSerial(index, value, '{@Qty}', dimensions, 'StockSite', 'Qty')
   })
 }
 
@@ -91,12 +78,12 @@ const setEchart = () => {
   eChart.setOption(
     {
       title: {
-        text: t('Stock Info'),
+        text: t('Label.Stock Info'),
         left: 'center'
       },
       tooltip: defaultTooltip,
       legend: defaultLegend,
-      toolbox: defaultToolbox(dimensions, data, t('Stock Info')),
+      toolbox: defaultToolbox(dimensions, data, t('Label.Stock Info')),
       grid: { bottom: 20, top: 40, right: 20 },
       xAxis: {
         type: 'category',

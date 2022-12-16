@@ -14,14 +14,7 @@ import _forEach from 'lodash/forEach'
 import _groupBy from 'lodash/groupBy'
 import _map from 'lodash/map'
 import _uniq from 'lodash/uniq'
-import {
-  onActivated,
-  onBeforeUnmount,
-  onDeactivated,
-  onMounted,
-  ref,
-  watch
-} from 'vue'
+import { onActivated, onBeforeUnmount, onDeactivated, onMounted, ref, watch } from 'vue'
 
 const props = defineProps({
   accountNO: { type: String, require: true, default: '' },
@@ -36,11 +29,11 @@ const showLoading = ref(false)
 // echart vars
 let eChart = null
 let data = []
-let lengend = []
-let dataByLengend = []
+let legend = []
+let dataByLegend = []
 let series = []
 let catText = 'B'
-const eChartId = 'EchartAccoutBalance' + props.cat
+const eChartId = 'EchartAccountBalance' + props.cat
 
 if (props.cat === 'C') {
   catText = 'Credit'
@@ -87,15 +80,15 @@ const prepareData = () => {
   _forEach(data, (value) => {
     value.AccountAndCurrency = value.AccountNO + value.Currency
   })
-  lengend = _uniq(_map(data, 'AccountAndCurrency'))
-  dataByLengend = _groupBy(data, 'AccountAndCurrency')
+  legend = _uniq(_map(data, 'AccountAndCurrency'))
+  dataByLegend = _groupBy(data, 'AccountAndCurrency')
   series = []
-  _forEach(lengend, (value, index) => {
+  _forEach(legend, (value, index) => {
     const data12 = []
     for (let i = 0; i <= 12; i++) {
       // key C1,D1,M1,B1
       const key = props.cat + i
-      data12.push(dataByLengend[value][0][key])
+      data12.push(dataByLegend[value][0][key])
     }
     series[index] = {
       type: 'bar',
@@ -117,36 +110,18 @@ const setEchart = () => {
         left: 'center'
       },
       legend: {
-        data: lengend,
+        data: legend,
         left: 10,
         top: 20,
         itemWidth: 10,
         itemHeight: 10,
         textStyle: { fontSize: 10 }
       },
-      toolbox: defaultToolbox(
-        dimensions,
-        data,
-        'Account ' + props.accountNO + ' ' + catText + ' of ' + props.year
-      ),
+      toolbox: defaultToolbox(dimensions, data, 'Account ' + props.accountNO + ' ' + catText + ' of ' + props.year),
       tooltip: defaultTooltip,
       xAxis: {
         type: 'category',
-        data: [
-          'Open',
-          'Jan',
-          'Feb',
-          'Mar',
-          'Apr',
-          'May',
-          'Jun',
-          'Jul',
-          'Aug',
-          'Sep',
-          'Oct',
-          'Nov',
-          'Dec'
-        ]
+        data: ['Open', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
       },
       yAxis: {
         type: 'value',

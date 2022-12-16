@@ -24,14 +24,7 @@ import _groupBy from 'lodash/groupBy'
 import _map from 'lodash/map'
 import _uniq from 'lodash/uniq'
 import { date } from 'quasar'
-import {
-  onActivated,
-  onBeforeUnmount,
-  onDeactivated,
-  onMounted,
-  ref,
-  watch
-} from 'vue'
+import { onActivated, onBeforeUnmount, onDeactivated, onMounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 const props = defineProps({
@@ -46,8 +39,8 @@ const showLoading = ref(false)
 // echart vars
 let eChart = null
 let data = []
-let lengend = []
-let dataByLengend = []
+let legend = []
+let dataByLegend = []
 let dataset = []
 let series = []
 const dimensions = [
@@ -67,11 +60,7 @@ const dimensions = [
 
 // actions
 const doUpdate = () => {
-  if (
-    !props.supplierCode ||
-    !date.isValid(props.dateFrom) ||
-    !date.isValid(props.dateTo)
-  ) {
+  if (!props.supplierCode || !date.isValid(props.dateFrom) || !date.isValid(props.dateTo)) {
     return
   }
 
@@ -96,16 +85,16 @@ const doUpdate = () => {
 }
 
 const prepareData = () => {
-  lengend = _uniq(_map(data, 'Site'))
-  dataByLengend = _groupBy(data, 'Site')
+  legend = _uniq(_map(data, 'Site'))
+  dataByLegend = _groupBy(data, 'Site')
   dataset = []
   series = []
 
   _forEach(
-    lengend,
+    legend,
     (value, index) => {
       // dataset
-      dataset[index] = { source: dataByLengend[value] }
+      dataset[index] = { source: dataByLegend[value] }
       // series
       series[index] = {
         type: 'line',
@@ -138,22 +127,12 @@ const setEchart = () => {
   // data is ready,set echart option
   eChart.setOption({
     title: {
-      text: t('Delivery History ({dateFrom}-->{dateTo})', {
-        dateFrom: props.dateFrom,
-        dateTo: props.dateTo
-      }),
+      text: `${t('Label.Delivery History')} (${props.dateFrom}-->${props.dateTo})`,
       subtext: '',
       left: 'center'
     },
     legend: defaultLegend,
-    toolbox: defaultToolbox(
-      dimensions,
-      data,
-      t('Delivery History ({dateFrom}-->{dateTo})', {
-        dateFrom: props.dateFrom,
-        dateTo: props.dateTo
-      })
-    ),
+    toolbox: defaultToolbox(dimensions, data, `${t('Label.Delivery History')} (${props.dateFrom}-->${props.dateTo})`),
     tooltip: defaultTooltip,
     dataZoom: defaultDataZoom('x'),
     xAxis: mergerOption(defaultXAxisTime, { name: 'Receipt' }),
@@ -179,9 +158,7 @@ const resize = () => {
 
 // events
 onMounted(() => {
-  eChart = echarts.init(
-    document.getElementById('EchartSupplierDeliveryHistory')
-  )
+  eChart = echarts.init(document.getElementById('EchartSupplierDeliveryHistory'))
   // when not use keep alive, use mounted/unmounted
   window.addEventListener('resize', resize)
   doUpdate()

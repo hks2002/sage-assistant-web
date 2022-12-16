@@ -2,7 +2,7 @@
  * @Author         : Robert Huang<56649783@qq.com>
  * @Date           : 2022-03-25 11:01:23
  * @LastEditors    : Robert Huang<56649783@qq.com>
- * @LastEditTime   : 2022-05-29 01:01:26
+ * @LastEditTime   : 2022-12-16 17:46:52
  * @FilePath       : \web2\src\components\echarts\EchartQuoteHistory.vue
  * @CopyRight      : Dedienne Aerospace China ZhuHai
 -->
@@ -34,14 +34,7 @@ import _groupBy from 'lodash/groupBy'
 import _map from 'lodash/map'
 import _sumBy from 'lodash/sumBy'
 import _uniq from 'lodash/uniq'
-import {
-  onActivated,
-  onBeforeUnmount,
-  onDeactivated,
-  onMounted,
-  ref,
-  watch
-} from 'vue'
+import { onActivated, onBeforeUnmount, onDeactivated, onMounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 const props = defineProps({
@@ -55,9 +48,9 @@ const showLoading = ref(false)
 // echart vars
 let eChart = null
 let data = []
-let lengend = []
-let dataByLengend = []
-let dataCountedByLengend = []
+let legend = []
+let dataByLegend = []
+let dataCountedByLegend = []
 let dataset = []
 let series = []
 const dimensions = [
@@ -103,13 +96,13 @@ const prepareData = () => {
     dataZoomStartValue = _get(data[0], 'QuoteDate')
   }
 
-  lengend = _uniq(_map(data, 'SalesSite'))
-  dataByLengend = _groupBy(data, 'SalesSite')
-  dataCountedByLengend = []
+  legend = _uniq(_map(data, 'SalesSite'))
+  dataByLegend = _groupBy(data, 'SalesSite')
+  dataCountedByLegend = []
   dataset = []
   series = []
 
-  _forEach(dataByLengend, (value) => {
+  _forEach(dataByLegend, (value) => {
     const o = {}
     Object.defineProperty(o, 'SalesSite', {
       enumerable: true,
@@ -119,23 +112,16 @@ const prepareData = () => {
       enumerable: true,
       value: _sumBy(value, 'Qty')
     })
-    dataCountedByLengend.push(o)
+    dataCountedByLegend.push(o)
   })
 
-  lengend.forEach((value, index) => {
-    dataset[index] = { source: dataByLengend[value] }
-    series[index] = defaultLineSerial(
-      index,
-      value,
-      '{@NetPrice} {@Currency}',
-      dimensions,
-      'QuoteDate',
-      'USD'
-    )
+  legend.forEach((value, index) => {
+    dataset[index] = { source: dataByLegend[value] }
+    series[index] = defaultLineSerial(index, value, '{@NetPrice} {@Currency}', dimensions, 'QuoteDate', 'USD')
   })
 
   // add pie
-  dataset.push({ source: dataCountedByLengend })
+  dataset.push({ source: dataCountedByLegend })
   const seriesBySite = AttachedPieSerial(
     dataset.length - 1,
     '{@SalesSite} \nQty:{@Qty}\n{d}%',
@@ -151,15 +137,13 @@ const setEchart = () => {
   eChart.setOption(
     {
       title: {
-        text: t('Quotes History'),
-        subtext: t(
-          'Currency Rate Data From State Administration of Foreign Exchange'
-        ),
+        text: t('Label.Quotes History'),
+        //subtext: t('label.Currency Rate Data From State Administration of Foreign Exchange'),
         left: 'center'
       },
       legend: defaultLegend,
       grid: [{ left: '5%', right: '25%' }],
-      toolbox: defaultToolbox(dimensions, data, t('Quotes History')),
+      toolbox: defaultToolbox(dimensions, data, t('Label.Quotes History')),
       tooltip: defaultTooltip,
       dataZoom: defaultDataZoom('x', dataZoomStartValue),
       xAxis: defaultXAxisTime,

@@ -9,26 +9,13 @@
 
 <script setup>
 import { axiosGet } from '@/assets/axiosActions'
-import {
-  defaultBarSerial,
-  defaultLegend,
-  defaultToolbox,
-  defaultTooltip,
-  echarts
-} from '@/assets/echartsCfg.js'
+import { defaultBarSerial, defaultLegend, defaultToolbox, defaultTooltip, echarts } from '@/assets/echartsCfg.js'
 import _forEach from 'lodash/forEach'
 import _groupBy from 'lodash/groupBy'
 import _map from 'lodash/map'
 import _uniq from 'lodash/uniq'
 import { date } from 'quasar'
-import {
-  onActivated,
-  onBeforeUnmount,
-  onDeactivated,
-  onMounted,
-  ref,
-  watch
-} from 'vue'
+import { onActivated, onBeforeUnmount, onDeactivated, onMounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 const props = defineProps({
@@ -43,8 +30,8 @@ const showLoading = ref(false)
 // echart vars
 let eChart = null
 let data = []
-let lengend = []
-let dataByLengend = []
+let legend = []
+let dataByLegend = []
 let sites = []
 let dataset = []
 let series = []
@@ -52,11 +39,7 @@ const dimensions = ['Site', 'SupplierCode', 'CountType', 'Qty']
 
 // actions
 const doUpdate = () => {
-  if (
-    !props.supplierCode ||
-    !date.isValid(props.dateFrom) ||
-    !date.isValid(props.dateTo)
-  ) {
+  if (!props.supplierCode || !date.isValid(props.dateFrom) || !date.isValid(props.dateTo)) {
     return
   }
 
@@ -81,22 +64,15 @@ const doUpdate = () => {
 }
 
 const prepareData = () => {
-  lengend = _uniq(_map(data, 'CountType'))
-  dataByLengend = _groupBy(data, 'CountType')
+  legend = _uniq(_map(data, 'CountType'))
+  dataByLegend = _groupBy(data, 'CountType')
   sites = _uniq(_map(data, 'Site'))
   dataset = []
   series = []
 
-  _forEach(lengend, (value, index) => {
-    dataset[index] = { source: dataByLengend[value] }
-    series[index] = defaultBarSerial(
-      index,
-      value,
-      '{@Qty}',
-      dimensions,
-      'Site',
-      'Qty'
-    )
+  _forEach(legend, (value, index) => {
+    dataset[index] = { source: dataByLegend[value] }
+    series[index] = defaultBarSerial(index, value, '{@Qty}', dimensions, 'Site', 'Qty')
   })
 }
 
@@ -105,16 +81,12 @@ const setEchart = () => {
   eChart.setOption(
     {
       title: {
-        text: `${t('Total Qty')} ( ${props.dateFrom}-->${props.dateTo})`,
+        text: `${t('Label.Total Qty')} ( ${props.dateFrom}-->${props.dateTo})`,
         subtext: '',
         left: 'center'
       },
       legend: defaultLegend,
-      toolbox: defaultToolbox(
-        dimensions,
-        data,
-        `${t('Total Qty')} ( ${props.dateFrom}-->${props.dateTo})`
-      ),
+      toolbox: defaultToolbox(dimensions, data, `${t('Label.Total Qty')} ( ${props.dateFrom}-->${props.dateTo})`),
       tooltip: defaultTooltip,
       xAxis: {
         type: 'category',

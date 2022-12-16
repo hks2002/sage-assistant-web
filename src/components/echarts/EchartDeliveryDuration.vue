@@ -2,7 +2,7 @@
  * @Author         : Robert Huang<56649783@qq.com>
  * @Date           : 2022-03-25 11:01:23
  * @LastEditors    : Robert Huang<56649783@qq.com>
- * @LastEditTime   : 2022-05-29 01:00:39
+ * @LastEditTime   : 2022-12-16 17:47:46
  * @FilePath       : \web2\src\components\echarts\EchartDeliveryDuration.vue
  * @CopyRight      : Dedienne Aerospace China ZhuHai
 -->
@@ -43,8 +43,8 @@ const showLoading = ref(false)
 // echart vars
 let eChart = null
 let data = []
-let lengend = []
-let dataByLengend = []
+let legend = []
+let dataByLegend = []
 let dataset = []
 let series = []
 const dimensions = ['SalesSite', 'PN', 'OrderDate', 'ShipDate', 'Duration']
@@ -67,21 +67,14 @@ const doUpdate = (pnRoot) => {
 }
 
 const prepareData = () => {
-  lengend = _uniq(_map(data, 'SalesSite'))
-  dataByLengend = _groupBy(data, 'SalesSite')
+  legend = _uniq(_map(data, 'SalesSite'))
+  dataByLegend = _groupBy(data, 'SalesSite')
   dataset = []
   series = []
 
-  _forEach(lengend, (value, index) => {
-    dataset[index] = { source: dataByLengend[value] }
-    series[index] = defaultLineSerial(
-      index,
-      value,
-      '{@Duration}',
-      dimensions,
-      'ShipDate',
-      'Duration'
-    )
+  _forEach(legend, (value, index) => {
+    dataset[index] = { source: dataByLegend[value] }
+    series[index] = defaultLineSerial(index, value, '{@Duration}', dimensions, 'ShipDate', 'Duration')
   })
 }
 
@@ -90,12 +83,12 @@ const setEchart = () => {
   eChart.setOption(
     {
       title: {
-        text: t('Delivery Duration'),
+        text: t('Label.Delivery Duration'),
         left: 'center'
       },
       tooltip: defaultTooltip,
       legend: defaultLegend,
-      toolbox: defaultToolbox(dimensions, data, t('Delivery Duration')),
+      toolbox: defaultToolbox(dimensions, data, t('Label.Delivery Duration')),
       grid: { bottom: 40, top: 40, right: 20 },
       xAxis: defaultXAxisTime,
       yAxis: {
