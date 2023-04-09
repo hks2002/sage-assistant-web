@@ -1,7 +1,11 @@
-/*
- * This file runs in a Node context (it's NOT transpiled by Babel), so use only
- * the ES6 features that are supported by your Node version. https://node.green/
- */
+/*********************************************************************************************************************
+ * @Author                : Robert Huang<56649783@qq.com>                                                            *
+ * @CreatedDate           : 2023-04-09 23:09:37                                                                      *
+ * @LastEditors           : Robert Huang<56649783@qq.com>                                                            *
+ * @LastEditDate          : 2023-04-09 23:09:37                                                                      *
+ * @FilePath              : quasar.conf.js                                                                           *
+ * @CopyRight             : Dedienne Aerospace China ZhuHai                                                          *
+ ********************************************************************************************************************/
 
 // Configuration for your app
 // https://v2.quasar.dev/quasar-cli/quasar-conf-js
@@ -98,16 +102,16 @@ module.exports = configure(function (ctx) {
 
       // Options below are automatically set depending on the env, set them if you want to override
       // extractCSS: false,
-      beforeBuild() {
-        let pkg = fs.readFileSync('package.json')
-        const timeStamp = moment().format('MMDDHHmmss')
-        pkg = JSON.parse(pkg)
+      // beforeBuild() {
+      //   let pkg = fs.readFileSync('package.json')
+      //   const timeStamp = moment().format('MMDDHHmmss')
+      //   pkg = JSON.parse(pkg)
 
-        pkg.version = pkg.version.replace(/^(\d+\.\d+)(\S*)/, '$1')
-        pkg.version = pkg.version + '.' + timeStamp
+      //   pkg.version = pkg.version.replace(/^(\d+\.\d+)(\S*)/, '$1')
+      //   pkg.version = pkg.version + '.' + timeStamp
 
-        fs.writeFileSync('package.json', JSON.stringify(pkg, null, 2))
-      },
+      //   fs.writeFileSync('package.json', JSON.stringify(pkg, null, 2))
+      // },
 
       afterBuild() {
         let pkg = fs.readFileSync('package.json')
