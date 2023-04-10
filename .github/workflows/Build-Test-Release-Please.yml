@@ -13,7 +13,7 @@ permissions:
   pull-requests: write
 
 jobs:
-  build:
+  build-test-release:
     strategy:
       matrix:
         os: [ubuntu-latest]
