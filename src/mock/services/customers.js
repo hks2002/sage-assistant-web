@@ -1,18 +1,17 @@
-/***
- * @Author         : Robert Huang<56649783@qq.com>
- * @Date           : 2022-03-31 17:10:21
- * @LastEditors    : Robert Huang<56649783@qq.com>
- * @LastEditTime   : 2022-05-28 23:16:46
- * @FilePath       : \web2\src\mock\services\customers.js
- * @CopyRight      : Dedienne Aerospace China ZhuHai
- */
+/*********************************************************************************************************************
+ * @Author                : Robert Huang<56649783@qq.com>                                                            *
+ * @CreatedDate           : 2022-03-31 17:10:00                                                                      *
+ * @LastEditors           : Robert Huang<56649783@qq.com>                                                            *
+ * @LastEditDate          : 2023-06-15 16:36:05                                                                      *
+ * @FilePath              : src/mock/services/customers.js                                                           *
+ * @CopyRight             : Dedienne Aerospace China ZhuHai                                                          *
+ ********************************************************************************************************************/
+
 import { getQueryParameters } from '@/assets/mockExt'
 import { orderBy } from 'lodash'
 import Mock from 'mockjs'
 
 Mock.mock(RegExp('^(/Data/CustomerHelper)' + '.*'), (options) => {
-  console.debug('\u001b[35m' + '[Mocking] ', 'CustomerHelper')
-
   const query = getQueryParameters(options)
   const CodeOrName = query['CustomerName']
 
@@ -40,8 +39,6 @@ Mock.mock(RegExp('^(/Data/CustomerHelper)' + '.*'), (options) => {
 })
 
 Mock.mock(RegExp('^(/Data/CustomerDetails)' + '.*'), (options) => {
-  console.debug('\u001b[35m' + '[Mocking] ', 'CustomerDetails')
-
   const query = getQueryParameters(options)
   const CustomerCode = query['CustomerCode']
   // list = {data:[{},{}]}
@@ -56,7 +53,7 @@ Mock.mock(RegExp('^(/Data/CustomerDetails)' + '.*'), (options) => {
           return Mock.mock('@title(3, 5)')
         },
         PostCode: /[0-9]{6}/,
-        Contry: /[A-Z]{3}/,
+        Country: /[A-Z]{3}/,
         State: /[A-Z]{1}[a-z]{2,6}/,
         City: /[A-Z]{1}[a-z]{2,6}/,
         Address0: () => {
@@ -70,8 +67,7 @@ Mock.mock(RegExp('^(/Data/CustomerDetails)' + '.*'), (options) => {
         Tel2: /\d{3}-\d{8}|\d{4}-\d{7}/,
         Tel3: /\d{3}-\d{8}|\d{4}-\d{7}/,
         Tel4: /\d{3}-\d{8}|\d{4}-\d{7}/,
-        Mobile0:
-          /^(13[0-9]|14[5|7]|15[0|1|2|3|5|6|7|8|9]|18[0|1|2|3|5|6|7|8|9])\d{8}$/,
+        Mobile0: /^(13[0-9]|14[5|7]|15[0|1|2|3|5|6|7|8|9]|18[0|1|2|3|5|6|7|8|9])\d{8}$/,
         Fax0: /\d{3}-\d{8}|\d{4}-\d{7}/,
         Email0: /^\w{2,6}@\w{2,6}\.\w{2,6}$/,
         Email1: /^\w{2,6}@\w{2,6}\.\w{2,6}$/,
@@ -87,8 +83,6 @@ Mock.mock(RegExp('^(/Data/CustomerDetails)' + '.*'), (options) => {
 })
 
 Mock.mock(RegExp('^(/Data/CustomerDeliveryHistory)' + '.*'), (options) => {
-  console.debug('\u001b[35m' + '[Mocking] ', 'CustomerDeliveryHistory')
-
   const query = getQueryParameters(options)
   const CustomerCode = query['CustomerCode']
 
@@ -124,8 +118,6 @@ Mock.mock(RegExp('^(/Data/CustomerDeliveryHistory)' + '.*'), (options) => {
 })
 
 Mock.mock(RegExp('^(/Data/CustomerDelayHistory)' + '.*'), (options) => {
-  console.debug('\u001b[35m' + '[Mocking] ', 'CustomerDelayHistory')
-
   const query = getQueryParameters(options)
   const CustomerCode = query['CustomerCode']
 
@@ -162,8 +154,6 @@ Mock.mock(RegExp('^(/Data/CustomerDelayHistory)' + '.*'), (options) => {
 })
 
 Mock.mock(RegExp('^(/Data/CustomerOpenAmount)' + '.*'), (options) => {
-  console.debug('\u001b[35m' + '[Mocking] ', 'CustomerOpenAmount')
-
   const query = getQueryParameters(options)
   const CustomerCode = query['CustomerCode']
 
@@ -217,8 +207,6 @@ Mock.mock(RegExp('^(/Data/CustomerOpenAmount)' + '.*'), (options) => {
 })
 
 Mock.mock(RegExp('^(/Data/CustomerOpenItems)' + '.*'), (options) => {
-  console.debug('\u001b[35m' + '[Mocking] ', 'CustomerOpenItems')
-
   const query = getQueryParameters(options)
   const CustomerCode = query['CustomerCode']
   // list = {data:[{},{}]}
@@ -253,8 +241,6 @@ Mock.mock(RegExp('^(/Data/CustomerOpenItems)' + '.*'), (options) => {
 })
 
 Mock.mock(RegExp('^(/Data/CustomerOpenQty)' + '.*'), (options) => {
-  console.debug('\u001b[35m' + '[Mocking] ', 'CustomerOpenQty')
-
   const query = getQueryParameters(options)
   const CustomerCode = query['CustomerCode']
   // list = {data:[{},{}]}
@@ -323,8 +309,6 @@ Mock.mock(RegExp('^(/Data/CustomerOpenQty)' + '.*'), (options) => {
 })
 
 Mock.mock(RegExp('^(/Data/CustomerTotalAmount)' + '.*'), (options) => {
-  console.debug('\u001b[35m' + '[Mocking] ', 'CustomerTotalAmount')
-
   const query = getQueryParameters(options)
   const CustomerCode = query['CustomerCode']
   // list = {data:[{},{}]}
@@ -377,8 +361,6 @@ Mock.mock(RegExp('^(/Data/CustomerTotalAmount)' + '.*'), (options) => {
 })
 
 Mock.mock(RegExp('^(/Data/CustomerTotalQty)' + '.*'), (options) => {
-  console.debug('\u001b[35m' + '[Mocking] ', 'CustomerTotalQty')
-
   const query = getQueryParameters(options)
   const CustomerCode = query['CustomerCode']
   // list = {data:[{},{}]}

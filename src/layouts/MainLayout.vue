@@ -1,16 +1,17 @@
 <!--
- * @Author         : Robert Huang<56649783@qq.com>
- * @Date           : 2022-03-25 11:01:23
- * @LastEditors    : Robert Huang<56649783@qq.com>
- * @LastEditTime   : 2022-05-29 21:53:29
- * @FilePath       : \web2\src\layouts\MainLayout.vue
- * @CopyRight      : Dedienne Aerospace China ZhuHai
+* @Author                : Robert Huang<56649783@qq.com>
+* @CreatedDate           : 2022-03-25 11:01:00
+* @LastEditors           : Robert Huang<56649783@qq.com>
+* @LastEditDate          : 2023-08-25 10:53:08
+* @FilePath              : sage-assistant-web/src/layouts/MainLayout.vue
+* @CopyRight             : Dedienne Aerospace China ZhuHai
 -->
+
 <template>
   <q-layout view="hHh Lpr lFf">
-    <PageHeader :style="{ height: pageHeaderHeight + 'px' }" />
+    <PageHeader />
 
-    <!-- mini-to-overlay let the main body size frezon-->
+    <!-- mini-to-overlay let the main body size frozen-->
     <q-drawer
       v-model="leftDrawerOpen"
       show-if-above
@@ -25,69 +26,34 @@
       <MenuItems />
     </q-drawer>
 
-    <q-page-container :style="{ height: pageContainerHeight + 'px' }">
-      <MainTabsVue :tabHeight="pageContainerHeight" />
-      <!-- if don't want to use multi tabs, use router-view instead of it  -->
-      <!-- <router-view /> -->
+    <q-page-container>
+      <TabPages />
     </q-page-container>
 
-    <PageFooter :style="{ height: pageFooterHeight + 'px' }" />
+    <PageFooter />
   </q-layout>
 </template>
 
 <script setup>
-import { ebus } from '@/assets/ebus'
-import MainTabsVue from '@/layouts/MainTabs.vue'
 import MenuItems from '@/layouts/MenuItems.vue'
 import PageFooter from '@/layouts/PageFooter.vue'
 import PageHeader from '@/layouts/PageHeader.vue'
-import { onBeforeMount, onBeforeUnmount, ref } from 'vue'
+import TabPages from '@/layouts/TabPages.vue'
+import { inject, onBeforeUnmount, ref } from 'vue'
 
+const ebus = inject('ebus')
 /** why it always be true when mounted */
 const leftDrawerOpen = ref(true)
-const pageHeaderHeight = 40
-const pageFooterHeight = 18
-const pageContainerHeight = ref(600)
-const pageContainerWidth = ref(800)
-const drawerMiniWidth = 40
 const miniState = ref(true)
+const drawerMiniWidth = 40
 
 const toggleLeftDrawer = () => {
   leftDrawerOpen.value = !leftDrawerOpen.value
-  updatePageWidth()
 }
 
 const closeLeftDrawer = () => {
   leftDrawerOpen.value = false
-  updatePageWidth()
 }
-
-const updatePageHeight = () => {
-  // save to global
-  pageContainerHeight.value =
-    window.innerHeight - pageHeaderHeight - pageFooterHeight
-}
-
-const updatePageWidth = () => {
-  // save to global
-  // console.debug('leftDrawerOpen', leftDrawerOpen.value)
-  if (leftDrawerOpen.value) {
-    pageContainerWidth.value = window.innerWidth - drawerMiniWidth
-  } else {
-    pageContainerWidth.value = window.innerWidth
-  }
-}
-
-window.onresize = () => {
-  updatePageHeight()
-  updatePageWidth()
-}
-
-onBeforeMount(() => {
-  // sub components mounted before layout, need set global pageBodyHeight for sub components
-  updatePageHeight()
-  updatePageWidth()
-})
 
 // event handing
 ebus.on('toggleLeftDrawer', toggleLeftDrawer)

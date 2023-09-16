@@ -3,10 +3,7 @@
     "dbaeumer.vscode-eslint",
     "pkief.material-icon-theme",
     "wayou.vscode-todo-highlight",
-    "mhutchie.git-graph",
     "esbenp.prettier-vscode",
-    "formulahendry.auto-rename-tag",
-    "formulahendry.auto-close-tag",
     "christian-kohler.path-intellisense",
     "steoates.autoimport",
     "syler.sass-indented",
@@ -16,8 +13,7 @@
     "richie5um2.vscode-sort-json",
     "streetsidesoftware.code-spell-checker",
     "adpyke.vscode-sql-formatter",
-    "vue.volar",
-    "OBKoro1.korofileheader"
+    "vue.volar"
   ],
   "unwantedRecommendations": [
     "misterj.vue-volar-extention-pack",

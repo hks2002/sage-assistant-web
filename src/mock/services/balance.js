@@ -1,17 +1,16 @@
-/***
- * @Author         : Robert Huang<56649783@qq.com>
- * @Date           : 2022-04-01 10:30:43
- * @LastEditors    : Robert Huang<56649783@qq.com>
- * @LastEditTime   : 2022-05-28 23:17:00
- * @FilePath       : \web2\src\mock\services\financials.js
- * @CopyRight      : Dedienne Aerospace China ZhuHai
- */
+/*********************************************************************************************************************
+ * @Author                : Robert Huang<56649783@qq.com>                                                            *
+ * @CreatedDate           : 2022-04-01 10:30:00                                                                      *
+ * @LastEditors           : Robert Huang<56649783@qq.com>                                                            *
+ * @LastEditDate          : 2023-06-15 16:34:41                                                                      *
+ * @FilePath              : src/mock/services/balance.js                                                             *
+ * @CopyRight             : Dedienne Aerospace China ZhuHai                                                          *
+ ********************************************************************************************************************/
+
 import { getQueryParameters } from '@/assets/mockExt'
 import Mock from 'mockjs'
 
 Mock.mock(RegExp('^(/Data/FinancialBalanceC)' + '.*'), (options) => {
-  console.debug('\u001b[35m' + '[Mocking] ', 'FinancialBalanceC')
-
   const query = getQueryParameters(options)
   const Year = query['Year']
   const AccountNO = query['AccountNO']
@@ -46,8 +45,6 @@ Mock.mock(RegExp('^(/Data/FinancialBalanceC)' + '.*'), (options) => {
 })
 
 Mock.mock(RegExp('^(/Data/FinancialBalanceD)' + '.*'), (options) => {
-  console.debug('\u001b[35m' + '[Mocking] ', 'FinancialBalanceD')
-
   const query = getQueryParameters(options)
   const Year = query['Year']
   const AccountNO = query['AccountNO']
@@ -82,8 +79,6 @@ Mock.mock(RegExp('^(/Data/FinancialBalanceD)' + '.*'), (options) => {
 })
 
 Mock.mock(RegExp('^(/Data/FinancialBalanceM)' + '.*'), (options) => {
-  console.debug('\u001b[35m' + '[Mocking] ', 'FinancialBalanceM')
-
   const query = getQueryParameters(options)
   const Year = query['Year']
   const AccountNO = query['AccountNO']
@@ -118,8 +113,6 @@ Mock.mock(RegExp('^(/Data/FinancialBalanceM)' + '.*'), (options) => {
 })
 
 Mock.mock(RegExp('^(/Data/FinancialBalanceB)' + '.*'), (options) => {
-  console.debug('\u001b[35m' + '[Mocking] ', 'FinancialBalanceB')
-
   const query = getQueryParameters(options)
   const Year = query['Year']
   const AccountNO = query['AccountNO']
@@ -153,9 +146,7 @@ Mock.mock(RegExp('^(/Data/FinancialBalanceB)' + '.*'), (options) => {
   return list.data
 })
 
-Mock.mock(RegExp('^(/Data/FinancialBalance)' + '.*'), () => {
-  console.debug('\u001b[35m' + '[Mocking] ', 'FinancialBalance')
-
+Mock.mock(RegExp('^(/Data/FinancialBalance)' + '.*'), (options) => {
   //const AccountNO = getQueryParameter(options, 'AccountNO')
   //const Year = getQueryParameter(options, 'Year')
   //const Month = getQueryParameter(options, 'Month')

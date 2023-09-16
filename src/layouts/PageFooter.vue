@@ -1,16 +1,17 @@
 <!--
- * @Author         : Robert Huang<56649783@qq.com>
- * @Date           : 2022-03-25 11:01:23
- * @LastEditors    : Robert Huang<56649783@qq.com>
- * @LastEditTime   : 2022-05-28 22:58:34
- * @FilePath       : \web2\src\layouts\PageFooter.vue
- * @CopyRight      : Dedienne Aerospace China ZhuHai
+* @Author                : Robert Huang<56649783@qq.com>
+* @CreatedDate           : 2022-03-25 11:01:00
+* @LastEditors           : Robert Huang<56649783@qq.com>
+* @LastEditDate          : 2023-08-23 15:30:44
+* @FilePath              : sage-assistant-web/src/layouts/PageFooter.vue
+* @CopyRight             : Dedienne Aerospace China ZhuHai
 -->
+
 <template>
-  <q-footer class="footer" :style="'height:' + height + 'px'">
+  <q-footer :style="'height:' + height + 'px'">
     <q-bar class="fit flex-center footer">
       <div>
-        <span class="q-pa-ms">{{ $t('Developed by Dedienne China') }} </span>
+        <span class="q-pa-ms">{{ $t('S.DEVELOPED_BY') }} </span>
       </div>
     </q-bar>
   </q-footer>

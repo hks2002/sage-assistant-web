@@ -1,16 +1,16 @@
-/***
- * @Author         : Robert Huang<56649783@qq.com>
- * @Date           : 2022-03-25 11:01:23
- * @LastEditors    : Robert Huang<56649783@qq.com>
- * @LastEditTime   : 2022-05-28 23:17:04
- * @FilePath       : \web2\src\mock\services\invoice.js
- * @CopyRight      : Dedienne Aerospace China ZhuHai
- */
+/*********************************************************************************************************************
+ * @Author                : Robert Huang<56649783@qq.com>                                                            *
+ * @CreatedDate           : 2022-03-25 11:01:00                                                                      *
+ * @LastEditors           : Robert Huang<56649783@qq.com>                                                            *
+ * @LastEditDate          : 2023-06-15 16:37:39                                                                      *
+ * @FilePath              : src/mock/services/invoice.js                                                             *
+ * @CopyRight             : Dedienne Aerospace China ZhuHai                                                          *
+ ********************************************************************************************************************/
+
 import { getQueryParameters } from '@/assets/mockExt'
 import Mock from 'mockjs'
 
 Mock.mock(RegExp('^(/Data/InvoiceNO)' + '.*'), (options) => {
-  console.debug('\u001b[35m' + '[Mocking] ', 'InvoiceNO')
   const InvoiceNO = getQueryParameters(options, 'InvoiceNO')
   // list = {data:[]}
   const list = Mock.mock({
@@ -25,7 +25,6 @@ Mock.mock(RegExp('^(/Data/InvoiceNO)' + '.*'), (options) => {
 })
 
 Mock.mock(RegExp('^(/Data/InvoiceHeaderByInvoiceNO)' + '.*'), () => {
-  console.debug('\u001b[35m' + '[Mocking] ', 'InvoiceHeader')
   // list = {data:[{}]}
   const list = Mock.mock({
     'data|1': [
@@ -70,7 +69,6 @@ Mock.mock(RegExp('^(/Data/InvoiceHeaderByInvoiceNO)' + '.*'), () => {
 })
 
 Mock.mock(RegExp('^(/Data/InvoiceBodyByInvoiceNO)' + '.*'), () => {
-  console.debug('\u001b[35m' + '[Mocking] ', 'InvoiceBody')
   // list = {data:[{},{}]}
   const list = Mock.mock({
     'data|1-10': [
@@ -111,7 +109,6 @@ Mock.mock(RegExp('^(/Data/InvoiceBodyByInvoiceNO)' + '.*'), () => {
 })
 
 Mock.mock(RegExp('^(/Data/InvoiceHeaderByFaPiao)' + '.*'), () => {
-  console.debug('\u001b[35m' + '[Mocking] ', 'InvoiceHeader')
   // list = {data:[{}]}
   const list = Mock.mock({
     'data|1': [
@@ -155,8 +152,7 @@ Mock.mock(RegExp('^(/Data/InvoiceHeaderByFaPiao)' + '.*'), () => {
   return list.data
 })
 
-Mock.mock(RegExp('^(/Data/InvoiceBodyByFaPiao)' + '.*'), () => {
-  console.debug('\u001b[35m' + '[Mocking] ', 'InvoiceBody')
+Mock.mock(RegExp('^(/Data/InvoiceBodyByFaPiao)' + '.*'), (options) => {
   //const Lbdm = getQueryParameter(options, 'Lbdm')
   //const fphm = getQueryParameter(options, 'fphm')
   // list = {data:[{},{}]}

@@ -1,11 +1,12 @@
 <!--
- * @Author         : Robert Huang<56649783@qq.com>
- * @Date           : 2022-03-25 11:01:23
- * @LastEditors    : Robert Huang<56649783@qq.com>
- * @LastEditTime   : 2022-05-28 23:02:10
- * @FilePath       : \web2\src\layouts\PopMenuTabPanel.vue
- * @CopyRight      : Dedienne Aerospace China ZhuHai
+* @Author                : Robert Huang<56649783@qq.com>
+* @CreatedDate           : 2022-03-25 11:01:00
+* @LastEditors           : Robert Huang<56649783@qq.com>
+* @LastEditDate          : 2023-06-21 15:37:22
+* @FilePath              : src/layouts/PopMenuTabPanel.vue
+* @CopyRight             : Dedienne Aerospace China ZhuHai
 -->
+
 <template>
   <q-tab-panel name="" class="q-pa-none">
     <q-list>
@@ -26,20 +27,20 @@
 </template>
 
 <script setup>
-import ebus from '@/assets/ebus'
-import { useQuasar } from 'quasar'
-import { onBeforeUnmount } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
+// import ebus from '@/assets/ebus'
+// import { useQuasar } from 'quasar'
+// import { onBeforeUnmount } from 'vue'
+// import { useRoute, useRouter } from 'vue-router'
 
-const q = useQuasar()
-const { route } = useRoute()
-const { router } = useRouter()
-q.loadingBar.stop()
+// const q = useQuasar()
+// const { route } = useRoute()
+// const { router } = useRouter()
+// q.loadingBar.stop()
 
-// event handing
-ebus.on('toggleLeftDrawer', toggleLeftDrawer)
-onBeforeUnmount(() => {
-  ebus.off('toggleLeftDrawer', toggleLeftDrawer)
-})
+// // event handing
+// ebus.on('toggleLeftDrawer', toggleLeftDrawer)
+// onBeforeUnmount(() => {
+//   ebus.off('toggleLeftDrawer', toggleLeftDrawer)
+// })
 </script>
 <style lang="scss" scoped></style>

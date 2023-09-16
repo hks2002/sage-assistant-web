@@ -1,11 +1,12 @@
-/***
- * @Author         : Robert Huang<56649783@qq.com>
- * @Date           : 2022-03-25 11:01:23
- * @LastEditors    : Robert Huang<56649783@qq.com>
- * @LastEditTime   : 2022-05-28 23:11:46
- * @FilePath       : \web2\src\router\routes.js
- * @CopyRight      : Dedienne Aerospace China ZhuHai
- */
+/*********************************************************************************************************************
+ * @Author                : Robert Huang<56649783@qq.com>                                                            *
+ * @CreatedDate           : 2022-03-25 11:01:00                                                                      *
+ * @LastEditors           : Robert Huang<56649783@qq.com>                                                            *
+ * @LastEditDate          : 2023-05-24 09:06:23                                                                      *
+ * @FilePath              : src/router/routes.js                                                                     *
+ * @CopyRight             : Dedienne Aerospace China ZhuHai                                                          *
+ ********************************************************************************************************************/
+
 const routes = [
   {
     path: '/',

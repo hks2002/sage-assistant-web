@@ -1,15 +1,15 @@
-/***
- * @Author         : Robert Huang<56649783@qq.com>
- * @Date           : 2022-03-25 11:01:23
- * @LastEditors    : Robert Huang<56649783@qq.com>
- * @LastEditTime   : 2022-05-28 23:15:55
- * @FilePath       : \web2\src\mock\services\todo.js
- * @CopyRight      : Dedienne Aerospace China ZhuHai
- */
+/*********************************************************************************************************************
+ * @Author                : Robert Huang<56649783@qq.com>                                                            *
+ * @CreatedDate           : 2022-03-25 11:01:00                                                                      *
+ * @LastEditors           : Robert Huang<56649783@qq.com>                                                            *
+ * @LastEditDate          : 2023-06-15 16:43:07                                                                      *
+ * @FilePath              : src/mock/services/todo.js                                                                *
+ * @CopyRight             : Dedienne Aerospace China ZhuHai                                                          *
+ ********************************************************************************************************************/
+
 import Mock from 'mockjs'
 
 Mock.mock(RegExp('^(/Data/TobeDealWithOrderLine)' + '.*'), () => {
-  console.debug('\u001b[35m' + '[Mocking] ', 'TobeDealWithOrderLine')
   // list = {data:[{},{}]}
   const list = Mock.mock({
     'data|1-100': [
@@ -41,7 +41,6 @@ Mock.mock(RegExp('^(/Data/TobeDealWithOrderLine)' + '.*'), () => {
 })
 
 Mock.mock(/^(\/Data\/TobeDelivery)/, () => {
-  console.debug('\u001b[35m' + '[Mocking] ', 'TobeDelivery')
   // list = {data:[{},{}]}
 
   const list = Mock.mock({
@@ -79,7 +78,6 @@ Mock.mock(/^(\/Data\/TobeDelivery)/, () => {
 })
 
 Mock.mock(RegExp('^(/Data/TobePurchaseBom)' + '.*'), () => {
-  console.debug('\u001b[35m' + '[Mocking] ', 'TobePurchaseBom')
   // list = {data:[{},{}]}
   const list = Mock.mock({
     'data|1-100': [
@@ -111,7 +109,6 @@ Mock.mock(RegExp('^(/Data/TobePurchaseBom)' + '.*'), () => {
 })
 
 Mock.mock(RegExp('^(/Data/TobeReceive)' + '.*'), () => {
-  console.debug('\u001b[35m' + '[Mocking] ', 'TobeReceive')
   // list = {data:[{},{}]}
   const list = Mock.mock({
     'data|1-100': [
@@ -150,7 +147,6 @@ Mock.mock(RegExp('^(/Data/TobeReceive)' + '.*'), () => {
 })
 
 Mock.mock(RegExp('^(/Data/TobeClosedWO)' + '.*'), () => {
-  console.debug('\u001b[35m' + '[Mocking] ', 'TobeClosedWO')
   // list = {data:[{},{}]}
   const list = Mock.mock({
     'data|1-100': [
@@ -177,7 +173,6 @@ Mock.mock(RegExp('^(/Data/TobeClosedWO)' + '.*'), () => {
 })
 
 Mock.mock(RegExp('^(/Data/TobeTracking)' + '.*'), () => {
-  console.debug('\u001b[35m' + '[Mocking] ', 'TrackingProject')
   // list = {data:[{},{}]}
   const list = Mock.mock({
     'data|200-500': [

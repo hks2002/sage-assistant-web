@@ -1,18 +1,17 @@
-/***
- * @Author         : Robert Huang<56649783@qq.com>
- * @Date           : 2022-03-25 11:01:23
- * @LastEditors    : Robert Huang<56649783@qq.com>
- * @LastEditTime   : 2022-05-28 23:16:50
- * @FilePath       : \web2\src\mock\services\fapiao.js
- * @CopyRight      : Dedienne Aerospace China ZhuHai
- */
+/*********************************************************************************************************************
+ * @Author                : Robert Huang<56649783@qq.com>                                                            *
+ * @CreatedDate           : 2022-03-25 11:01:00                                                                      *
+ * @LastEditors           : Robert Huang<56649783@qq.com>                                                            *
+ * @LastEditDate          : 2023-06-15 16:36:32                                                                      *
+ * @FilePath              : src/mock/services/fapiao.js                                                              *
+ * @CopyRight             : Dedienne Aerospace China ZhuHai                                                          *
+ ********************************************************************************************************************/
+
 import { getQueryParameters } from '@/assets/mockExt'
 import Mock from 'mockjs'
 
 // 发票代码
 Mock.mock(RegExp('^(/Fapiao/Lbdm)' + '.*'), (options) => {
-  console.debug('\u001b[35m' + '[Mocking] ', 'fapiaoLbdm')
-
   const query = getQueryParameters(options)
   const Lbdm = query['Lbdm']
   // list = {data:[]}
@@ -33,8 +32,6 @@ Mock.mock(RegExp('^(/Fapiao/Lbdm)' + '.*'), (options) => {
 
 // 发票号码
 Mock.mock(RegExp('^(/Fapiao/Fphm)' + '.*'), (options) => {
-  console.debug('\u001b[35m' + '[Mocking] ', 'fapiaoFphm')
-
   const query = getQueryParameters(options)
   const Fphm = query['Fphm']
   // list = {data:[]}
@@ -54,8 +51,6 @@ Mock.mock(RegExp('^(/Fapiao/Fphm)' + '.*'), (options) => {
 })
 
 Mock.mock(RegExp('^(/Fapiao/Header)' + '.*'), (options) => {
-  console.debug('\u001b[35m' + '[Mocking] ', 'fapiaoHeader')
-
   const query = getQueryParameters(options)
   const Lbdm = query['Lbdm']
   const Fphm = query['Fphm']
@@ -122,8 +117,6 @@ Mock.mock(RegExp('^(/Fapiao/Header)' + '.*'), (options) => {
 })
 
 Mock.mock(RegExp('^(/Fapiao/Body)' + '.*'), (options) => {
-  console.debug('\u001b[35m' + '[Mocking] ', 'fapiaoBody')
-
   const query = getQueryParameters(options)
   const Lbdm = query['Lbdm']
   const Fphm = query['Fphm']

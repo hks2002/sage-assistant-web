@@ -1,12 +1,14 @@
-/***
- * @Author         : Robert Huang<56649783@qq.com>
- * @Date           : 2022-05-26 14:52:28
- * @LastEditors    : Robert Huang<56649783@qq.com>
- * @LastEditTime   : 2022-05-28 23:11:56
- * @FilePath       : \web2\src\stores\index.js
- * @CopyRight      : Dedienne Aerospace China ZhuHai
- */
+/*********************************************************************************************************************
+ * @Author                : Robert Huang<56649783@qq.com>                                                            *
+ * @CreatedDate           : 2022-05-26 14:52:00                                                                      *
+ * @LastEditors           : Robert Huang<56649783@qq.com>                                                            *
+ * @LastEditDate          : 2023-08-19 15:48:05                                                                      *
+ * @FilePath              : sage-assistant-web/src/stores/index.js                                                   *
+ * @CopyRight             : Dedienne Aerospace China ZhuHai                                                          *
+ ********************************************************************************************************************/
+
 import { createPinia } from 'pinia'
+import piniaPersist from 'pinia-plugin-persist'
 import { store } from 'quasar/wrappers'
 
 /*
@@ -22,7 +24,7 @@ export default store((/* { ssrContext } */) => {
   const pinia = createPinia()
 
   // You can add Pinia plugins here
-  // pinia.use(SomePiniaPlugin)
+  pinia.use(piniaPersist)
 
   return pinia
 })

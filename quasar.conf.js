@@ -1,7 +1,11 @@
-/*
- * This file runs in a Node context (it's NOT transpiled by Babel), so use only
- * the ES6 features that are supported by your Node version. https://node.green/
- */
+/******************************************************************************
+ * @Author                : Robert Huang<56649783@qq.com>                     *
+ * @CreatedDate           : 2022-04-09 23:09:37                               *
+ * @LastEditors           : Robert Huang<56649783@qq.com>                     *
+ * @LastEditDate          : 2023-09-16 17:28:25                               *
+ * @FilePath              : sage-assistant-web/quasar.conf.js                 *
+ * @CopyRight             : MerBleueAviation                                  *
+ *****************************************************************************/
 
 // Configuration for your app
 // https://v2.quasar.dev/quasar-cli/quasar-conf-js
@@ -13,7 +17,6 @@ const { configure } = require('quasar/wrappers')
 
 const fs = require('fs')
 const path = require('path')
-const moment = require('moment')
 const { ContextReplacementPlugin } = require('webpack')
 
 module.exports = configure(function (ctx) {
@@ -27,7 +30,7 @@ module.exports = configure(function (ctx) {
     // app boot file (/src/boot)
     // --> boot files are part of "main.js"
     // https://v2.quasar.dev/quasar-cli/boot-files
-    boot: ['i18n', 'mock'],
+    boot: ['quasar', 'ebus', 'i18n', 'mock'],
 
     // https://v2.quasar.dev/quasar-cli/quasar-conf-js#Property%3A-css
     css: ['app.scss'],
@@ -98,16 +101,16 @@ module.exports = configure(function (ctx) {
 
       // Options below are automatically set depending on the env, set them if you want to override
       // extractCSS: false,
-      beforeBuild() {
-        let pkg = fs.readFileSync('package.json')
-        const timeStamp = moment().format('MMDDHHmmss')
-        pkg = JSON.parse(pkg)
+      // beforeBuild() {
+      //   let pkg = fs.readFileSync('package.json')
+      //   const timeStamp = moment().format('MMDDHHmmss')
+      //   pkg = JSON.parse(pkg)
 
-        pkg.version = pkg.version.replace(/^(\d+\.\d+)(\S*)/, '$1')
-        pkg.version = pkg.version + '.' + timeStamp
+      //   pkg.version = pkg.version.replace(/^(\d+\.\d+)(\S*)/, '$1')
+      //   pkg.version = pkg.version + '.' + timeStamp
 
-        fs.writeFileSync('package.json', JSON.stringify(pkg, null, 2))
-      },
+      //   fs.writeFileSync('package.json', JSON.stringify(pkg, null, 2))
+      // },
 
       afterBuild() {
         let pkg = fs.readFileSync('package.json')
@@ -128,19 +131,10 @@ module.exports = configure(function (ctx) {
       // https://quasar.dev/quasar-cli/cli-documentation/handling-webpack
       extendWebpack(cfg) {
         cfg.resolve.alias = {
-          // The existing alias
-          // src --> /src
-          // app --> /
-          // components --> /src/components
-          // layouts --> /src/layouts
-          // pages --> /src/pages
-          // assets --> /src/assets
-          // boot --> /src/boot
           ...cfg.resolve.alias, // This adds the existing alias
 
           // Add your own alias like this
-          '@': path.resolve(__dirname, './src'),
-          '@ctr': path.resolve(__dirname, './src/components/.controls')
+          '@': path.resolve(__dirname, './src')
         }
         console.debug(' webpack-aliases:', cfg.resolve.alias)
       }
@@ -148,30 +142,13 @@ module.exports = configure(function (ctx) {
 
     // Full list of options: https://v2.quasar.dev/quasar-cli/quasar-conf-js#Property%3A-devServer
     devServer: {
-      // in order to proxy to srvsyr01, must set https
-      https: {
-        cert: fs.readFileSync(path.resolve(__dirname, './https/localhost+2.pem')),
-        key: fs.readFileSync(path.resolve(__dirname, './https/localhost+2-key.pem'))
-      },
-      port: 443, // the devServer <port> must same to nginx and srvsyr01, otherwise you will receive some <forbidden> result.
+      port: 443, // the devServer <port> must be same, otherwise you will receive some <forbidden> result.
       open: true, // opens browser window automatically
 
-      // please using nignx to provide proxy first, then let devServer proxy to nignx
+      // please using Nginx to provide proxy first, then let devServer proxy to Nginx
       proxy: {
         '/Data': {
-          target: 'http://192.168.10.12'
-        },
-        '/auth': {
-          target: 'http://192.168.10.12'
-        },
-        '/trans': {
-          target: 'http://192.168.10.12'
-        },
-        '/api1': {
-          target: 'http://192.168.10.12'
-        },
-        '/print': {
-          target: 'http://192.168.10.12'
+          target: 'http://192.168.0.246'
         }
       }
     },

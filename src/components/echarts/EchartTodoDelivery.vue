@@ -1,14 +1,15 @@
 <!--
- * @Author         : Robert Huang<56649783@qq.com>
- * @Date           : 2022-03-25 11:01:23
- * @LastEditors    : Robert Huang<56649783@qq.com>
- * @LastEditTime   : 2022-12-16 17:07:18
- * @FilePath       : \web2\src\components\echarts\EchartTodoDelivery.vue
- * @CopyRight      : Dedienne Aerospace China ZhuHai
+* @Author                : Robert Huang<56649783@qq.com>
+* @CreatedDate           : 2022-03-25 11:01:00
+* @LastEditors           : Robert Huang<56649783@qq.com>
+* @LastEditDate          : 2023-08-28 00:08:48
+* @FilePath              : sage-assistant-web/src/components/echarts/EchartTodoDelivery.vue
+* @CopyRight             : Dedienne Aerospace China ZhuHai
 -->
+
 <template>
   <q-item>
-    <div id="EchartTodoDelivery" style="height: 100%; width: 100%" />
+    <base-echart :e-chart-option="eChartOption" />
     <q-inner-loading :showing="showLoading">
       <q-spinner-ios size="50px" color="primary" />
     </q-inner-loading>
@@ -22,17 +23,16 @@ import {
   defaultLegend,
   defaultScatterSerial,
   defaultToolbox,
-  defaultTooltip,
-  defaultXAxisTime,
-  echarts
+  defaultXAxisTime
 } from '@/assets/echartsCfg.js'
 import _groupBy from 'lodash/groupBy'
 import _map from 'lodash/map'
 import _sortBy from 'lodash/sortBy'
 import _uniq from 'lodash/uniq'
 import { date } from 'quasar'
-import { onActivated, onBeforeUnmount, onDeactivated, onMounted, ref, watch } from 'vue'
+import { onMounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
+import BaseEchart from './BaseEchart.vue'
 
 const props = defineProps({
   site: String
@@ -43,35 +43,35 @@ const { t } = useI18n()
 const showLoading = ref(false)
 
 // echart vars
-let eChart = null
+let eChartOption = {}
 let data = []
 let legend = []
 let dataByLegend = []
 let dataset = []
 let series = []
 const dimensions = [
-  'ProjectNO',
-  'OrderNO',
-  'OrderType',
+  'projectNO',
+  'orderNO',
+  'orderType',
   'PN',
-  'Qty',
-  'Description',
-  'CustomerCode',
-  'CustomerName',
-  'Currency',
-  'NetPrice',
+  'qty',
+  'description',
+  'customerCode',
+  'customerName',
+  'currency',
+  'netPrice',
   'USD',
-  'Rate',
-  'OrderDate',
-  'RequestDate',
-  'PlanedDate',
-  'DaysLeft'
+  'rate',
+  'orderDate',
+  'requestDate',
+  'planedDate',
+  'daysLeft'
 ]
 
 // computed vars
 
 // actions
-const doUpdate = () => {
+function doUpdate() {
   if (!props.site) return
 
   showLoading.value = true
@@ -87,86 +87,56 @@ const doUpdate = () => {
     })
 }
 
-const prepareData = () => {
+function prepareData() {
   const newDate = new Date()
   data.forEach((row) => {
     const requestDate = new Date(row.RequestDate)
     const planedDate = new Date(row.PlanedDate)
     row.DaysLeft = date.getDateDiff(Math.min(requestDate, planedDate), newDate, 'days')
   })
-  data = _sortBy(data, ['DaysLeft'])
-  legend = _uniq(_map(data, 'OrderType'))
-  dataByLegend = _groupBy(data, 'OrderType')
+  data = _sortBy(data, ['daysLeft'])
+  legend = _uniq(_map(data, 'orderType'))
+  dataByLegend = _groupBy(data, 'orderType')
   dataset = []
   series = []
 
   legend.forEach((value, index) => {
     dataset[index] = { source: dataByLegend[value] }
-    series[index] = defaultScatterSerial(index, value, '{@ProjectNO}', dimensions, 'RequestDate', 'ProjectNO')
+    series[index] = defaultScatterSerial(index, value, '{@projectNO}', dimensions, 'requestDate', 'projectNO')
   })
 }
 
-const setEchart = () => {
+function setEchart() {
   // data is ready,set echart option
-  eChart.setOption(
-    {
-      title: {
-        text: t('Label.Products to be delivered to customers') + ` [${props.site}]`,
-        left: 'center'
-      },
-      legend: defaultLegend,
-      toolbox: defaultToolbox(dimensions, data, t('Label.Products to be delivered to customers') + ` [${props.site}]`),
-      tooltip: defaultTooltip,
-      xAxis: defaultXAxisTime,
-      grid: [{ left: 40, right: 40, bottom: 50 }],
-      yAxis: [
-        {
-          type: 'category',
-          show: false
-        }
-      ],
-      dataZoom: defaultDataZoom('xy'),
-      dataset: dataset,
-      series: series
+  eChartOption = {
+    title: {
+      text: t('S.TODO_TO_BE_DELIVERED') + ` [${props.site}]`,
+      left: 'center'
     },
-    true
-  )
-}
-
-const resize = () => {
-  eChart.resize()
+    legend: defaultLegend,
+    toolbox: defaultToolbox(dimensions, data, t('S.TODO_TO_BE_DELIVERED') + ` [${props.site}]`),
+    xAxis: defaultXAxisTime,
+    grid: [{ left: 40, right: 40, bottom: 50 }],
+    yAxis: [
+      {
+        type: 'category',
+        show: false
+      }
+    ],
+    dataZoom: defaultDataZoom('xy'),
+    dataset: dataset,
+    series: series
+  }
 }
 
 // events
 onMounted(() => {
-  eChart = echarts.init(document.getElementById('EchartTodoDelivery'))
   doUpdate()
 })
 
-onBeforeUnmount(() => {
-  eChart.dispose()
+watch(props, (value, oldValue) => {
+  console.debug('watch:', oldValue, '--->', value)
+
+  doUpdate()
 })
-
-onActivated(() => {
-  // when use keep alive, must use activated/deactivated
-  window.addEventListener('resize', resize)
-  resize()
-})
-
-onDeactivated(() => {
-  // when use keep alive, must use activated/deactivated
-  window.removeEventListener('resize', resize)
-})
-
-watch(
-  // Don't use watchEffect, it run before Mounted.
-  () => [props.site],
-  (...newAndold) => {
-    // newAndold[1]:old
-    // newAndold[0]:new
-    console.debug('watch:' + newAndold[1] + ' ---> ' + newAndold[0])
-
-    doUpdate()
-  }
-)
 </script>

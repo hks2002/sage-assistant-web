@@ -1,96 +1,88 @@
+<!--
+* @Author                : Robert Huang<56649783@qq.com>
+* @CreatedDate           : 2023-06-17 22:26:00
+* @LastEditors           : Robert Huang<56649783@qq.com>
+* @LastEditDate          : 2023-08-28 22:13:40
+* @FilePath              : sage-assistant-web/src/components/customers/QCardCustomerInfo.vue
+* @CopyRight             : Dedienne Aerospace China ZhuHai
+-->
+
 <template>
   <q-card>
-    <template v-for="(info, index) in customerInfo" :key="info['CustomerCode']">
-      <q-item
-        class="text-h6 text-weight-bold q-pr-md q-pb-xs"
-        no-wrap
-        v-if="index === 0"
-      >
-        <q-icon
-          name="fas fa-address-book"
-          class="q-pr-md q-pt-xs"
-          color="teal"
-        />
-        {{ info['CustomerCode'] }}
-        {{ info['CustomerName0'] }}
-        {{ info['CustomerName1'] }}
+    <template v-for="(info, index) in customerInfo" :key="info['customerCode']">
+      <q-item class="text-h6 text-weight-bold q-pr-md q-pb-xs" no-wrap v-if="index === 0">
+        <q-icon name="fas fa-address-book" class="q-pr-md q-pt-xs" color="teal" />
+        {{ info['customerCode'] }}
+        {{ info['customerName0'] }}
+        {{ info['customerName1'] }}
       </q-item>
     </template>
-    <template v-for="info in customerInfo" :key="info['CustomerCode']">
+    <template v-for="info in customerInfo" :key="info['customerCode']">
       <q-item class="q-pt-xs q-pb-xs">
         <q-icon
           name="fas fa-phone"
           class="q-pr-md q-pt-xs"
           color="teal"
           v-if="
-            info['Tel0'] != ' ' ||
-            info['Tel1'] != ' ' ||
-            info['Tel2'] != ' ' ||
-            info['Tel3'] != ' ' ||
-            info['Tel4'] != ' ' ||
-            info['Mobile0'] != ' '
+            info['tel0'] != ' ' ||
+            info['tel1'] != ' ' ||
+            info['tel2'] != ' ' ||
+            info['tel3'] != ' ' ||
+            info['tel4'] != ' ' ||
+            info['mobile0'] != ' '
           "
         />
-        {{ info['Tel0'] }}
-        {{ info['Tel1'] }}
-        {{ info['Tel2'] }}
-        {{ info['Tel3'] }}
-        {{ info['Tel4'] }}
-        {{ info['Mobile0'] }}
-        <q-icon
-          name="fas fa-fax"
-          class="q-pr-md q-pl-md q-pt-xs"
-          color="teal"
-          v-if="info['Fax0'] != ' '"
-        />
-        {{ info['Fax0'] }}
+        {{ info['tel0'] }}
+        {{ info['tel1'] }}
+        {{ info['tel2'] }}
+        {{ info['tel3'] }}
+        {{ info['tel4'] }}
+        {{ info['mobile0'] }}
+        <q-icon name="fas fa-fax" class="q-pr-md q-pl-md q-pt-xs" color="teal" v-if="info['fax0'] != ' '" />
+        {{ info['fax0'] }}
 
         <q-icon
           name="fas fa-envelope"
           class="q-pr-md q-pl-md q-pt-xs"
           color="teal"
           v-if="
-            info['Email0'] != ' ' ||
-            info['Email1'] != ' ' ||
-            info['Email2'] != ' ' ||
-            info['Email3'] != ' ' ||
-            info['Email4'] != ' '
+            info['email0'] != ' ' ||
+            info['email1'] != ' ' ||
+            info['email2'] != ' ' ||
+            info['email3'] != ' ' ||
+            info['email4'] != ' '
           "
         />
-        {{ info['Email0'] }}
-        {{ info['Email1'] }}
-        {{ info['Email2'] }}
-        {{ info['Email3'] }}
-        {{ info['Email4'] }}
+        {{ info['email0'] }}
+        {{ info['email1'] }}
+        {{ info['email2'] }}
+        {{ info['email3'] }}
+        {{ info['email4'] }}
 
         <q-icon
           name="fas fa-map-marker"
           class="q-pr-md q-pl-md q-pt-xs"
           color="teal"
           v-if="
-            info['PostCode'] != ' ' ||
-            info['Contry'] != ' ' ||
-            info['State'] != ' ' ||
-            info['City'] != ' ' ||
-            info['Address0'] != ' ' ||
-            info['Address1'] != ' '
+            info['postCode'] != ' ' ||
+            info['country'] != ' ' ||
+            info['state'] != ' ' ||
+            info['city'] != ' ' ||
+            info['address0'] != ' ' ||
+            info['address1'] != ' '
           "
         />
-        {{ info['PostCode'] }}{{ info['Contry'] }} {{ info['State'] }}
-        {{ info['City'] }} {{ info['Address0'] }}{{ info['Address1'] }}
+        {{ info['postCode'] }}{{ info['country'] }} {{ info['state'] }} {{ info['city'] }} {{ info['address0']
+        }}{{ info['address1'] }}
 
         <q-icon
           name="fas fa-internet-explorer"
           class="q-pr-md q-pl-md q-pt-xs"
           color="teal"
-          v-if="info['Website'] != ' '"
+          v-if="info['website'] != ' '"
         />
-        <a
-          target="_blank"
-          :href="WebSiteUrl(info['Website'])"
-          v-if="info['Website'] != ' '"
-        >
-          {{ WebSiteUrl(info['Website']) }}
+        <a target="_blank" :href="WebSiteUrl(info['website'])" v-if="info['website'] != ' '">
+          {{ WebSiteUrl(info['website']) }}
         </a>
       </q-item>
     </template>
@@ -102,8 +94,10 @@
 
 <script setup>
 import { axiosGet } from '@/assets/axiosActions'
-import { notifyError } from 'assets/common'
+import { Notify } from 'quasar'
 import { onMounted, ref, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
+const { t } = useI18n()
 
 const props = defineProps({
   customerCode: String
@@ -121,13 +115,15 @@ const doUpdate = () => {
 
   showLoading.value = true
 
-  axiosGet('/Data/CustomerDetails?CustomerCode=' + props.customerCode)
+  axiosGet('/Data/CustomerDetails', { customerCode: props.customerCode })
     .then((response) => {
       customerInfo.value = response
     })
-    .catch((e) => {
-      console.error(e)
-      notifyError('Loading Customer Info Failed!')
+    .catch(() => {
+      Notify.create({
+        type: 'error',
+        message: t('W.LOADING') + t('{VAR_HOLD_WITH_SPACE}', t('S.CUSTOMER_INFO')) + t('W.FAILED')
+      })
     })
     .finally(() => {
       showLoading.value = false
@@ -147,16 +143,11 @@ onMounted(() => {
   doUpdate()
 })
 
-watch(
-  () => [props.customerCode],
-  (...newAndold) => {
-    // newAndold[1]:old
-    // newAndold[0]:new
-    console.debug('watch:' + newAndold[1] + ' ---> ' + newAndold[0])
+watch(props, (value, oldValue) => {
+  console.debug('watch:', oldValue, '--->', value)
 
-    doUpdate()
-  }
-)
+  doUpdate()
+})
 </script>
 <style lang="sass" scoped>
 .q-item

@@ -1,13 +1,14 @@
-/***
- * @Author         : Robert Huang<56649783@qq.com>
- * @Date           : 2022-03-25 11:01:23
- * @LastEditors    : Robert Huang<56649783@qq.com>
- * @LastEditTime   : 2022-05-28 23:04:03
- * @FilePath       : \web2\src\assets\echartsCfg.js
- * @CopyRight      : Dedienne Aerospace China ZhuHai
- */
+/*********************************************************************************************************************
+ * @Author                : Robert Huang<56649783@qq.com>                                                            *
+ * @CreatedDate           : 2022-03-25 11:01:00                                                                      *
+ * @LastEditors           : Robert Huang<56649783@qq.com>                                                            *
+ * @LastEditDate          : 2023-06-14 15:51:52                                                                      *
+ * @FilePath              : src/assets/echartsCfg.js                                                                 *
+ * @CopyRight             : Dedienne Aerospace China ZhuHai                                                          *
+ ********************************************************************************************************************/
+
 const echarts = require('echarts/lib/echarts')
-import { jsonToExcel, jsonToMultLine, jsonToTable } from 'assets/dataUtils.js'
+import { jsonToExcel, jsonToMultiLine, jsonToTable } from 'assets/dataUtils.js'
 import { BarChart, LineChart, PieChart, ScatterChart } from 'echarts/charts'
 import {
   DataZoomComponent,
@@ -20,7 +21,7 @@ import {
 import _cloneDeep from 'lodash/cloneDeep'
 import _get from 'lodash/get'
 import _merge from 'lodash/merge'
-import { date, Dialog } from 'quasar'
+import { Dialog, date } from 'quasar'
 
 echarts.use([
   GridComponent,
@@ -198,7 +199,7 @@ const defaultToolbox = function (headers, data, title) {
       },
       myTool2: {
         show: true,
-        title: 'Downlaod',
+        title: 'Download',
         icon: 'path://M4.7,22.9L29.3,45.5L54.7,23.4M4.6,43.6L4.6,58L53.8,58L53.8,43.6M29.2,45.1L29.2,0M4.7,35.9L29.3,45.5L54.7,35.4',
         onclick: () => {
           const timeStamp = Date.now()
@@ -226,14 +227,7 @@ const defaultEchartOption = {
   tooltip: defaultTooltip
 }
 
-const defaultLineSerial = function (
-  index,
-  value,
-  labelFormatter,
-  dimensions,
-  encodeX,
-  encodeY
-) {
+const defaultLineSerial = function (index, value, labelFormatter, dimensions, encodeX, encodeY) {
   return {
     type: 'line',
     datasetIndex: index,
@@ -245,7 +239,7 @@ const defaultLineSerial = function (
     },
     tooltip: {
       trigger: 'item',
-      formatter: (params) => jsonToMultLine(dimensions, params.data)
+      formatter: (params) => jsonToMultiLine(dimensions, params.data)
     },
     dimensions: dimensions,
     encode: {
@@ -254,14 +248,7 @@ const defaultLineSerial = function (
     }
   }
 }
-const defaultBarSerial = function (
-  index,
-  value,
-  labelFormatter,
-  dimensions,
-  encodeX,
-  encodeY
-) {
+const defaultBarSerial = function (index, value, labelFormatter, dimensions, encodeX, encodeY) {
   return {
     type: 'bar',
     datasetIndex: index,
@@ -273,7 +260,7 @@ const defaultBarSerial = function (
     },
     tooltip: {
       trigger: 'item',
-      formatter: (params) => jsonToMultLine(dimensions, params.data)
+      formatter: (params) => jsonToMultiLine(dimensions, params.data)
     },
     dimensions: dimensions,
     encode: {
@@ -283,14 +270,7 @@ const defaultBarSerial = function (
   }
 }
 
-const defaultScatterSerial = function (
-  index,
-  value,
-  labelFormatter,
-  dimensions,
-  encodeX,
-  encodeY
-) {
+const defaultScatterSerial = function (index, value, labelFormatter, dimensions, encodeX, encodeY) {
   return {
     type: 'scatter',
     datasetIndex: index,
@@ -302,7 +282,7 @@ const defaultScatterSerial = function (
     },
     tooltip: {
       trigger: 'item',
-      formatter: (params) => jsonToMultLine(dimensions, params.data)
+      formatter: (params) => jsonToMultiLine(dimensions, params.data)
     },
     dimensions: dimensions,
     encode: {
@@ -312,34 +292,11 @@ const defaultScatterSerial = function (
   }
 }
 
-const defaultBarStackedSerial = function (
-  index,
-  value,
-  labelFormatter,
-  dimensions,
-  encodeX,
-  encodeY
-) {
-  return mergerOption(
-    defaultBarSerial(
-      index,
-      value,
-      labelFormatter,
-      dimensions,
-      encodeX,
-      encodeY
-    ),
-    { stack: 'total' }
-  )
+const defaultBarStackedSerial = function (index, value, labelFormatter, dimensions, encodeX, encodeY) {
+  return mergerOption(defaultBarSerial(index, value, labelFormatter, dimensions, encodeX, encodeY), { stack: 'total' })
 }
 
-const DefaultPieSerial = function (
-  index,
-  labelFormatter,
-  dimensions,
-  summed,
-  encode
-) {
+const DefaultPieSerial = function (index, labelFormatter, dimensions, summed, encode) {
   return {
     type: 'pie',
     datasetIndex: index,
@@ -349,13 +306,7 @@ const DefaultPieSerial = function (
     },
     tooltip: {
       trigger: 'item',
-      formatter: (params) =>
-        _get(params.data, summed) +
-        '<br/>' +
-        encode +
-        ':' +
-        _get(params.data, encode) +
-        '<br/>'
+      formatter: (params) => _get(params.data, summed) + '<br/>' + encode + ':' + _get(params.data, encode) + '<br/>'
     },
     labelLine: {},
     dimensions: dimensions,
@@ -365,17 +316,8 @@ const DefaultPieSerial = function (
   }
 }
 
-const AttachedPieSerial = function (
-  index,
-  labelFormatter,
-  dimensions,
-  summed,
-  encode
-) {
-  return mergerOption(
-    DefaultPieSerial(index, labelFormatter, dimensions, summed, encode),
-    { center: ['88%', '50%'] }
-  )
+const AttachedPieSerial = function (index, labelFormatter, dimensions, summed, encode) {
+  return mergerOption(DefaultPieSerial(index, labelFormatter, dimensions, summed, encode), { center: ['88%', '50%'] })
 }
 
 function mergerOption(defaultOption, clientOption) {
@@ -398,6 +340,5 @@ export {
   defaultBarSerial,
   defaultBarStackedSerial,
   defaultScatterSerial,
-  mergerOption,
-  jsonToMultLine
+  mergerOption
 }

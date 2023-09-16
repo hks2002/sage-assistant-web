@@ -1,11 +1,12 @@
 <!--
- * @Author         : Robert Huang<56649783@qq.com>
- * @Date           : 2022-03-25 11:01:23
- * @LastEditors    : Robert Huang<56649783@qq.com>
- * @LastEditTime   : 2022-08-26 10:29:56
- * @FilePath       : \web2\src\layouts\MenuLink.vue
- * @CopyRight      : Dedienne Aerospace China ZhuHai
+* @Author                : Robert Huang<56649783@qq.com>
+* @CreatedDate           : 2022-03-25 11:01:00
+* @LastEditors           : Robert Huang<56649783@qq.com>
+* @LastEditDate          : 2023-06-22 19:55:05
+* @FilePath              : src/layouts/MenuLink.vue
+* @CopyRight             : Dedienne Aerospace China ZhuHai
 -->
+
 <template>
   <div>
     <q-separator v-if="split" />
@@ -18,10 +19,10 @@
 
         <q-item-section @click="showPages(children)">
           <q-item-label class="text-primary text-bold">
-            {{ $t(title) }}
+            {{ $t('{VAR_HOLD}', { VAR_HOLD: title }) }}
           </q-item-label>
           <q-item-label class="text-primary" caption>
-            {{ $t(caption) }}
+            {{ $t('{VAR_HOLD}', { VAR_HOLD: caption }) }}
           </q-item-label>
         </q-item-section>
       </template>
@@ -40,10 +41,10 @@
 
         <q-item-section>
           <q-item-label class="text-primary text-bold">
-            {{ $t(child.title) }}
+            {{ $t('{VAR_HOLD}', { VAR_HOLD: child.title }) }}
           </q-item-label>
           <q-item-label class="text-primary" caption>
-            {{ $t(child.caption) }}
+            {{ $t('{VAR_HOLD}', { VAR_HOLD: child.caption }) }}
           </q-item-label>
         </q-item-section>
       </q-item>
@@ -57,10 +58,10 @@
 
       <q-item-section>
         <q-item-label class="text-primary text-bold">
-          {{ $t(title) }}
+          {{ $t('{VAR_HOLD}', { VAR_HOLD: title }) }}
         </q-item-label>
         <q-item-label class="text-primary" caption>
-          {{ $t(caption) }}
+          {{ $t('{VAR_HOLD}', { VAR_HOLD: caption }) }}
         </q-item-label>
       </q-item-section>
     </q-item>

@@ -1,11 +1,12 @@
 <!--
- * @Author         : Robert Huang<56649783@qq.com>
- * @Date           : 2022-05-20 12:00:06
- * @LastEditors    : Robert Huang<56649783@qq.com>
- * @LastEditTime   : 2022-10-09 20:01:26
- * @FilePath       : \web2\src\components\.controls\QSelectAxios.vue
- * @CopyRight      : Dedienne Aerospace China ZhuHai
+* @Author                : Robert Huang<56649783@qq.com>
+* @CreatedDate           : 2022-05-20 12:00:00
+* @LastEditors           : Robert Huang<56649783@qq.com>
+* @LastEditDate          : 2023-08-27 21:03:43
+* @FilePath              : sage-assistant-web/src/controls/QSelectAxios.vue
+* @CopyRight             : Dedienne Aerospace China ZhuHai
 -->
+
 <!--
 If want to set value to one object prop, set optionValue to the name,
 without set it, the model value is an object.
@@ -33,7 +34,7 @@ Note: 'multiple' can't with 'fill-input', 'hide-selected'
   >
     <template v-slot:no-option>
       <q-item>
-        <q-item-section class="text-red"> No results </q-item-section>
+        <q-item-section class="text-red"> {{ $t('S.NO_RESULTS') }} </q-item-section>
       </q-item>
     </template>
   </q-select>
@@ -50,11 +51,11 @@ const props = defineProps({
   },
   optionLabel: {
     type: String,
-    required: false
+    required: true
   },
   optionValue: {
     type: String,
-    required: false
+    required: true
   },
   minQueryLen: {
     type: Number,
@@ -75,11 +76,7 @@ const filterFn = (inputVal, done, abort) => {
   let url = props.dataUrl
   const params = {}
 
-  if (props.optionLabel) {
-    params[props.optionLabel] = inputVal.toUpperCase()
-  } else {
-    url = url + inputVal.toUpperCase()
-  }
+  params[props.optionLabel] = inputVal.toUpperCase()
 
   axiosGet(url, params).then((data) => {
     options.value = data
@@ -102,17 +99,8 @@ const abortFilterFn = () => {
 }
 
 // Don't use watchEffect, it run before Mounted.
-watch(
-  () => [model.value],
-  (...newAndold) => {
-    // newAndold[1]:old
-    // newAndold[0]:new
-    if (typeof model.value === 'object') {
-      console.debug('watch:' + JSON.stringify(newAndold[1]) + ' ---> ' + JSON.stringify(newAndold[0]))
-    } else {
-      console.debug('watch:' + newAndold[1] + ' ---> ' + newAndold[0])
-    }
-  }
-)
+watch(props, (value, oldValue) => {
+  console.debug('watch:', oldValue, '--->', value)
+})
 </script>
 <style lang="sass"></style>

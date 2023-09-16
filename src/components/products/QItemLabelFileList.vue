@@ -1,3 +1,12 @@
+<!--
+* @Author                : Robert Huang<56649783@qq.com>
+* @CreatedDate           : 2023-06-23 00:16:00
+* @LastEditors           : Robert Huang<56649783@qq.com>
+* @LastEditDate          : 2023-09-08 22:14:45
+* @FilePath              : sage-assistant-web/src/components/products/QItemLabelFileList.vue
+* @CopyRight             : Dedienne Aerospace China ZhuHai
+-->
+
 <template>
   <q-item-label class="relative-position">
     <div class="q-gutter-sm">
@@ -6,29 +15,43 @@
         :key="file.ROWID"
         type="a"
         size="xs"
-        :icon="getDocIcon(file.DocType)"
-        @click="clickBtn(file.Path)"
+        :icon="getDocIcon(file.docType)"
+        @click="clickBtn(file.path)"
         dense
       >
-        <q-badge v-if="file.Cat === 'Drawing'" floating>D</q-badge>
-        <q-badge v-else-if="file.Cat === 'Manual'" floating>M</q-badge>
-        <q-badge v-else-if="file.Cat === 'Certificate'" floating>C</q-badge>
+        <q-badge v-if="file.cat === 'drawing'" floating>D</q-badge>
+        <q-badge v-else-if="file.cat === 'manual'" floating>M</q-badge>
+        <q-badge v-else-if="file.cat === 'certificate'" floating>C</q-badge>
         <q-badge v-else floating>?</q-badge>
-        <q-tooltip v-if="file.Cat === 'Drawing'" floating>Drawing:{{ file.File }}</q-tooltip>
-        <q-tooltip v-else-if="file.Cat === 'Manual'" floating>Manual:{{ file.File }}</q-tooltip>
-        <q-tooltip v-else-if="file.Cat === 'Certificate'" floating>Certificate:{{ file.File }}</q-tooltip>
-        <q-tooltip v-else floating>Unknown Category:{{ file.File }}</q-tooltip>
+        <q-tooltip v-if="file.cat === 'drawing'" floating>{{ t('W.DRAWING') }}:{{ file.file }}</q-tooltip>
+        <q-tooltip v-else-if="file.cat === 'manual'" floating>{{ t('W.MANUAL') }}:{{ file.file }}</q-tooltip>
+        <q-tooltip v-else-if="file.cat === 'certificate'" floating>{{ t('W.CERTIFICATE') }}:{{ file.file }}</q-tooltip>
+        <q-tooltip v-else floating>{{ t('S.UNKNOWN_CATEGORY') }}:{{ file.file }}</q-tooltip>
         <q-menu touch-position context-menu>
-          <q-btn icon="fas fa-trash-alt" color="teal" size="sm" @click="doDeleteFile(file.Path)" dense />
+          <q-btn
+            icon="fas fa-trash-alt"
+            color="teal"
+            size="sm"
+            v-if="isFromChina"
+            @click="doDeleteFile(file.path)"
+            dense
+          />
         </q-menu>
       </q-btn>
 
-      <q-btn v-if="pn" icon="fas fa-file-medical" color="teal" size="sm" dense @click="showFileUploader = true" />
+      <q-btn
+        v-if="pn && isFromChina"
+        icon="fas fa-file-medical"
+        color="teal"
+        size="sm"
+        dense
+        @click="showFileUploader = true"
+      />
     </div>
     <q-dialog v-model="showFileUploader">
       <q-card>
         <q-card-section>
-          <div class="text-h6">Choose the category of your files</div>
+          <div class="text-h6">{{ t('S.CHOOSE_CATEGORY_OF_FILE') }}</div>
         </q-card-section>
         <q-card-section class="q-pt-none">
           <div class="q-gutter-sm">
@@ -56,15 +79,18 @@
 </template>
 
 <script setup>
-import { axios } from '@/assets/axios'
-import { notifyError, notifySuccess } from 'assets/common'
+import { axiosGet } from '@/assets/axiosActions'
+import { Notify } from 'quasar'
 import { onMounted, ref, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
+const { t } = useI18n()
 
 const props = defineProps({
   pn: String,
   isActive: Boolean
 })
 
+const isFromChina = ref(false)
 const files = ref([])
 const showLoading = ref(false)
 const showFileUploader = ref(false)
@@ -110,30 +136,42 @@ const setUploadParams = (pn, cat) => {
 }
 
 const doDeleteFile = (path) => {
+  if (!isFromChina.value) {
+    return
+  }
+
   console.debug('deleteFile:' + path)
-  axios
-    .get('/Data/FileDelete?Path=' + path)
-    .then((response) => {
-      notifySuccess(response.data)
+  axiosGet('/Data/FileDelete', { Path: path })
+    .then((data) => {
+      Notify.create({ type: 'success', message: data })
     })
     .catch((e) => {
-      console.error(e)
-      notifyError('Delete' + path + ' Failed!')
+      Notify.create({
+        type: 'error',
+        message: t('W.DELETE') + t('{VAR_HOLD_WITH_SPACE}', path) + t('W.FAILED')
+      })
     })
 }
 
-const doUpdate = (pn) => {
+const doUpdate = () => {
   showLoading.value = true
 
-  axios
-    .get('/Data/AttachmentPath?Pn=' + pn)
-    .then((response) => {
-      files.value = response.data
+  Promise.all([
+    axiosGet('/Data/AttachmentPath', { Pn: props.pn }),
+    axiosGet('/Data/AttachmentPathForChina', { Pn: props.pn })
+  ])
+    .then((data) => {
+      files.value = data[0]
+      if (isFromChina.value) {
+        files.value.concat(data[1])
+      }
       showFileUploader.value = false
     })
     .catch((e) => {
-      console.error(e)
-      notifyError('Loading Attachment Failed!')
+      Notify.create({
+        type: 'error',
+        message: t('W.LOADING') + t('{VAR_HOLD_WITH_SPACE}', t('W.ATTACHMENT')) + t('W.FAILED')
+      })
     })
     .finally(() => {
       showLoading.value = false
@@ -141,19 +179,20 @@ const doUpdate = (pn) => {
 }
 
 onMounted(() => {
+  axiosGet('/Data/ClientIP').then((ip) => {
+    if (ip.startsWith('192.168.0') || ip.startsWith('192.168.8') || ip.startsWith('192.168.253')) {
+      isFromChina.value = true
+    }
+  })
+
   if (props.pn) {
-    doUpdate(props.pn)
+    doUpdate()
   }
 })
 
-// Don't use watchEffect, it run before Mounted.
-watch(
-  () => props.pn,
-  (newVal, oldVal) => {
-    console.debug('watch:' + oldVal + ' ---> ' + newVal)
-    if (newVal) {
-      doUpdate(newVal)
-    }
-  }
-)
+watch(props, (value, oldValue) => {
+  console.debug('watch:', oldValue, '--->', value)
+
+  doUpdate()
+})
 </script>

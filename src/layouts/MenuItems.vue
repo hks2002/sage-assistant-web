@@ -1,11 +1,12 @@
 <!--
- * @Author         : Robert Huang<56649783@qq.com>
- * @Date           : 2022-03-25 11:01:23
- * @LastEditors    : Robert Huang<56649783@qq.com>
- * @LastEditTime   : 2022-08-26 10:31:27
- * @FilePath       : \web2\src\layouts\MenuItems.vue
- * @CopyRight      : Dedienne Aerospace China ZhuHai
+* @Author                : Robert Huang<56649783@qq.com>
+* @CreatedDate           : 2022-03-25 11:01:00
+* @LastEditors           : Robert Huang<56649783@qq.com>
+* @LastEditDate          : 2023-09-06 03:12:22
+* @FilePath              : sage-assistant-web/src/layouts/MenuItems.vue
+* @CopyRight             : Dedienne Aerospace China ZhuHai
 -->
+
 <template>
   <q-scroll-area class="fit">
     <q-list>

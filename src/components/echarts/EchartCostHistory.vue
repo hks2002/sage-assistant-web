@@ -1,14 +1,15 @@
 <!--
- * @Author         : Robert Huang<56649783@qq.com>
- * @Date           : 2022-03-25 11:01:23
- * @LastEditors    : Robert Huang<56649783@qq.com>
- * @LastEditTime   : 2022-12-16 17:49:18
- * @FilePath       : \web2\src\components\echarts\EchartCostHistory.vue
- * @CopyRight      : Dedienne Aerospace China ZhuHai
+* @Author                : Robert Huang<56649783@qq.com>
+* @CreatedDate           : 2022-03-25 11:01:00
+* @LastEditors           : Robert Huang<56649783@qq.com>
+* @LastEditDate          : 2023-08-27 23:33:13
+* @FilePath              : sage-assistant-web/src/components/echarts/EchartCostHistory.vue
+* @CopyRight             : Dedienne Aerospace China ZhuHai
 -->
+
 <template>
   <q-item>
-    <div id="EchartCostHistory" style="height: 100%; width: 100%" />
+    <base-echart :e-chart-option="eChartOption" />
     <q-inner-loading :showing="showLoading">
       <q-spinner-ios size="50px" color="primary" />
     </q-inner-loading>
@@ -24,18 +25,18 @@ import {
   defaultToolbox,
   defaultTooltip,
   defaultXAxisTime,
-  defaultYAxisUSD,
-  echarts
+  defaultYAxisUSD
 } from '@/assets/echartsCfg.js'
-import { notifyError } from 'assets/common'
 import _forEach from 'lodash/forEach'
 import _get from 'lodash/get'
 import _groupBy from 'lodash/groupBy'
 import _map from 'lodash/map'
 import _sumBy from 'lodash/sumBy'
 import _uniq from 'lodash/uniq'
-import { onActivated, onBeforeUnmount, onDeactivated, onMounted, ref, watch } from 'vue'
+import { Notify } from 'quasar'
+import { onMounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
+import BaseEchart from './BaseEchart.vue'
 
 const props = defineProps({
   pnRoot: String
@@ -46,7 +47,7 @@ const { t } = useI18n()
 const showLoading = ref(false)
 
 // echart vars
-let eChart = null
+let eChartOption = {}
 let data = []
 let legend = []
 let dataByLegend = []
@@ -55,27 +56,27 @@ let dataSumBySiteProject = []
 let dataset = []
 let series = []
 const dimensions = [
-  'PurchaseSite',
-  'ProjectNO',
-  'OrderPN',
-  'OrderDate',
-  'PurchaseNO',
-  'Line',
-  'VendorCode',
-  'VendorName',
-  'PurchasePN',
-  'Description',
-  'Qty',
-  'Currency',
-  'NetPrice',
+  'purchaseSite',
+  'projectNO',
+  'orderPN',
+  'orderDate',
+  'purchaseNO',
+  'line',
+  'vendorCode',
+  'vendorName',
+  'purchasePN',
+  'description',
+  'qty',
+  'currency',
+  'netPrice',
   'USD',
-  'Rate'
+  'rate'
 ]
-const miniDimensions = ['PurchaseSite', 'ProjectNO', 'OrderPN', 'OrderDate', 'USD']
+const miniDimensions = ['purchaseSite', 'projectNO', 'orderPN', 'orderDate', 'USD']
 let dataZoomStartValue = '1900-01-01'
 
 // actions
-const doUpdate = () => {
+function doUpdate() {
   if (!props.pnRoot) return
 
   showLoading.value = true
@@ -87,118 +88,91 @@ const doUpdate = () => {
       setEchart()
     })
     .catch((e) => {
-      console.error(e)
-      notifyError(t('Loading Cost History Failed!'))
+      Notify.create({
+        type: 'error',
+        message: t('W.LOADING') + t('{VAR_HOLD_WITH_SPACE}', t('S.PURCHASE_COST_HISTORY')) + t('W.FAILED')
+      })
     })
     .finally(() => {
       showLoading.value = false
     })
 }
 
-const prepareData = () => {
+function prepareData() {
   const len = data.length
   if (len >= 20) {
-    dataZoomStartValue = _get(data[len - 20], 'OrderDate')
+    dataZoomStartValue = _get(data[len - 20], 'orderDate')
   } else if (len > 0) {
-    dataZoomStartValue = _get(data[0], 'OrderDate')
+    dataZoomStartValue = _get(data[0], 'orderDate')
   }
   dataSumBySiteProject = []
   dataset = []
   series = []
 
   dataBySiteProject = _groupBy(data, function (n) {
-    return _get(n, 'PurchaseSite') + _get(n, 'ProjectNO')
+    return _get(n, 'purchaseSite') + _get(n, 'projectNO')
   })
   _forEach(dataBySiteProject, (value) => {
     const o = {}
-    Object.defineProperty(o, 'PurchaseSite', {
+    Object.defineProperty(o, 'purchaseSite', {
       enumerable: true,
-      value: _get(value[0], 'PurchaseSite')
+      value: _get(value[0], 'purchaseSite')
     })
-    Object.defineProperty(o, 'ProjectNO', {
+    Object.defineProperty(o, 'projectNO', {
       enumerable: true,
-      value: _get(value[0], 'ProjectNO')
+      value: _get(value[0], 'projectNO')
     })
-    Object.defineProperty(o, 'OrderPN', {
+    Object.defineProperty(o, 'orderPN', {
       enumerable: true,
-      value: _get(value[0], 'OrderPN')
+      value: _get(value[0], 'orderPN')
     })
-    Object.defineProperty(o, 'OrderDate', {
+    Object.defineProperty(o, 'orderDate', {
       enumerable: true,
-      value: _get(value[0], 'OrderDate')
+      value: _get(value[0], 'orderDate')
     })
     Object.defineProperty(o, 'USD', {
       enumerable: true,
-      value: _sumBy(value, 'USD')
+      value: _sumBy(value, 'USD').toFixed(0)
     })
     dataSumBySiteProject.push(o)
   })
-  legend = _uniq(_map(data, 'PurchaseSite'))
-  dataByLegend = _groupBy(dataSumBySiteProject, 'PurchaseSite')
+  legend = _uniq(_map(data, 'purchaseSite'))
+  dataByLegend = _groupBy(dataSumBySiteProject, 'purchaseSite')
 
   _forEach(legend, (value, index) => {
     dataset[index] = { source: dataByLegend[value] }
-    series[index] = defaultLineSerial(index, value, '{@USD} USD', miniDimensions, 'OrderDate', 'USD')
+    series[index] = defaultLineSerial(index, value, '{@USD} USD', miniDimensions, 'orderDate', 'USD')
   })
 }
 
-const setEchart = () => {
+function setEchart() {
   // data is ready,set echart option
-  eChart.setOption(
-    {
-      title: {
-        text: t('Label.Sales Order Cost History'),
-        // subtext: t('Label.Currency Rate Data From State Administration of Foreign Exchange'),
-        left: 'center'
-      },
-      legend: defaultLegend,
-      grid: [{ left: '5%', right: '25%' }],
-      toolbox: defaultToolbox(dimensions, data, t('Label.Sales Order Cost History')),
-      tooltip: defaultTooltip,
-      dataZoom: defaultDataZoom(dataZoomStartValue),
-      xAxis: defaultXAxisTime,
-      yAxis: defaultYAxisUSD,
-      dataset: dataset,
-      series: series
+  eChartOption = {
+    title: {
+      text: t('S.PURCHASE_COST_HISTORY'),
+      // subtext: t(''),
+      left: 'center'
     },
-    true
-  )
-}
-
-const resize = () => {
-  eChart.resize()
+    legend: defaultLegend,
+    grid: [{ left: '5%', right: '5%' }],
+    toolbox: defaultToolbox(dimensions, data, t('S.PURCHASE_COST_HISTORY')),
+    tooltip: defaultTooltip,
+    dataZoom: defaultDataZoom(dataZoomStartValue),
+    xAxis: defaultXAxisTime,
+    yAxis: defaultYAxisUSD,
+    dataset: dataset,
+    series: series
+  }
 }
 
 // events
 onMounted(() => {
-  eChart = echarts.init(document.getElementById('EchartCostHistory'))
   doUpdate()
 })
 
-onBeforeUnmount(() => {
-  eChart.dispose()
+watch(props, (value, oldValue) => {
+  console.debug('watch:', oldValue, '--->', value)
+
+  doUpdate()
 })
-
-onActivated(() => {
-  // when use keep alive, must use activated/deactivated
-  window.addEventListener('resize', resize)
-  resize()
-})
-
-onDeactivated(() => {
-  // when use keep alive, must use activated/deactivated
-  window.removeEventListener('resize', resize)
-})
-
-watch(
-  // Don't use watchEffect, it run before Mounted.
-  () => [props.pnRoot],
-  (...newAndold) => {
-    // newAndold[1]:old
-    // newAndold[0]:new
-    console.debug('watch:' + newAndold[1] + ' ---> ' + newAndold[0])
-
-    doUpdate()
-  }
-)
 </script>

@@ -1,12 +1,21 @@
+<!--
+* @Author                : Robert Huang<56649783@qq.com>
+* @CreatedDate           : 2023-06-17 23:13:00
+* @LastEditors           : Robert Huang<56649783@qq.com>
+* @LastEditDate          : 2023-09-03 00:14:21
+* @FilePath              : sage-assistant-web/src/components/stock/QMarkupTableStockSummary.vue
+* @CopyRight             : Dedienne Aerospace China ZhuHai
+-->
+
 <template>
   <q-markup-table dense bordered class="col-grow">
     <thead style="position: sticky; top: 0px; z-index: 1">
       <tr>
         <td colspan="2" class="bg-teal text-white shadow-2 col-grow">
-          {{ $t('Stock count result of {site}', { site: site }) }}, {{ $t('Total Qty') }}:{{ S2N(sumQty, 0) }}
-          {{ $t('Total cost') }}:{{ S2N(sumCost) }}, {{ $t('Products Qty') }}:{{ S2N(sumProductQty, 0) }}
-          {{ $t('Products cost') }}:{{ S2N(sumProductCost) }}, {{ $t('Others Qty') }}:{{ S2N(sumOtherQty, 0) }}
-          {{ $t('Others cost') }}:{{ S2N(sumOtherCost) }}
+          {{ $t('S.STOCK_COUNT_RESULT {SITE}', { SITE: site }) }}, {{ $t('S.TOTAL_QTY') }}:{{ S2N(sumQty, 0) }}
+          {{ $t('S.TOTAL_COST') }}:{{ S2N(sumCost) }}, {{ $t('S.PRODUCTS_QTY') }}:{{ S2N(sumProductQty, 0) }}
+          {{ $t('S.PRODUCTS_COST') }}:{{ S2N(sumProductCost) }}, {{ $t('S.OTHERS_QTY') }}:{{ S2N(sumOtherQty, 0) }}
+          {{ $t('S.OTHERS_COST') }}:{{ S2N(sumOtherCost) }}
           <q-btn dense flat text-color="indigo-7" icon="fas fa-download" @click="download()" />
         </td>
       </tr>
@@ -29,11 +38,11 @@
               @click="showHistory(subitem['PN'])"
             >
               <q-tooltip>
-                {{ subitem['Description'] }}
-                <div v-if="subitem['OptionPN']">{{ $t('Option PN') }}:{{ subitem['OptionPN'] }}</div>
+                {{ subitem['description'] }}
+                <div v-if="subitem['optionPN']">{{ $t('S.OPTIONAL_PN') }}:{{ subitem['optionPN'] }}</div>
               </q-tooltip>
-              <span>{{ subitem['PN'] }}[{{ subitem['Location'] }}:{{ subitem['Qty'] }}]</span
-              ><span v-if="false">{{ [subitem['Cost']] }}</span>
+              <span>{{ subitem['PN'] }}[{{ subitem['location'] }}:{{ subitem['qty'] }}]</span
+              ><span v-if="false">{{ [subitem['cost']] }}</span>
             </div>
           </div>
         </td>
@@ -47,13 +56,12 @@
 
 <script setup>
 import { axiosGet } from '@/assets/axiosActions'
-import { ebus } from '@/assets/ebus'
 import { jsonToExcel, jsonToTable } from 'assets/dataUtils'
 import _forEach from 'lodash/forEach'
 import _groupBy from 'lodash/groupBy'
 import _sumBy from 'lodash/sumBy'
-import { date, Dialog, LocalStorage } from 'quasar'
-import { onBeforeUnmount, onMounted, ref, watch } from 'vue'
+import { Dialog, LocalStorage, date } from 'quasar'
+import { inject, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 const props = defineProps({
   PNfilter: {
@@ -65,6 +73,7 @@ const props = defineProps({
 
 // common vars
 const { t } = useI18n()
+const ebus = inject('ebus')
 const showLoading = ref(false)
 const site = ref(LocalStorage.getItem('site'))
 
@@ -85,30 +94,30 @@ const { formatDate } = date
 const doUpdate = () => {
   showLoading.value = true
 
-  axiosGet('/Data/StockSummary?Site=' + site.value)
+  axiosGet('/Data/StockSummary', { site: site.value })
     .then((response) => {
       data = response
       dataByFirstChar.value = _groupBy(data, 'A')
-      sumQty.value = _sumBy(data, 'Qty')
-      sumCost.value = _sumBy(data, 'Cost')
+      sumQty.value = _sumBy(data, 'qty')
+      sumCost.value = _sumBy(data, 'cost')
       sumProductQty.value = _sumBy(data, function (o) {
-        if (o.G === 'P') {
-          return o.Qty
+        if (o['G'] === 'P') {
+          return o['qty']
         }
       })
       sumProductCost.value = _sumBy(data, function (o) {
-        if (o.G === 'P') {
-          return o.Cost
+        if (o['G'] === 'P') {
+          return o['cost']
         }
       })
       sumOtherQty.value = _sumBy(data, function (o) {
-        if (o.G !== 'P') {
-          return o.Qty
+        if (o['G'] !== 'P') {
+          return o['qty']
         }
       })
       sumOtherCost.value = _sumBy(data, function (o) {
-        if (o.G !== 'P') {
-          return o.Cost
+        if (o['G'] !== 'P') {
+          return o['cost']
         }
       })
     })
@@ -196,15 +205,9 @@ onBeforeUnmount(() => {
   ebus.off('changeSite')
 })
 
-// Don't use watchEffect, it run before Mounted.
-watch(
-  () => [props.PNfilter],
-  (...newAndold) => {
-    // newAndold[1]:old
-    // newAndold[0]:new
-    console.debug('watch:' + newAndold[1] + ' ---> ' + newAndold[0])
-    doUpdate()
-  }
-)
+watch(props, (value, oldValue) => {
+  console.debug('watch:', oldValue, '--->', value)
+  doUpdate()
+})
 </script>
 <style lang="sass" scoped></style>

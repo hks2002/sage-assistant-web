@@ -1,43 +1,48 @@
+<!--
+* @Author                : Robert Huang<56649783@qq.com>
+* @CreatedDate           : 2023-06-22 20:58:00
+* @LastEditors           : Robert Huang<56649783@qq.com>
+* @LastEditDate          : 2023-08-28 22:13:56
+* @FilePath              : sage-assistant-web/src/components/customers/QMarkupTableCustomerOpenItems.vue
+* @CopyRight             : Dedienne Aerospace China ZhuHai
+-->
+
 <template>
-  <q-markup-table
-    dense
-    v-if="customerOpenItems.length > 0"
-    style="height: 250px"
-  >
+  <q-markup-table dense v-if="customerOpenItems.length > 0" style="height: 250px">
     <thead style="position: sticky; top: 0px; z-index: 1">
       <tr>
         <td colspan="11" class="bg-teal text-h6 text-white shadow-2">
-          {{ $t('OpenItems') }}({{ $t('All') }}-{{ customerOpenItems.length }})
+          {{ $t('S.OPEN_ITEMS') }}({{ $t('W.ALL') }}-{{ customerOpenItems.length }})
           <q-btn dense flat icon="fas fa-download" @click="download()" />
         </td>
       </tr>
       <tr class="bg-primary text-white">
         <th class="text-center text-caption">#</th>
-        <th class="text-left">Site</th>
-        <th class="text-left">CustomerCode</th>
-        <th class="text-left">OrderNO</th>
-        <th class="text-left">ProjectNO</th>
-        <th class="text-left">PN</th>
-        <th class="text-left">Description</th>
-        <th class="text-center">ShipDate</th>
-        <th class="text-center">DemandDate</th>
-        <th class="text-center">OrderDate</th>
-        <th class="text-center">DaysDelay</th>
+        <th class="text-left">{{ $t('F.Site') }}</th>
+        <th class="text-left">{{ $t('F.CustomerCode') }}</th>
+        <th class="text-left">{{ $t('F.OrderNO') }}</th>
+        <th class="text-left">{{ $t('F.ProjectNO') }}</th>
+        <th class="text-left">{{ $t('F.PN') }}</th>
+        <th class="text-left">{{ $t('F.Description') }}</th>
+        <th class="text-center">{{ $t('F.ShipDate') }}</th>
+        <th class="text-center">{{ $t('F.DemandDate') }}</th>
+        <th class="text-center">{{ $t('F.OrderDate') }}</th>
+        <th class="text-center">{{ $t('F.DaysDelay') }}</th>
       </tr>
     </thead>
     <tbody>
       <tr v-for="(item, index) in customerOpenItems" :key="index">
         <td class="text-center">{{ index }}</td>
-        <td>{{ item['Site'] }}</td>
-        <td>{{ item['CustomerCode'] }}</td>
-        <td>{{ item['OrderNO'] }}</td>
-        <td>{{ item['ProjectNO'] }}</td>
+        <td>{{ item['site'] }}</td>
+        <td>{{ item['customerCode'] }}</td>
+        <td>{{ item['orderNO'] }}</td>
+        <td>{{ item['projectNO'] }}</td>
         <td>{{ item['PN'] }}</td>
-        <td>{{ item['Description'] }}</td>
-        <td class="text-center">{{ item['ShipDate'] }}</td>
-        <td class="text-center">{{ item['DemandDate'] }}</td>
-        <td class="text-center">{{ item['OrderDate'] }}</td>
-        <td class="text-center">{{ item['DaysDelay'] }}</td>
+        <td>{{ item['description'] }}</td>
+        <td class="text-center">{{ item['shipDate'] }}</td>
+        <td class="text-center">{{ item['demandDate'] }}</td>
+        <td class="text-center">{{ item['orderDate'] }}</td>
+        <td class="text-center">{{ item['daysDelay'] }}</td>
       </tr>
     </tbody>
   </q-markup-table>
@@ -66,14 +71,11 @@ const customerOpenItems = ref([])
 const doUpdate = () => {
   showLoading.value = true
 
-  axiosGet(
-    '/Data/CustomerOpenItems?CustomerCode=' +
-      props.customerCode +
-      '&DateFrom=' +
-      props.dateFrom +
-      '&DateTo=' +
-      props.dateTo
-  )
+  axiosGet('/Data/CustomerOpenItems', {
+    customerCode: props.customerCode,
+    DateFrom: props.dateFrom,
+    dateTo: props.dateTo
+  })
     .then((response) => {
       customerOpenItems.value = response
     })
@@ -84,22 +86,18 @@ const doUpdate = () => {
 
 const download = () => {
   const header = [
-    'Site',
-    'CustomerCode',
-    'OrderNO',
-    'ProjectNO',
+    'site',
+    'customerCode',
+    'orderNO',
+    'projectNO',
     'PN',
-    'Description',
-    'ShipDate',
-    'DemandDate',
-    'OrderDate',
-    'DaysDelay'
+    'description',
+    'shipDate',
+    'demandDate',
+    'orderDate',
+    'daysDelay'
   ]
-  jsonToExcel(
-    header,
-    customerOpenItems.value,
-    t('{customerCode} OpenItems', { customerCode: props.customerCode })
-  )
+  jsonToExcel(header, customerOpenItems.value, t('{customerCode} OpenItems', { customerCode: props.customerCode }))
 }
 
 // events
@@ -107,16 +105,9 @@ onMounted(() => {
   doUpdate()
 })
 
-// Don't use watchEffect, it run before Mounted.
-watch(
-  () => [props.customerCode, props.dateFrom, props.dateTo],
-  (...newAndold) => {
-    // newAndold[1]:old
-    // newAndold[0]:new
-    console.debug('watch:' + newAndold[1] + ' ---> ' + newAndold[0])
-    // customerCode must not be null
+watch(props, (value, oldValue) => {
+  console.debug('watch:', oldValue, '--->', value)
 
-    doUpdate()
-  }
-)
+  doUpdate()
+})
 </script>

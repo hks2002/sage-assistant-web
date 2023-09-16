@@ -1,10 +1,19 @@
+<!--
+* @Author                : Robert Huang<56649783@qq.com>
+* @CreatedDate           : 2023-06-23 01:50:00
+* @LastEditors           : Robert Huang<56649783@qq.com>
+* @LastEditDate          : 2023-08-14 17:01:48
+* @FilePath              : sage-assistant-web/src/pages/FapiaoPage.vue
+* @CopyRight             : Dedienne Aerospace China ZhuHai
+-->
+
 <template>
   <q-page class="row q-gutter-sm q-pa-sm">
     <q-card flat class="col-6">
       <q-card-section class="row q-gutter-sm q-px-sm" v-if="isAuthorized('GESSIH')">
         <QSelectAxiosVue
           data-url="/Fapiao/Lbdm?Lbdm="
-          :label="$t('发票代码')"
+          :label="$t('F.FAPIAO_CODE')"
           input-style="font-weight:bolder;font-size:25px;text-transform:uppercase"
           popup-content-style="font-weight:bold;font-size:25px"
           popup-content-class="text-secondary"
@@ -14,7 +23,7 @@
         />
         <QSelectAxiosVue
           data-url="/Fapiao/Fphm?Fphm="
-          :label="$t('发票号码')"
+          :label="$t('F.FAPIAO_NUMBER')"
           input-style="font-weight:bolder;font-size:25px;text-transform:uppercase"
           popup-content-style="font-weight:bold;font-size:25px"
           popup-content-class="text-secondary"
@@ -23,14 +32,14 @@
           @update:model-value="searchFapiao"
         />
         <q-btn dense icon="translate" color="primary" label="OCR" />
-        <q-toggle v-model="isChecked" color="primary" :label="$t('Checked')" />
+        <q-toggle v-model="isChecked" color="primary" :label="$t('F.FAPIAO_CHECKED')" />
         <q-input
           dense
           outlined
           debounce="1000"
           mask="date"
           type="date"
-          :label="$t('Check Date')"
+          :label="$t('F.FAPIAO_CHECK_DATE')"
           v-model="FapiaoHeader.checkDate"
         />
       </q-card-section>
@@ -219,7 +228,7 @@
       <q-card-section class="row" v-if="isAuthorized('GESSIH')">
         <QSelectAxiosVue
           data-url="/Data/InvoiceNO?InvoiceNO="
-          :label="$t('InvoiceNO')"
+          :label="$t('F.InvoiceNO')"
           input-style="font-weight:bolder;font-size:25px;text-transform:uppercase"
           popup-content-style="font-weight:bold;font-size:25px"
           popup-content-class="text-secondary"
@@ -233,35 +242,35 @@
       <q-card-section class="q-pa-none">
         <q-list dense>
           <q-item v-ripple>
-            <q-item-section> CreateUser </q-item-section>
+            <q-item-section> {{ t('F.CreateUser') }} </q-item-section>
             <q-item-section>
               {{ InvoiceHeader.CreateUser }}
             </q-item-section>
-            <q-item-section> CreateDate </q-item-section>
+            <q-item-section> {{ $t('F.CreateDate') }} </q-item-section>
             <q-item-section>
               {{ InvoiceHeader.CreateDate }}
             </q-item-section>
-            <q-item-section> Status </q-item-section>
+            <q-item-section> {{ $t('F.Status') }} </q-item-section>
             <q-item-section>
               {{ InvoiceHeader.InvoiceStatus }}
             </q-item-section>
           </q-item>
           <q-item v-ripple>
-            <q-item-section> Fapiao </q-item-section>
+            <q-item-section> {{ $t('F.Fapiao') }} </q-item-section>
             <q-item-section>
               {{ InvoiceHeader.FaPiao }}
             </q-item-section>
-            <q-item-section> Currency </q-item-section>
+            <q-item-section> {{ $t('F.Currency') }} </q-item-section>
             <q-item-section>
               {{ InvoiceHeader.Currency }}
             </q-item-section>
-            <q-item-section> Rate </q-item-section>
+            <q-item-section> {{ $t('F.Rate') }} </q-item-section>
             <q-item-section>
               {{ InvoiceHeader.CurrRate }}
             </q-item-section>
           </q-item>
           <q-item v-ripple>
-            <q-item-section> AmountNoTax </q-item-section>
+            <q-item-section> {{ $t('F.AmountNoTax') }} </q-item-section>
             <q-item-section
               :class="
                 notMatchClass(NMN(InvoiceHeader.AmountTaxNotInclude, InvoiceHeader.CurrRate), S2N(FapiaoHeader.hjje))
@@ -269,13 +278,13 @@
             >
               {{ S2N(InvoiceHeader.AmountTaxNotInclude) }}
             </q-item-section>
-            <q-item-section> AmountTax </q-item-section>
+            <q-item-section> {{ $t('F.AmountTax') }} </q-item-section>
             <q-item-section
               :class="notMatchClass(NMN(InvoiceHeader.AmountTax, InvoiceHeader.CurrRate), S2N(FapiaoHeader.hjse))"
             >
               {{ S2N(InvoiceHeader.AmountTax) }}
             </q-item-section>
-            <q-item-section> AmountTaxInclude </q-item-section>
+            <q-item-section> {{ $t('F.AmountTaxInclude') }} </q-item-section>
             <q-item-section
               :class="
                 notMatchClass(
@@ -288,7 +297,7 @@
             </q-item-section>
           </q-item>
           <q-item>
-            <q-item-section side> Note </q-item-section>
+            <q-item-section side> {{ $t('F.Note') }} </q-item-section>
             <q-item-section>
               {{ InvoiceHeader.Note }}
             </q-item-section>
@@ -298,14 +307,14 @@
         <q-separator inset />
         <q-list dense>
           <q-item v-ripple>
-            <q-item-section side> Customer </q-item-section>
+            <q-item-section side> {{ $t('F.Customer') }} </q-item-section>
             <q-item-section>
               {{ InvoiceHeader.Customer }}
             </q-item-section>
           </q-item>
           <q-item v-ripple> </q-item>
           <q-item v-ripple>
-            <q-item-section side> Address </q-item-section>
+            <q-item-section side> {{ $t('F.Address') }} </q-item-section>
             <q-item-section>
               {{ InvoiceHeader.Address }}
             </q-item-section>
@@ -322,15 +331,15 @@
         <q-markup-table dense class="col-4">
           <thead>
             <tr>
-              <th class="text-left">Line</th>
-              <th class="text-left">Description</th>
-              <th class="text-left">PN</th>
-              <th class="text-center">Unit</th>
-              <th class="text-center">Qty</th>
-              <th class="text-right">NetPrice</th>
-              <th class="text-right">AmountNoTax</th>
-              <th class="text-center">TaxRate</th>
-              <th class="text-right">AmountTax</th>
+              <th class="text-left">{{ $t('F.Line') }}</th>
+              <th class="text-left">{{ $t('F.Description') }}</th>
+              <th class="text-left">{{ $t('F.PN') }}</th>
+              <th class="text-center">{{ $t('F.Unit') }}</th>
+              <th class="text-center">{{ $t('F.Qty') }}</th>
+              <th class="text-right">{{ $t('F.NetPrice') }}</th>
+              <th class="text-right">{{ $t('F.AmountNoTax') }}</th>
+              <th class="text-center">{{ $t('F.TaxRate') }}</th>
+              <th class="text-right">{{ $t('F.AmountTax') }}</th>
             </tr>
           </thead>
           <tbody>
@@ -368,7 +377,7 @@
 <script setup>
 import { isAuthorized } from '@/assets/auth'
 import { axiosGet } from '@/assets/axiosActions'
-import QSelectAxiosVue from '@/components/.controls/QSelectAxios.vue'
+import QSelectAxiosVue from '@/controls/QSelectAxios.vue'
 import { computed, ref, toRaw } from 'vue'
 
 // common vars
@@ -462,7 +471,7 @@ const doUpdateFapiaoHeader = async (withLbdm) => {
 
   axiosGet(url)
     .then((response) => {
-      // Fapiao aways be array, even on recorder
+      // Fapiao always be array, even on recorder
       if (response.length > 0) {
         FapiaoHeader.value = response[0] // Only one
       }

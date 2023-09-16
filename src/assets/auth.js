@@ -1,78 +1,70 @@
-/***
- * @Author         : Robert Huang<56649783@qq.com>
- * @Date           : 2022-03-25 11:01:23
- * @LastEditors    : Robert Huang<56649783@qq.com>
- * @LastEditTime   : 2022-05-28 23:02:52
- * @FilePath       : \web2\src\assets\auth.js
- * @CopyRight      : Dedienne Aerospace China ZhuHai
- */
-import { axios } from '@/assets/axios'
-import { axiosGet } from '@/assets/axiosActions'
-import { notifyError } from '@/assets/common'
+/*********************************************************************************************************************
+ * @Author                : Robert Huang<56649783@qq.com>                                                            *
+ * @CreatedDate           : 2022-03-25 11:01:00                                                                      *
+ * @LastEditors           : Robert Huang<56649783@qq.com>                                                            *
+ * @LastEditDate          : 2023-09-06 03:14:21                                                                      *
+ * @FilePath              : sage-assistant-web/src/assets/auth.js                                                    *
+ * @CopyRight             : Dedienne Aerospace China ZhuHai                                                          *
+ ********************************************************************************************************************/
+
 import { SessionStorage } from 'quasar'
+import { axiosPost } from './axiosActions'
 
-const setAuthority = (json) => {
-  const str = JSON.stringify(json)
-  const authorizations = str.match(/sessions\?f=([A-Z]+)/g)
-  for (let i = 0; i < authorizations.length; ++i) {
-    authorizations[i] = authorizations[i].replace('sessions?f=', '')
-  }
-  SessionStorage.set('authorizations', authorizations)
-}
-
-const isAuthorised = (fun) => {
+/**
+ * Check if the user has the authority to access the function
+ * @param {*} fun function code, such as 'GESSOH'
+ * @returns
+ */
+const isAuthorized = (fun) => {
   const authorizations = SessionStorage.getItem('authorizations')
   if (!authorizations) return false
 
   const index = authorizations.findIndex((auth) => {
     return auth === fun
   })
-  if (index > -1) {
-    return true
-  } else {
-    return false
-  }
-}
-
-const doReLogin = async () => {
-  const token = SessionStorage.getItem('authorization')
-  if (!token) return Promise.resolve(false)
-
-  return axios.post('/auth/login/submit', {}, { headers: { authorization: token, accept: 'application/json' } }).then(
-    (response) => {
-      return response.status === 200 ? true : false
-    },
-    (error) => {
-      notifyError(error.response.data.$diagnoses[0].$message)
-      return false
-    }
-  )
+  return index > -1 ? true : false
 }
 
 const fetchUserProfiles = async () => {
   // post must have {}, if data is empty, otherwise forbidden
   // sage return 201 status, don't use axiosPost
-  await axios
-    .post('/api1/syracuse/collaboration/syracuse/userProfiles/$template/$workingCopies', {})
+  const token = SessionStorage.getItem('authorization')
+  if (!token) return Promise.reject()
+  //const nty = Notify.create({ type: 'ongoing', message: t('S.LOAD_PROFILE') })
+
+  return axiosPost('/Data/Profile', {})
     .then((response) => {
-      const data = response.data
-      const userProfiles = {}
-      userProfiles.userName = `${data.user.firstName} ${data.user.lastName}`
-      userProfiles.userInfo = `${data.user.firstName} ${data.user.lastName}(${data.user.email})`
-      userProfiles.sageInfo = `${data.productName} ${data.selectedEndpoint.description}`
-      userProfiles.userId = data.user.$uuid
-      userProfiles.roleId = data.selectedRole.$uuid
-      userProfiles.locale = data.selectedLocale.code
-      userProfiles.localeDesc = data.selectedLocale.description
-      userProfiles.endpointId = data.selectedEndpoint.$uuid
-      SessionStorage.set('userProfiles', userProfiles)
+      if (response.success) {
+        SessionStorage.set('userProfiles', response.profile)
+        return Promise.resolve(response.profile)
+      } else {
+        return Promise.reject()
+      }
+    })
+    .finally(() => {
+      //nty()
     })
 }
 
 const fetchAuthorityData = async () => {
-  await axiosGet("/api1/syracuse/collaboration/syracuse/pages('x3.erp.EXPLOIT.home.$navigation')").then((response) => {
-    setAuthority(response)
-  })
+  // post must have {}, if data is empty, otherwise forbidden
+  // sage return 201 status, don't use axiosPost
+  const token = SessionStorage.getItem('authorization')
+  if (!token) return Promise.reject()
+  //const nty = Notify.create({ type: 'ongoing', message: t('S.LOAD_AUTHORITY') })
+
+  return axiosPost('/Data/Function', {})
+    .then((response) => {
+      if (response.success) {
+        SessionStorage.set('authorizations', response.functions)
+        return Promise.resolve(response.functions)
+      } else {
+        return Promise.reject()
+      }
+    })
+    .finally(() => {
+      // nty()
+    })
 }
 
-export { setAuthority, isAuthorised, doReLogin, fetchUserProfiles, fetchAuthorityData }
+export { fetchAuthorityData, fetchUserProfiles, isAuthorized }

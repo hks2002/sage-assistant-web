@@ -1,40 +1,61 @@
+<!--
+* @Author                : Robert Huang<56649783@qq.com>
+* @CreatedDate           : 2023-05-25 01:02:00
+* @LastEditors           : Robert Huang<56649783@qq.com>
+* @LastEditDate          : 2023-06-23 03:21:11
+* @FilePath              : src/pages/ReportsPage.vue
+* @CopyRight             : Dedienne Aerospace China ZhuHai
+-->
+
 <template>
   <q-page class="row">
     <div class="column col-md-4 col-lg-4 col-xl-3 q-pa-xs">
       <q-item>
         <q-item-section avatar>
           <q-avatar color="primary" text-color="white"> A </q-avatar>
-          <q-tooltip>{{ $t('SalesOrder Acknowledge') }}</q-tooltip>
+          <q-tooltip>{{ $t('W.ACK') }}</q-tooltip>
         </q-item-section>
         <q-item-section>
           <q-input
-            v-model="OrderNO4SA"
-            :label="$t('OrderNO')"
+            v-model="OrderNO"
+            :label="$t('F.OrderNO')"
             outlined
             clearable
             hint="ZCC200002 ZREP2019001"
             :hide-hint="true"
             input-class="text-uppercase"
             class="q-pa-xs"
-            @keydown="clickTarget($event, 'showSA')"
+            @keydown="clickTarget($event, 'showSalesOrder')"
           >
           </q-input>
         </q-item-section>
         <q-item-section side>
-          <q-btn dense flat disable icon="fas fa-file-pdf" />
+          <q-btn
+            id="showSalesOrder"
+            text-color="orange-10"
+            dense
+            icon="fas fa-file-pdf"
+            @click="showPdf('SalesOrder')"
+          />
         </q-item-section>
         <q-item-section side>
-          <q-btn dense flat disable icon="fas fa-file-word" />
+          <q-btn text-color="indigo-7" dense icon="fas fa-file-word" @click="exportWord('SalesOrder')" />
         </q-item-section>
         <q-item-section side>
-          <q-btn id="showSA" text-color="light-green-7" dense icon="fas fa-file-pdf" @click="showPdf('SA', 'sage')" />
+          <q-btn
+            id="showSalesOrder"
+            text-color="light-green-7"
+            dense
+            icon="fas fa-file-pdf"
+            @click="showPdf('SalesOrder', 'sage')"
+          />
         </q-item-section>
       </q-item>
 
       <q-item>
         <q-item-section avatar>
           <q-avatar color="primary" text-color="white"> C </q-avatar>
-          <q-tooltip>{{ $t('COC') }}</q-tooltip>
+          <q-tooltip>{{ $t('W.COC') }}</q-tooltip>
         </q-item-section>
         <q-item-section>
           <q-input
@@ -64,11 +85,11 @@
       <q-item>
         <q-item-section avatar>
           <q-avatar color="primary" text-color="white"> D </q-avatar>
-          <q-tooltip>{{ $t('Delivery') }}</q-tooltip>
+          <q-tooltip>{{ $t('W.DELIVERY') }}</q-tooltip>
         </q-item-section>
         <q-item-section>
           <q-input
-            :label="$t('Delivery NO')"
+            :label="$t('F.DeliveryNO')"
             v-model="DeliveryNO"
             outlined
             clearable
@@ -100,11 +121,11 @@
       <q-item>
         <q-item-section avatar>
           <q-avatar color="primary" text-color="white"> I </q-avatar>
-          <q-tooltip>{{ $t('Invoice') }}</q-tooltip>
+          <q-tooltip>{{ $t('W.INVOICE') }}</q-tooltip>
         </q-item-section>
         <q-item-section>
           <q-input
-            :label="$t('Invoice NO')"
+            :label="$t('F.InvoiceNO')"
             v-model="InvoiceNO"
             outlined
             clearable
@@ -135,43 +156,12 @@
 
       <q-item>
         <q-item-section avatar>
-          <q-avatar color="primary" text-color="white"> I2 </q-avatar>
-
-          <q-tooltip>{{ $t('Invoice by Sales Order') }}</q-tooltip>
-        </q-item-section>
-        <q-item-section>
-          <q-input
-            :label="$t('Order NO')"
-            v-model="OrderNO4Invoice"
-            outlined
-            clearable
-            hint="ZCC180020 or customer order"
-            :hide-hint="true"
-            input-class="text-uppercase"
-            @keydown="clickTarget($event, 'showInvoice2')"
-            class="q-pa-xs"
-          >
-          </q-input>
-        </q-item-section>
-        <q-item-section side>
-          <q-btn id="showInvoice2" text-color="orange-10" dense icon="fas fa-file-pdf" @click="showPdf('Invoice2')" />
-        </q-item-section>
-        <q-item-section side>
-          <q-btn text-color="indigo-7" dense icon="fas fa-file-word" @click="exportWord('Invoice2')" />
-        </q-item-section>
-        <q-item-section side>
-          <q-btn dense flat disable icon="fas fa-file-pdf" />
-        </q-item-section>
-      </q-item>
-
-      <q-item>
-        <q-item-section avatar>
           <q-avatar color="primary" text-color="white"> P </q-avatar>
-          <q-tooltip>{{ $t('Purchase Order') }}</q-tooltip>
+          <q-tooltip>{{ $t('W.PURCHASE_ORDER') }}</q-tooltip>
         </q-item-section>
         <q-item-section>
           <q-input
-            :label="$t('Purchase NO')"
+            :label="$t('F.PurchaseNO')"
             v-model="PurchaseNO"
             outlined
             clearable
@@ -204,11 +194,11 @@
       <q-item>
         <q-item-section avatar>
           <q-avatar color="primary" text-color="white"> R </q-avatar>
-          <q-tooltip>{{ $t('Receiptation') }}</q-tooltip>
+          <q-tooltip>{{ $t('W.RECEIPT') }}</q-tooltip>
         </q-item-section>
         <q-item-section>
           <q-input
-            :label="$t('Receipt NO')"
+            :label="$t('F.ReceiptNO')"
             v-model="ReceiptNO"
             outlined
             clearable
@@ -234,11 +224,11 @@
       <q-item>
         <q-item-section avatar>
           <q-avatar color="primary" text-color="white"> R2 </q-avatar>
-          <q-tooltip>{{ $t('Receiptation By Site & Vendor & Duration') }}</q-tooltip>
+          <q-tooltip>{{ $t('S.R2_TOOLTIP') }}</q-tooltip>
         </q-item-section>
         <q-item-section>
           <q-input
-            :label="$t('PurchaseSite-VendorCode-Duration')"
+            :label="$t('S.SITE_VENDOR_CODE_DURATION')"
             v-model="PurchaseSiteVendorCodeDuration"
             outlined
             clearable
@@ -264,11 +254,11 @@
       <q-item>
         <q-item-section avatar>
           <q-avatar color="primary" text-color="white"> W </q-avatar>
-          <q-tooltip>{{ $t('Work Order') }}</q-tooltip>
+          <q-tooltip>{{ $t('W.WORKER_ORDER') }}</q-tooltip>
         </q-item-section>
         <q-item-section>
           <q-input
-            :label="$t('Project/Work Order NO')"
+            :label="$t('W.PROJECT_OR_WORK_ORDER_NO')"
             v-model="ProjectOrWorkOrderNO"
             outlined
             clearable
@@ -294,11 +284,11 @@
       <q-item>
         <q-item-section avatar>
           <q-avatar color="primary" text-color="white"> S </q-avatar>
-          <q-tooltip>{{ $t('Statement Of Account') }}</q-tooltip>
+          <q-tooltip>{{ $t('W.SOA') }}</q-tooltip>
         </q-item-section>
         <q-item-section>
           <q-input
-            :label="$t('Site&CustomerCode')"
+            :label="$t('W.SITE_AND_BP_CODE')"
             v-model="SiteAndBPCode"
             outlined
             clearable
@@ -323,7 +313,7 @@
     </div>
     <q-separator vertical inset />
     <div class="column col q-pa-xs">
-      <iframe id="pdfwin" frameborder="0" class="fit" :src="UrlShow" @load="onSubFrameLoad" />
+      <iframe id="pdfWin" frameborder="0" class="fit" :src="UrlShow" @load="onSubFrameLoad" />
       <iframe frameborder="0" width="0" height="0" :src="UrlExport" />
     </div>
   </q-page>
@@ -331,15 +321,8 @@
 
 <script setup>
 import { isAuthorized } from '@/assets/auth'
+import { axios } from '@/assets/axios'
 import { validateInput } from '@/assets/reportUtils'
-import {
-  doActsForSagePrint,
-  getInvoiceTransaction,
-  getPurchaseTransaction,
-  getSageReportUrl,
-  getSageSessionUrl,
-  getSalesOrderTransaction
-} from '@/assets/sageSvcs'
 import { QSpinnerGears, useQuasar } from 'quasar'
 import { onMounted, ref } from 'vue'
 
@@ -351,8 +334,7 @@ const UrlExport = ref('about:blank')
 const COCProj = ref('')
 const DeliveryNO = ref('')
 const InvoiceNO = ref('')
-const OrderNO4SA = ref('')
-const OrderNO4Invoice = ref('')
+const OrderNO = ref('')
 const PurchaseNO = ref('')
 const POtax = ref(true)
 const ReceiptNO = ref('')
@@ -361,24 +343,15 @@ const ProjectOrWorkOrderNO = ref('')
 const SiteAndBPCode = ref('')
 
 const rptFncMap = {
-  SA: 'GESSOH',
+  SalesOrder: 'GESSOH',
   Delivery: 'GESSDH',
   Invoice: 'GESSIH',
   PurchaseOrder: 'GESPOH'
 }
 
 onMounted(() => {
-  // must change it once, other wise it doesn't show in iframe
+  // must change it once, otherwise it doesn't show in iframe
   UrlShow.value = '/#/WaitInput'
-
-  // preload sage module, when you revoke the first action,
-  // it could skip it, and save the total times.
-  getSageSessionUrl('GESSOH2~1')
-  getSageSessionUrl('GESSOH2~2')
-  getSageSessionUrl('GESSDH')
-  getSageSessionUrl('GESSIH2~2')
-  getSageSessionUrl('GESSIH2~3')
-  //getSageSessionUrl('GESPOH3~1')
 })
 
 /**
@@ -414,8 +387,8 @@ const getInputValue = (rpt) => {
   let vals = { val: '', val2: '' }
 
   switch (rpt) {
-    case 'SA':
-      vals.val = OrderNO4SA.value
+    case 'SalesOrder':
+      vals.val = OrderNO.value
       break
     case 'COC':
       vals.val = COCProj.value
@@ -425,9 +398,6 @@ const getInputValue = (rpt) => {
       break
     case 'Invoice':
       vals.val = InvoiceNO.value
-      break
-    case 'Invoice2':
-      vals.val = OrderNO4Invoice.value
       break
     case 'PurchaseOrder':
       vals.val = PurchaseNO.value
@@ -463,14 +433,14 @@ const showPdf = async (rpt, fromWhere) => {
   $q.loadingBar.start()
 
   if (fromWhere === 'sage') {
-    getSageUrl(rpt, vals.val, vals.val2).then((res) => {
-      UrlShow.value = res
-      UrlShow.value += `?disposition=inline&filename=${vals.val}.pdf`
+    // Here is Promise
+    getSageUrl(rpt, vals.val, vals.val2).then((url) => {
+      UrlShow.value = url
       $q.loadingBar.stop()
       $q.loading.hide()
     })
   } else {
-    UrlShow.value = getSageAssistantUrl(rpt, vals, 'showPdf')
+    UrlShow.value = getSageAssistantUrl(rpt, vals, 'pdf')
     $q.loadingBar.stop()
     $q.loading.hide()
   }
@@ -484,7 +454,7 @@ const exportWord = (rpt) => {
   }
 
   $q.loadingBar.start()
-  UrlExport.value = getSageAssistantUrl(rpt, vals, 'exportWord')
+  UrlExport.value = getSageAssistantUrl(rpt, vals, 'doc')
 
   $q.loadingBar.stop()
   $q.loading.hide()
@@ -494,41 +464,41 @@ const exportWord = (rpt) => {
  * get report url from Sage Assistant
  * @param {*} rpt
  * @param {*} vals {val:val,val2:val2}
- * @param {*} type 'showPdf','exportWord'
+ * @param {*} type 'pdf','doc'
  */
 const getSageAssistantUrl = (rpt, vals, type) => {
   let url = '/#/WaitInput'
   switch (rpt) {
+    case 'SalesOrder':
+      url = `/Report/SalesOrder/${type}?OrderNO=${vals.val}&FileName=${vals.val}`
+      break
     case 'COC':
-      url = `/Report/COC/${type}?ProjectNO=${vals.val}`
+      url = `/Report/COC/${type}?ProjectNO=${vals.val}&FileName=${vals.val}`
       break
     case 'Delivery':
-      url = `/Report/Delivery/${type}?DeliveryNO=${vals.val}`
+      url = `/Report/Delivery/${type}?DeliveryNO=${vals.val}&FileName=${vals.val}`
       break
     case 'Invoice':
-      url = `/Report/Invoice/${type}?Invoice=${vals.val}`
-      break
-    case 'Invoice2':
-      url = `/Report/Invoice2/${type}?OrderNO=${vals.val}`
+      url = `/Report/Invoice/${type}?InvoiceNO=${vals.val}&FileName=${vals.val}&Language=ENG`
       break
     case 'PurchaseOrder':
-      url = `/Report/PurchaseOrder/${type}` + `?PurchaseNO=${vals.val}&TaxInclude=${vals.val2}`
+      url = `/Report/PurchaseOrder/${type}` + `?PurchaseNO=${vals.val}&TaxInclude=${vals.val2}&FileName=${vals.val}`
       break
     case 'Receipt':
-      url = `/Report/Receipt/${type}?ReceiptNO=${vals.val}`
+      url = `/Report/Receipt/${type}?ReceiptNO=${vals.val}&FileName=${vals.val}`
       break
     case 'Receipt2':
       url =
         `/Report/Receipt2/${type}` +
         `?PurchaseSite=${vals.val.slice(0, 3)}` +
         `&VendorCode=${vals.val.slice(4, 9)}` +
-        `&StartDay=${vals.val.slice(10, 18)}&EndDay=${vals.val.slice(19, 27)}`
+        `&StartDay=${vals.val.slice(10, 18)}&EndDay=${vals.val.slice(19, 27)}&FileName=${vals.val}`
       break
     case 'WorkOrder':
-      url = `/Report/WorkOrder/${type}?ProjectOrWorkOrderNO=${vals.val}`
+      url = `/Report/WorkOrder/${type}?ProjectOrWorkOrderNO=${vals.val}&FileName=${vals.val}`
       break
     case 'SOA':
-      url = `/Report/SOA/${type}?Site=` + `${vals.val.slice(0, 3)}&BPCode=${vals.val.slice(3, 8)}`
+      url = `/Report/SOA/${type}?Site=` + `${vals.val.slice(0, 3)}&BPCode=${vals.val.slice(3, 8)}&FileName=${vals.val}`
       break
     default:
       url = '/#/Exception/500'
@@ -537,51 +507,60 @@ const getSageAssistantUrl = (rpt, vals, type) => {
 }
 
 const getSageUrl = async (rpt, val, val2) => {
-  $q.loading.show({
-    message: 'Preparing to print report...',
-    spinner: QSpinnerGears,
-    spinnerColor: 'indigo-5'
-  })
-
   const fnc = rptFncMap[rpt]
-  let trans = ''
 
   if (!isAuthorized(fnc)) {
-    return Promise.resolve('/#/Exception/403')
+    return '/#/Exception/403'
   }
 
-  if (rpt === 'SA') {
-    trans = getSalesOrderTransaction(val)
-  } else if (rpt === 'Invoice') {
-    trans = getInvoiceTransaction(val)
-  } else if (rpt === 'PurchaseOrder') {
-    trans = getPurchaseTransaction(val)
-  }
+  $q.loading.show({
+    message: 'Printing report ...',
+    messageColor: 'light-green',
+    spinner: QSpinnerGears,
+    spinnerColor: 'light-green',
+    spinnerSize: 40
+  })
 
-  return getSageSessionUrl(rptFncMap[rpt] + trans).then(
-    async (url) => {
-      return doActsForSagePrint(url, trans, rpt, val, val2).then(
-        async (printUUID) => {
-          function process(cnt) {
-            $q.loading.show({
-              message: `Printing report in server ${cnt}...`,
-              messageColor: 'light-green',
-              spinner: QSpinnerGears,
-              spinnerColor: 'light-green',
-              spinnerSize: Math.log2(cnt) * 20
-            })
+  return await axios.post(`/Data/PrintUUID?Report=${rpt}&ReportNO=${val}&Opt=${val2}`, {}).then(
+    async (response) => {
+      if (response.status === 200 && response.data.success) {
+        $q.loading.show({
+          message: 'Report printed',
+          messageColor: 'green',
+          spinner: QSpinnerGears,
+          spinnerColor: 'green',
+          spinnerSize: 40
+        })
+        // response.data.printUUID
+        // passing process loading function
+        const reportUrl = await axios.post(`/Data/ReportUUID?PrintUUID=${response.data.printUUID}`, {}).then(
+          (resp) => {
+            if (resp.status === 200 && resp.data.success) {
+              $q.loading.show({
+                message: 'Report completed',
+                messageColor: 'green',
+                spinner: QSpinnerGears,
+                spinnerColor: 'green',
+                spinnerSize: 80
+              })
+              // response.data.reportUUID
+              return `/Data/ReportFile?ReportNO=${val}&ReportUUID=${resp.data.reportUUID}`
+            } else {
+              return '/#/Exception/500'
+            }
+          },
+          // ReportUUID reject
+          () => {
+            return '/#/Exception/500'
           }
-          process(1)
-          // // passing process loading function
-          const reportUrl = await getSageReportUrl(printUUID, process)
-          return reportUrl
-        },
-        () => {
-          return '/#/Exception/500'
-        }
-      )
+        )
+
+        return reportUrl
+      } else {
+        return '/#/Exception/500'
+      }
     },
-    // get session failed
+    // PrintUUID reject
     () => {
       return '/#/Exception/500'
     }

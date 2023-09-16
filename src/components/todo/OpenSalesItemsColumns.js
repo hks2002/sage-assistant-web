@@ -1,310 +1,351 @@
-/***
- * @Author         : Robert Huang<56649783@qq.com>
- * @Date           : 2022-06-09 17:24:01
- * @LastEditors    : Robert Huang<56649783@qq.com>
- * @LastEditTime   : 2022-06-14 17:42:37
- * @FilePath       : \web2\src\components\todo\OpenSalesItemsColumns.js
- * @CopyRight      : Dedienne Aerospace China ZhuHai
- */
+/*********************************************************************************************************************
+ * @Author                : Robert Huang<56649783@qq.com>                                                            *
+ * @CreatedDate           : 2022-06-09 17:24:00                                                                      *
+ * @LastEditors           : Robert Huang<56649783@qq.com>                                                            *
+ * @LastEditDate          : 2023-09-03 00:02:12                                                                      *
+ * @FilePath              : sage-assistant-web/src/components/todo/OpenSalesItemsColumns.js                          *
+ * @CopyRight             : Dedienne Aerospace China ZhuHai                                                          *
+ ********************************************************************************************************************/
+
 import { i18n } from '@/boot/i18n'
 const { t } = i18n.global
 
 export default [
-  { name: '#', label: '#', align: 'center', headerClasses: 'bg-white' },
-  //{ name: 'orderno', label: t('OrderNO'), field: 'OrderNO', align: 'left', sortable: true },
-  //{ name: 'orderline', label: t('OrderLine'), field: 'OrderLine', align: 'left', sortable: true },
+  {
+    name: '#',
+    label: '#',
+    align: 'center',
+    headerClasses: 'bg-white',
+    required: true
+  },
   {
     name: 'trackingno',
-    label: t('TrackingNO'),
-    field: 'TrackingNO',
+    label: t('F.TrackingNO'),
+    field: 'trackingNO',
     align: 'left',
-    headerClasses: 'bg-indigo-1'
+    headerClasses: 'bg-indigo-1',
+    required: true
   },
-  //{ name: 'orderprojectno', label: t('OrderProjectNO'), field: 'OrderProjectNO', align: 'left', sortable: true },
+  {
+    name: 'orderprojectno',
+    label: t('F.OrderProjectNO'),
+    field: 'orderProjectNO',
+    align: 'left',
+    headerClasses: 'bg-indigo-1',
+    sortable: true,
+    required: true
+  },
   {
     name: 'ordertype',
-    label: t('OrderType'),
-    field: 'OrderType',
+    label: t('F.OrderType'),
+    field: 'orderType',
     align: 'left',
-    headerClasses: 'bg-indigo-1'
+    headerClasses: 'bg-indigo-1',
+    required: true
   },
   {
     name: 'orderpn',
-    label: t('PN'),
-    field: 'OrderPN',
+    label: t('F.PN'),
+    field: 'orderPN',
     align: 'left',
-    headerClasses: 'bg-indigo-1'
+    headerClasses: 'bg-indigo-1',
+    required: true
   },
   {
     name: 'orderpndesc',
-    label: t('Desc'),
-    field: 'OrderPNDesc',
+    label: t('F.Desc'),
+    field: 'orderPNDesc',
     align: 'left',
-    headerClasses: 'bg-indigo-1'
+    headerClasses: 'bg-indigo-1',
+    required: false
   },
   {
     name: 'orderqty',
-    label: t('QTY'),
-    field: 'OrderQTY',
+    label: t('F.QTY'),
+    field: 'orderQTY',
     align: 'center',
-    headerClasses: 'bg-indigo-1'
+    headerClasses: 'bg-indigo-1',
+    required: true
   },
   {
     name: 'orderprice',
-    label: t('Price'),
-    field: 'OrderPrice',
+    label: t('F.Price'),
+    field: 'orderPrice',
     align: 'right',
-    headerClasses: 'bg-indigo-1'
+    headerClasses: 'bg-indigo-1',
+    required: false
   },
   {
     name: 'ordercurrency',
-    label: t('Currency'),
-    field: 'OrderCurrency',
+    label: t('F.Currency'),
+    field: 'orderCurrency',
     align: 'center',
-    headerClasses: 'bg-indigo-1'
+    headerClasses: 'bg-indigo-1',
+    required: false
   },
   {
     name: 'customercode',
-    label: t('Customer'),
-    field: 'CustomerCode',
+    label: t('F.Customer'),
+    field: 'customerCode',
     align: 'left',
-    headerClasses: 'bg-indigo-1'
+    headerClasses: 'bg-indigo-1',
+    required: false
   },
   //{ name: 'customername', label: t('CustomerName'), field: 'CustomerName', align: 'left', sortable: true },
   {
     name: 'orderdate',
-    label: t('OrderDate'),
-    field: 'OrderDate',
+    label: t('F.OrderDate'),
+    field: 'orderDate',
     align: 'center',
-    headerClasses: 'bg-indigo-1'
+    headerClasses: 'bg-indigo-1',
+    required: false
   },
   {
     name: 'orderrequestdate',
-    label: t('RequestDate'),
-    field: 'OrderRequestDate',
+    label: t('F.RequestDate'),
+    field: 'orderRequestDate',
     align: 'center',
-    headerClasses: 'bg-indigo-1'
+    headerClasses: 'bg-indigo-1',
+    required: true
   },
   {
     name: 'daysleft',
-    label: t('DaysLeft'),
-    field: 'DaysLeft',
+    label: t('F.DaysLeft'),
+    field: 'daysLeft',
     align: 'center',
     sortable: true,
-    headerClasses: 'bg-indigo-1'
+    headerClasses: 'bg-indigo-1',
+    required: true
   },
   {
     name: 'orderplaneddate',
-    label: t('PlanDate'),
-    field: 'OrderPlanedDate',
+    label: t('F.PlanDate'),
+    field: 'orderPlanedDate',
     align: 'center',
     sortable: true,
-    headerClasses: 'bg-indigo-1'
+    headerClasses: 'bg-indigo-1',
+    required: true
   },
   {
     name: 'orderdeliveryflag',
-    label: t('D-Ready'),
-    field: 'OrderDeliveryFlag',
+    label: t('F.D-Ready'),
+    field: 'orderDeliveryFlag',
     align: 'center',
-    headerClasses: 'bg-indigo-1'
+    headerClasses: 'bg-indigo-1',
+    required: true
   },
   {
     name: 'projectstatus',
-    label: t('Status'),
-    field: 'ProjectStatus',
+    label: t('F.Status'),
+    field: 'projectStatus',
     align: 'left',
     headerClasses: 'bg-indigo-1',
-    headerStyle: 'min-width: 100px'
+    headerStyle: 'min-width: 100px',
+    required: true
   },
   {
     name: 'projectblockreason',
-    label: t('Reason'),
-    field: 'ProjectBlockReason',
+    label: t('F.Reason'),
+    field: 'projectBlockReason',
     align: 'left',
     headerClasses: 'bg-indigo-1',
-    headerStyle: 'min-width: 100px'
+    headerStyle: 'min-width: 100px',
+    required: false
   },
   {
     name: 'projectcomment',
-    label: t('Comment'),
-    field: 'ProjectComment',
+    label: t('F.Comment'),
+    field: 'projectComment',
     align: 'left',
     headerClasses: 'bg-indigo-1',
-    headerStyle: 'min-width: 100px'
+    headerStyle: 'min-width: 100px',
+    required: false
   },
   {
     name: 'projectaction',
-    label: t('Action'),
-    field: 'ProjectAction',
+    label: t('F.Action'),
+    field: 'projectAction',
     align: 'left',
     headerClasses: 'bg-indigo-1',
-    headerStyle: 'min-width: 100px'
+    headerStyle: 'min-width: 100px',
+    required: false
   },
-  //{ name: 'bomprojectno', label: t('BomProjectNO'), field: 'BomProjectNO', align: 'left', sortable: true },
-  //{    name: 'workorderno',    label: t('WorkOrderNO'),    field: 'WorkOrderNO',    align: 'left',    headerClasses: 'bg-blue-grey-1'  },
-  //{ name: 'bomseq', label: t('BomSeq'), field: 'BomSeq', align: 'left', sortable: true },
   {
     name: 'bompn',
-    label: t('BomPN'),
-    field: 'BomPN',
+    label: t('F.BomPN'),
+    field: 'bomPN',
     align: 'left',
-    headerClasses: 'bg-blue-grey-1'
+    headerClasses: 'bg-blue-grey-1',
+    required: true
   },
-  //{ name: 'bomdesc', label: t('Desc'), field: 'BomDesc', align: 'left', sortable: false },
   {
     name: 'bomqty',
-    label: t('QTY'),
-    field: 'BomQTY',
+    label: t('F.QTY'),
+    field: 'bomQTY',
     align: 'center',
-    headerClasses: 'bg-blue-grey-1'
+    headerClasses: 'bg-blue-grey-1',
+    required: false
   },
-  //{ name: 'bomunit', label: t('Unit'), field: 'BomUnit', align: 'center', sortable: false },
   {
     name: 'shortqty',
-    label: t('Short'),
-    field: 'ShortQty',
+    label: t('F.Short'),
+    field: 'shortQty',
     align: 'center',
-    headerClasses: 'bg-blue-grey-1'
+    headerClasses: 'bg-blue-grey-1',
+    required: false
   },
   {
     name: 'allqty',
-    label: t('Alloc'),
-    field: 'AllQty',
+    label: t('F.Alloc'),
+    field: 'allQty',
     align: 'center',
-    headerClasses: 'bg-blue-grey-1'
+    headerClasses: 'bg-blue-grey-1',
+    required: false
   },
   {
     name: 'avaqty',
-    label: t('Avail'),
-    field: 'AvaQty',
+    label: t('F.Avail'),
+    field: 'avaQty',
     align: 'center',
-    headerClasses: 'bg-blue-grey-1'
+    headerClasses: 'bg-blue-grey-1',
+    required: false
   },
-  //{ name: 'bomrequestdate', label: t('RequestDate'), field: 'BomRequestDate', align: 'center', sortable: true },
-  //{ name: 'stockpn', label: t('StockPN'), field: 'StockPN', align: 'left', sortable: true },
   {
     name: 'purchaseno',
-    label: t('PurchaseNO'),
-    field: 'PurchaseNO',
+    label: t('F.PurchaseNO'),
+    field: 'purchaseNO',
     align: 'left',
-    headerClasses: 'bg-blue-1'
+    headerClasses: 'bg-blue-1',
+    required: true
   },
-  //{ name: 'purchaseline', label: t('PurchaseLine'), field: 'PurchaseLine', align: 'left', sortable: true },
-  //{ name: 'purchaseprojectno', label: t('PurchaseProjectNO'), field: 'PurchaseProjectNO', align: 'left', sortable: true },
+  {
+    name: 'purchaseline',
+    label: t('F.PurchaseLine'),
+    field: 'purchaseLine',
+    align: 'left',
+    headerClasses: 'bg-blue-1',
+    required: true
+  },
   {
     name: 'purchasepn',
-    label: t('PurchasePN'),
-    field: 'PurchasePN',
+    label: t('F.PurchasePN'),
+    field: 'purchasePN',
     align: 'left',
-    headerClasses: 'bg-blue-1'
+    headerClasses: 'bg-blue-1',
+    required: false
   },
-  //{ name: 'purchasepndesc', label: t('PurchasePNDesc'), field: 'PurchasePNDesc', align: 'left', sortable: true },
   {
     name: 'purchaseqty',
-    label: t('QTY'),
-    field: 'PurchaseQTY',
+    label: t('F.QTY'),
+    field: 'purchaseQTY',
     align: 'left',
-    headerClasses: 'bg-blue-1'
+    headerClasses: 'bg-blue-1',
+    required: false
   },
-  //{ name: 'purchaseunit', label: t('PurchaseUnit'), field: 'PurchaseUnit', align: 'left', sortable: true },
   {
     name: 'vendorcode',
-    label: t('Vendor'),
-    field: 'VendorCode',
+    label: t('F.Vendor'),
+    field: 'vendorCode',
     align: 'left',
-    headerClasses: 'bg-blue-1'
+    headerClasses: 'bg-blue-1',
+    required: false
   },
-  //{ name: 'vendorname', label: t('VendorName'), field: 'VendorName', align: 'left', sortable: true },
   {
     name: 'purchasedate',
-    label: t('PurchaseDate'),
-    field: 'PurchaseDate',
+    label: t('F.PurchaseDate'),
+    field: 'purchaseDate',
     align: 'left',
-    headerClasses: 'bg-blue-1'
+    headerClasses: 'bg-blue-1',
+    required: true
   },
   {
     name: 'purchaseexpectdate',
-    label: t('ExpectDate'),
-    field: 'PurchaseExpectDate',
+    label: t('F.ExpectDate'),
+    field: 'purchaseExpectDate',
     align: 'left',
-    headerClasses: 'bg-blue-1'
+    headerClasses: 'bg-blue-1',
+    required: true
   },
   {
     name: 'purchaseackdate',
-    label: t('AckDate'),
-    field: 'PurchaseAckDate',
+    label: t('F.AckDate'),
+    field: 'purchaseAckDate',
     align: 'left',
-    headerClasses: 'bg-blue-1'
+    headerClasses: 'bg-blue-1',
+    required: true
   },
   {
     name: 'ordersadflag',
-    label: t('SAD'),
-    field: 'OrderSADFlag',
+    label: t('F.SAD'),
+    field: 'orderSADFlag',
     align: 'center',
-    headerClasses: 'bg-blue-1'
+    headerClasses: 'bg-blue-1',
+    required: true
   },
   {
     name: 'purchasecomment',
-    label: t('Comment'),
-    field: 'PurchaseComment',
+    label: t('F.Comment'),
+    field: 'purchaseComment',
     align: 'left',
     headerClasses: 'bg-blue-1',
-    headerStyle: 'min-width: 100px'
+    headerStyle: 'min-width: 100px',
+    required: false
   },
-  //{ name: 'purchaseuser', label: t('PurchaseUser'), field: 'PurchaseUser', align: 'left', sortable: true },
   {
     name: 'receiptno',
-    label: t('ReceiptNO'),
-    field: 'ReceiptNO',
+    label: t('F.ReceiptNO'),
+    field: 'receiptNO',
     align: 'left',
-    headerClasses: 'bg-green-1'
+    headerClasses: 'bg-green-1',
+    required: true
   },
-  //{ name: 'receiptline', label: t('ReceiptLine'), field: 'ReceiptLine', align: 'left', sortable: true },
-  //{ name: 'receiptpurchaseno', label: t('ReceiptPurchaseNO'), field: 'ReceiptPurchaseNO', align: 'left', sortable: true },
-  //{ name: 'receiptpurchaseline', label: t('ReceiptPurchaseLine'), field: 'ReceiptPurchaseLine', align: 'left', sortable: true },
   {
     name: 'receiptqty',
-    label: t('Qty'),
-    field: 'ReceiptQty',
+    label: t('F.Qty'),
+    field: 'receiptQty',
     align: 'center',
-    headerClasses: 'bg-green-1'
+    headerClasses: 'bg-green-1',
+    required: true
   },
   {
     name: 'receiptdate',
-    label: t('ReceiptDate'),
-    field: 'ReceiptDate',
+    label: t('F.ReceiptDate'),
+    field: 'receiptDate',
     align: 'left',
     classes: 'bg-green-1',
-    headerClasses: 'bg-green-1'
+    headerClasses: 'bg-green-1',
+    required: true
   },
-  //{ name: 'receipter', label: t('Receipter'), field: 'Receipter', align: 'left', sortable: true },
-  //{ name: 'claimprojectno', label: t('ClaimProjectNO'), field: 'ClaimProjectNO', align: 'left', sortable: true },
   {
     name: 'orderproductflag',
-    label: t('QC-OK'),
-    field: 'OrderProductFlag',
+    label: t('F.QC-OK'),
+    field: 'orderProductFlag',
     align: 'center',
-    headerClasses: 'bg-green-3'
+    headerClasses: 'bg-green-3',
+    required: true
   },
   {
     name: 'orderproductdate',
-    label: t('Date'),
-    field: 'OrderProductDate',
+    label: t('F.Date'),
+    field: 'orderProductDate',
     align: 'center',
-    headerClasses: 'bg-green-3'
+    headerClasses: 'bg-green-3',
+    required: true
   },
   {
     name: 'claimno',
-    label: t('NC NO'),
-    field: 'ClaimNO',
+    label: t('F.NC NO'),
+    field: 'claimNO',
     align: 'left',
-    headerClasses: 'bg-red-1'
+    headerClasses: 'bg-red-1',
+    required: true
   },
   {
     name: 'ncdetail',
-    label: t('NC Code'),
-    field: 'NCCode',
+    label: t('F.NC Code'),
+    field: 'nCCode',
     align: 'left',
-    headerClasses: 'bg-red-1'
+    headerClasses: 'bg-red-1',
+    required: true
   }
 ]

@@ -1,11 +1,12 @@
 <!--
- * @Author         : Robert Huang<56649783@qq.com>
- * @Date           : 2022-04-08 09:36:21
- * @LastEditors    : Robert Huang<56649783@qq.com>
- * @LastEditTime   : 2022-11-17 19:33:12
- * @FilePath       : \web2\src\pages\SuppliersPage.vue
- * @CopyRight      : Dedienne Aerospace China ZhuHai
+* @Author                : Robert Huang<56649783@qq.com>
+* @CreatedDate           : 2022-04-08 09:36:00
+* @LastEditors           : Robert Huang<56649783@qq.com>
+* @LastEditDate          : 2023-08-14 17:05:24
+* @FilePath              : sage-assistant-web/src/pages/SuppliersPage.vue
+* @CopyRight             : Dedienne Aerospace China ZhuHai
 -->
+
 <template>
   <q-page>
     <ExceptionLottie :ErrorCode="403" v-if="!isAuthorized('GESPOH')" />
@@ -13,10 +14,10 @@
 
     <div class="row q-gutter-sm q-pa-sm" v-if="isAuthorized('GESPOH')">
       <QSelectAxiosVue
-        option-label="SupplierName"
-        option-value="SupplierCode"
+        option-label="supplierName"
+        option-value="supplierCode"
         data-url="/Data/SupplierHelper"
-        :label="$t('Search Your Suppliers (Code or Name)')"
+        :label="$t('S.SEARCH_SUPPLIER')"
         input-style="font-weight:bolder;font-size:25px;text-transform:uppercase"
         popup-content-style="font-weight:bold;font-size:25px"
         popup-content-class="text-secondary"
@@ -30,7 +31,7 @@
         mask="date"
         type="date"
         class="col-3"
-        :label="$t('From')"
+        :label="$t('W.FROM')"
         v-model="dateFrom"
       />
       <q-input
@@ -40,7 +41,7 @@
         mask="date"
         type="date"
         class="col-3"
-        :label="$t('To')"
+        :label="$t('W.TO')"
         v-model="dateTo"
       />
     </div>
@@ -105,7 +106,6 @@
 
 <script setup>
 import { isAuthorized } from '@/assets/auth'
-import QSelectAxiosVue from '@/components/.controls/QSelectAxios.vue'
 import EchartSupplierDelayHistoryVue from '@/components/echarts/EchartSupplierDelayHistory.vue'
 import EchartSupplierDeliveryHistoryVue from '@/components/echarts/EchartSupplierDeliveryHistory.vue'
 import EchartSupplierOpenAmountVue from '@/components/echarts/EchartSupplierOpenAmount.vue'
@@ -116,6 +116,7 @@ import ExceptionLottie from '@/components/lottie/ExceptionLottie.vue'
 import WaitInputLottieVue from '@/components/lottie/WaitInputLottie.vue'
 import QCardSupplierInfoVue from '@/components/suppliers/QCardSupplierInfo.vue'
 import QMarkupTableSupplierOpenItemsVue from '@/components/suppliers/QMarkupTableSupplierOpenItems.vue'
+import QSelectAxiosVue from '@/controls/QSelectAxios.vue'
 import { date } from 'quasar'
 import { ref } from 'vue'
 

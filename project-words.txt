@@ -5,6 +5,7 @@ Axios
 Bleue
 BONLIV
 commitlint
+Cust
 datetime
 dedaero
 dedienne
@@ -23,6 +24,7 @@ lottieplayer
 middlewares
 mockjs
 myapp
+orderno
 pinia
 roboto
 SBONFAC

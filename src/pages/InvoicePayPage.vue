@@ -1,3 +1,12 @@
+<!--
+* @Author                : Robert Huang<56649783@qq.com>
+* @CreatedDate           : 2023-06-17 23:07:00
+* @LastEditors           : Robert Huang<56649783@qq.com>
+* @LastEditDate          : 2023-08-28 17:08:25
+* @FilePath              : sage-assistant-web/src/pages/InvoicePayPage.vue
+* @CopyRight             : Dedienne Aerospace China ZhuHai
+-->
+
 <template>
   <q-page>
     <WaitInputLottieVue v-if="!customerCode && isAuthorized('GESSIH')" />
@@ -5,10 +14,10 @@
 
     <div class="row q-gutter-sm q-px-sm q-pt-sm" v-if="isAuthorized('GESSIH')">
       <QSelectAxios
-        option-label="CustomerName"
-        option-value="CustomerCode"
+        option-label="customerName"
+        option-value="customerCode"
         data-url="/Data/CustomerHelper"
-        :label="$t('Search Your Customer (Code or Name)[%% for all]')"
+        :label="$t('S.SEARCH_CUSTOMER')"
         input-style="font-weight:bolder;font-size:25px;text-transform:uppercase"
         popup-content-style="font-weight:bold;font-size:25px"
         popup-content-class="text-secondary"
@@ -16,7 +25,7 @@
         @input-value="checkInputAll"
         @update:model-value="searchCustomer"
       />
-      <q-toggle v-model="proSearch" label="Pro Search" class="col-1" />
+      <q-toggle v-model="proSearch" :label="$t('S.PRO_SEARCH')" class="col-1" />
       <q-input
         v-model="dateFrom"
         dense
@@ -24,7 +33,7 @@
         debounce="1000"
         mask="date"
         type="date"
-        :label="$t('From')"
+        :label="$t('W.FROM')"
         class="col-3"
       />
       <q-input
@@ -34,7 +43,7 @@
         debounce="1000"
         mask="date"
         type="date"
-        :label="$t('To')"
+        :label="$t('W.TO')"
         class="col-3"
       />
     </div>
@@ -45,7 +54,6 @@
         :dateTo="dateTo"
         :site="site"
         :proSearch="proSearch"
-        :style="{ height: tableHeight + 'px' }"
       />
     </q-list>
   </q-page>
@@ -53,20 +61,20 @@
 
 <script setup>
 import { isAuthorized } from '@/assets/auth'
-import { ebus } from '@/assets/ebus'
 import { getCookies } from '@/assets/storage'
-import QSelectAxios from '@/components/.controls/QSelectAxios.vue'
 import QMarkupTableInvoicePayVue from '@/components/Financial/QMarkupTableInvoicePay.vue'
 import ExceptionLottieVue from '@/components/lottie/ExceptionLottie.vue'
 import WaitInputLottieVue from '@/components/lottie/WaitInputLottie.vue'
+import QSelectAxios from '@/controls/QSelectAxios.vue'
 import { date, LocalStorage } from 'quasar'
-import { computed, onBeforeUnmount, ref } from 'vue'
+import { inject, onBeforeUnmount, ref } from 'vue'
 /* eslint-disable */
 const props = defineProps({
   pageHeight: { type: Number, default: 0 /* not passing  */ }
 })
 
 // common vars
+const ebus = inject('ebus')
 const site = ref(LocalStorage.getItem('site'))
 
 // page vars
@@ -77,12 +85,6 @@ const nowTimeStamp = Date.now()
 const fromTimeStamp = addToDate(nowTimeStamp, { years: -3 })
 const dateFrom = ref(formatDate(fromTimeStamp, 'YYYY-MM-DD'))
 const dateTo = ref(formatDate(nowTimeStamp, 'YYYY-MM-DD'))
-
-// computed vars
-const tableHeight = computed(() => {
-  /** 56: QSelect height, 16: padding height */
-  return props.pageHeight - 56 - 8
-})
 
 // check if searchAll
 const checkInputAll = (inputText) => {

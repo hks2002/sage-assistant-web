@@ -1,3 +1,12 @@
+<!--
+* @Author                : Robert Huang<56649783@qq.com>
+* @CreatedDate           : 2023-06-23 02:58:00
+* @LastEditors           : Robert Huang<56649783@qq.com>
+* @LastEditDate          : 2023-06-23 02:59:58
+* @FilePath              : src/pages/StockHistoryPage.vue
+* @CopyRight             : Dedienne Aerospace China ZhuHai
+-->
+
 <template>
   <q-page>
     <ExceptionLottie :ErrorCode="403" v-if="!isAuthorized('CONSSAR')" />
@@ -11,8 +20,8 @@
         debounce="1000"
         class="col"
         input-class="text-uppercase"
-        hint="example: MS 856A NUT SCREW"
-        :label="$t('Filter result by PN or Name')"
+        hint="MS 856A NUT SCREW"
+        :label="$t('S.FILTER_PN_OR_NAME')"
         v-model="PnOrName"
         @update:model-value="doUpdate"
       >
@@ -25,7 +34,7 @@
         mask="date"
         type="date"
         class="col-3"
-        :label="$t('From')"
+        :label="$t('W.FROM')"
         v-model="dateFrom"
         @update:model-value="doUpdate"
       />
@@ -37,12 +46,12 @@
         mask="date"
         type="date"
         class="col-3"
-        :label="$t('To')"
+        :label="$t('W.TO')"
         v-model="dateTo"
         @update:model-value="doUpdate"
       />
     </q-list>
-    <q-list class="row q-gutter-sm q-pa-sm" v-if="isAuthorised('CONSSAR')">
+    <q-list class="row q-gutter-sm q-pa-sm" v-if="isAuthorized('CONSSAR')">
       <QMarkupTableStockHistoryVue
         :PnOrName="PnOrName"
         :dateFrom="dateFrom"

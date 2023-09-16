@@ -1,6 +1,15 @@
+<!--
+* @Author                : Robert Huang<56649783@qq.com>
+* @CreatedDate           : 2023-06-14 15:58:00
+* @LastEditors           : Robert Huang<56649783@qq.com>
+* @LastEditDate          : 2023-08-27 23:32:50
+* @FilePath              : sage-assistant-web/src/components/echarts/EchartCustomerDeliveryHistory.vue
+* @CopyRight             : Dedienne Aerospace China ZhuHai
+-->
+
 <template>
   <q-item>
-    <div id="EchartCustomerDeliveryHistory" style="height: 100%; width: 100%" />
+    <base-echart :e-chart-option="eChartOption" />
     <q-inner-loading :showing="showLoading">
       <q-spinner-ios size="50px" color="primary" />
     </q-inner-loading>
@@ -15,16 +24,17 @@ import {
   defaultToolbox,
   defaultTooltip,
   defaultXAxisTime,
-  echarts,
-  jsonToMultLine,
   mergerOption
-} from '@/assets/echartsCfg.js'
+} from '@/assets/echartsCfg'
+import BaseEchart from './BaseEchart.vue'
+
+import { jsonToMultiLine } from '@/assets/dataUtils'
 import _forEach from 'lodash/forEach'
 import _groupBy from 'lodash/groupBy'
 import _map from 'lodash/map'
 import _uniq from 'lodash/uniq'
 import { date } from 'quasar'
-import { onActivated, onBeforeUnmount, onDeactivated, onMounted, ref, watch } from 'vue'
+import { onMounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 const props = defineProps({
@@ -38,42 +48,39 @@ const { t } = useI18n()
 const showLoading = ref(false)
 
 // echart vars
-let eChart = null
+let eChartOption = {}
 let data = []
 let legend = []
 let dataByLegend = []
 let dataset = []
 let series = []
 const dimensions = [
-  'Site',
-  'CustomerCode',
-  'OrderNO',
-  'ProjectNO',
+  'site',
+  'customerCode',
+  'orderNO',
+  'projectNO',
   'PN',
-  'Description',
-  'ShipDate',
-  'DemandDate',
-  'OrderDate',
-  'DeliveryNO',
-  'DaysNeed'
+  'description',
+  'shipDate',
+  'demandDate',
+  'orderDate',
+  'deliveryNO',
+  'daysNeed'
 ]
 
 // actions
-const doUpdate = () => {
+function doUpdate() {
   if (!props.customerCode || !date.isValid(props.dateFrom) || !date.isValid(props.dateTo)) {
     return
   }
 
   showLoading.value = true
 
-  axiosGet(
-    '/Data/CustomerDeliveryHistory?CustomerCode=' +
-      props.customerCode +
-      '&DateFrom=' +
-      props.dateFrom +
-      '&DateTo=' +
-      props.dateTo
-  )
+  axiosGet('/Data/CustomerDeliveryHistory', {
+    customerCode: props.customerCode,
+    dateFrom: props.dateFrom,
+    dateTo: props.dateTo
+  })
     .then((response) => {
       data = response
       prepareData()
@@ -84,9 +91,9 @@ const doUpdate = () => {
     })
 }
 
-const prepareData = () => {
-  legend = _uniq(_map(data, 'Site'))
-  dataByLegend = _groupBy(data, 'Site')
+function prepareData() {
+  legend = _uniq(_map(data, 'site'))
+  dataByLegend = _groupBy(data, 'site')
   dataset = []
   series = []
 
@@ -109,13 +116,13 @@ const prepareData = () => {
         tooltip: {
           trigger: 'item',
           formatter: (params) => {
-            return jsonToMultLine(dimensions, params.data)
+            return jsonToMultiLine(dimensions, params.data)
           }
         },
         dimensions: dimensions,
         encode: {
-          x: 'ShipDate',
-          y: 'DaysNeed'
+          x: 'shipDate',
+          y: 'daysNeed'
         }
       }
     },
@@ -123,16 +130,16 @@ const prepareData = () => {
   )
 }
 
-const setEchart = () => {
+function setEchart() {
   // data is ready,set echart option
-  eChart.setOption({
+  eChartOption = {
     title: {
-      text: `${t('Label.Delivery History')} ( ${props.dateFrom}-->${props.dateTo})`,
+      text: `${t('S.DELIVERY_HISTORY')} ( ${props.dateFrom}-->${props.dateTo})`,
       subtext: '',
       left: 'center'
     },
     legend: defaultLegend,
-    toolbox: defaultToolbox(dimensions, data, `${t('Label.Delivery History')} ( ${props.dateFrom}-->${props.dateTo})`),
+    toolbox: defaultToolbox(dimensions, data, `${t('S.DELIVERY_HISTORY')} ( ${props.dateFrom}-->${props.dateTo})`),
     tooltip: defaultTooltip,
     dataZoom: defaultDataZoom('x'),
     xAxis: mergerOption(defaultXAxisTime, { name: 'Receipt' }),
@@ -149,47 +156,17 @@ const setEchart = () => {
     },
     dataset: dataset,
     series: series
-  })
-}
-
-const resize = () => {
-  eChart.resize()
+  }
 }
 
 // events
 onMounted(() => {
-  eChart = echarts.init(document.getElementById('EchartCustomerDeliveryHistory'))
-  // when not use keep alive, use mounted/unmounted
-  window.addEventListener('resize', resize)
   doUpdate()
 })
 
-onBeforeUnmount(() => {
-  // when not use keep alive, use mounted/unmounted
-  window.removeEventListener('resize', resize)
-  eChart.dispose()
+watch(props, (value, oldValue) => {
+  console.debug('watch:', oldValue, '--->', value)
+
+  doUpdate()
 })
-
-onActivated(() => {
-  // when use keep alive, must use activated/deactivated
-  window.addEventListener('resize', resize)
-  resize()
-})
-
-onDeactivated(() => {
-  // when use keep alive, must use activated/deactivated
-  window.removeEventListener('resize', resize)
-})
-
-watch(
-  // Don't use watchEffect, it run before Mounted.
-  () => [props.customerCode, props.dateFrom, props.dateTo],
-  (...newAndold) => {
-    // newAndold[1]:old
-    // newAndold[0]:new
-    console.debug('watch:' + newAndold[1] + ' ---> ' + newAndold[0])
-
-    doUpdate()
-  }
-)
 </script>

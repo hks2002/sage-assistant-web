@@ -1,16 +1,17 @@
-/***
- * @Author         : Robert Huang<56649783@qq.com>
- * @Date           : 2022-05-20 12:50:44
- * @LastEditors    : Robert Huang<56649783@qq.com>
- * @LastEditTime   : 2022-05-28 23:04:21
- * @FilePath       : \web2\src\assets\mockExt.js
- * @CopyRight      : Dedienne Aerospace China ZhuHai
- */
+/*********************************************************************************************************************
+ * @Author                : Robert Huang<56649783@qq.com>                                                            *
+ * @CreatedDate           : 2022-05-20 12:50:00                                                                      *
+ * @LastEditors           : Robert Huang<56649783@qq.com>                                                            *
+ * @LastEditDate          : 2023-06-15 16:33:38                                                                      *
+ * @FilePath              : src/assets/mockExt.js                                                                    *
+ * @CopyRight             : Dedienne Aerospace China ZhuHai                                                          *
+ ********************************************************************************************************************/
+
 import Mock from 'mockjs'
 import qs from 'qs'
 const Util = Mock.Util
 
-// overrivde send function, to support arrsybuffer, status code, staus text
+// override send function, to support arraybuffer, status code, status text
 Util.extend(Mock.XHR.prototype, {
   send: function (postData) {
     // eslint-disable-next-line @typescript-eslint/no-this-alias
@@ -32,6 +33,9 @@ Util.extend(Mock.XHR.prototype, {
     // postData contains post request data, pass it to options
     this.custom.options.postData = postData
 
+    // Add debug info
+    console.debug('\u001b[35m' + '[Mocking] ', this.custom.options)
+
     // Add support for arraybuffer type
     // responseType: "arraybuffer", do nothing
     if (this.responseType === 'arraybuffer') {
@@ -40,8 +44,8 @@ Util.extend(Mock.XHR.prototype, {
       return
     }
 
-    // mockdata may have {data} and {statusCode} and {statusText}
-    const mockdata = Util.isFunction(this.custom.template.template)
+    // mockData may have {data} and {statusCode} and {statusText}
+    const mockData = Util.isFunction(this.custom.template.template)
       ? this.custom.template.template(this.custom.options)
       : Mock.mock(this.custom.template.template)
 
@@ -51,8 +55,8 @@ Util.extend(Mock.XHR.prototype, {
     function done() {
       stateStart()
       // promise object support
-      if (typeof mockdata.then === 'function') {
-        mockdata
+      if (typeof mockData.then === 'function') {
+        mockData
           .then((res) => {
             setResponse(res)
             stateDone()
@@ -63,7 +67,7 @@ Util.extend(Mock.XHR.prototype, {
           })
       } else {
         //normal object
-        setResponse(mockdata)
+        setResponse(mockData)
         stateDone()
       }
     }
@@ -78,9 +82,7 @@ Util.extend(Mock.XHR.prototype, {
         ? (that.status = data.statusCode) &&
           (that.statusText = data.statusText) &&
           (that.responseText = JSON.stringify(data.data, null, 4))
-        : (that.status = 200) &&
-          (that.statusText = 'OK') &&
-          (that.responseText = JSON.stringify(data, null, 4))
+        : (that.status = 200) && (that.statusText = 'OK') && (that.responseText = JSON.stringify(data, null, 4))
     }
     function stateDone() {
       that.readyState = Mock.XHR.DONE
@@ -194,10 +196,4 @@ const getPostData = (options) => {
   return data
 }
 
-export {
-  Mock,
-  dataWithStatusCode,
-  getQueryParameters,
-  getPostParameters,
-  getPostData
-}
+export { Mock, dataWithStatusCode, getQueryParameters, getPostParameters, getPostData }

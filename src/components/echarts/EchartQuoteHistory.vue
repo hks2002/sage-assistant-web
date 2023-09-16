@@ -1,14 +1,15 @@
 <!--
- * @Author         : Robert Huang<56649783@qq.com>
- * @Date           : 2022-03-25 11:01:23
- * @LastEditors    : Robert Huang<56649783@qq.com>
- * @LastEditTime   : 2022-12-16 17:46:52
- * @FilePath       : \web2\src\components\echarts\EchartQuoteHistory.vue
- * @CopyRight      : Dedienne Aerospace China ZhuHai
+* @Author                : Robert Huang<56649783@qq.com>
+* @CreatedDate           : 2022-03-25 11:01:00
+* @LastEditors           : Robert Huang<56649783@qq.com>
+* @LastEditDate          : 2023-08-27 23:33:31
+* @FilePath              : sage-assistant-web/src/components/echarts/EchartQuoteHistory.vue
+* @CopyRight             : Dedienne Aerospace China ZhuHai
 -->
+
 <template>
   <q-item>
-    <div id="EchartQuoteHistory" style="height: 100%; width: 100%" />
+    <base-echart :e-chart-option="eChartOption" />
     <q-inner-loading :showing="showLoading">
       <q-spinner-ios size="50px" color="primary" />
     </q-inner-loading>
@@ -25,8 +26,7 @@ import {
   defaultToolbox,
   defaultTooltip,
   defaultXAxisTime,
-  defaultYAxisUSD,
-  echarts
+  defaultYAxisUSD
 } from '@/assets/echartsCfg.js'
 import _forEach from 'lodash/forEach'
 import _get from 'lodash/get'
@@ -34,8 +34,9 @@ import _groupBy from 'lodash/groupBy'
 import _map from 'lodash/map'
 import _sumBy from 'lodash/sumBy'
 import _uniq from 'lodash/uniq'
-import { onActivated, onBeforeUnmount, onDeactivated, onMounted, ref, watch } from 'vue'
+import { onMounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
+import BaseEchart from './BaseEchart.vue'
 
 const props = defineProps({
   pnRoot: String
@@ -46,7 +47,7 @@ const { t } = useI18n()
 const showLoading = ref(false)
 
 // echart vars
-let eChart = null
+let eChartOption = {}
 let data = []
 let legend = []
 let dataByLegend = []
@@ -54,25 +55,25 @@ let dataCountedByLegend = []
 let dataset = []
 let series = []
 const dimensions = [
-  'SalesSite',
-  'QuoteNO',
-  'QuoteDate',
+  'salesSite',
+  'quoteNO',
+  'quoteDate',
   'PN',
-  'Qty',
-  'Currency',
-  'NetPrice',
+  'qty',
+  'currency',
+  'netPrice',
   'USD',
-  'Rate',
-  'TradeTerm',
-  'CustomerCode',
-  'CustomerName',
-  'OrderFlag',
-  'OrderNO'
+  'rate',
+  'tradeTerm',
+  'customerCode',
+  'customerName',
+  'orderFlag',
+  'orderNO'
 ]
 let dataZoomStartValue = '1900-01-01'
 
 // actions
-const doUpdate = () => {
+function doUpdate() {
   if (!props.pnRoot) return
 
   showLoading.value = true
@@ -88,107 +89,78 @@ const doUpdate = () => {
     })
 }
 
-const prepareData = () => {
+function prepareData() {
   const len = data.length
   if (len >= 20) {
-    dataZoomStartValue = _get(data[len - 20], 'QuoteDate')
+    dataZoomStartValue = _get(data[len - 20], 'quoteDate')
   } else if (len > 0) {
-    dataZoomStartValue = _get(data[0], 'QuoteDate')
+    dataZoomStartValue = _get(data[0], 'quoteDate')
   }
 
-  legend = _uniq(_map(data, 'SalesSite'))
-  dataByLegend = _groupBy(data, 'SalesSite')
+  legend = _uniq(_map(data, 'salesSite'))
+  dataByLegend = _groupBy(data, 'salesSite')
   dataCountedByLegend = []
   dataset = []
   series = []
 
   _forEach(dataByLegend, (value) => {
     const o = {}
-    Object.defineProperty(o, 'SalesSite', {
+    Object.defineProperty(o, 'salesSite', {
       enumerable: true,
-      value: _get(value[0], 'SalesSite')
+      value: _get(value[0], 'salesSite')
     })
-    Object.defineProperty(o, 'Qty', {
+    Object.defineProperty(o, 'qty', {
       enumerable: true,
-      value: _sumBy(value, 'Qty')
+      value: _sumBy(value, 'qty')
     })
     dataCountedByLegend.push(o)
   })
 
   legend.forEach((value, index) => {
     dataset[index] = { source: dataByLegend[value] }
-    series[index] = defaultLineSerial(index, value, '{@NetPrice} {@Currency}', dimensions, 'QuoteDate', 'USD')
+    series[index] = defaultLineSerial(index, value, '{@netPrice} {@currency}', dimensions, 'quoteDate', 'USD')
   })
 
   // add pie
   dataset.push({ source: dataCountedByLegend })
   const seriesBySite = AttachedPieSerial(
     dataset.length - 1,
-    '{@SalesSite} \nQty:{@Qty}\n{d}%',
-    ['SalesSite', 'Qty'],
-    'SalesSite',
-    'Qty'
+    '{@salesSite} \nQty:{@qty}\n{d}%',
+    ['salesSite', 'qty'],
+    'salesSite',
+    'qty'
   )
   series.push(seriesBySite)
 }
 
-const setEchart = () => {
+function setEchart() {
   // data is ready,set echart option
-  eChart.setOption(
-    {
-      title: {
-        text: t('Label.Quotes History'),
-        //subtext: t('label.Currency Rate Data From State Administration of Foreign Exchange'),
-        left: 'center'
-      },
-      legend: defaultLegend,
-      grid: [{ left: '5%', right: '25%' }],
-      toolbox: defaultToolbox(dimensions, data, t('Label.Quotes History')),
-      tooltip: defaultTooltip,
-      dataZoom: defaultDataZoom('x', dataZoomStartValue),
-      xAxis: defaultXAxisTime,
-      yAxis: defaultYAxisUSD,
-      dataset: dataset,
-      series: series
+  eChartOption = {
+    title: {
+      text: t('S.QUOTES HISTORY'),
+      //subtext: t('label.Currency Rate Data From State Administration of Foreign Exchange'),
+      left: 'center'
     },
-    true
-  )
-}
-
-const resize = () => {
-  eChart.resize()
+    legend: defaultLegend,
+    grid: [{ left: '5%', right: '25%' }],
+    toolbox: defaultToolbox(dimensions, data, t('S.QUOTES HISTORY')),
+    tooltip: defaultTooltip,
+    dataZoom: defaultDataZoom('x', dataZoomStartValue),
+    xAxis: defaultXAxisTime,
+    yAxis: defaultYAxisUSD,
+    dataset: dataset,
+    series: series
+  }
 }
 
 // events
 onMounted(() => {
-  eChart = echarts.init(document.getElementById('EchartQuoteHistory'))
-  doUpdate(props.pnRoot)
+  doUpdate()
 })
 
-onBeforeUnmount(() => {
-  eChart.dispose()
+watch(props, (value, oldValue) => {
+  console.debug('watch:', oldValue, '--->', value)
+
+  doUpdate()
 })
-
-onActivated(() => {
-  // when use keep alive, must use activated/deactivated
-  window.addEventListener('resize', resize)
-  resize()
-})
-
-onDeactivated(() => {
-  // when use keep alive, must use activated/deactivated
-  window.removeEventListener('resize', resize)
-})
-
-watch(
-  // Don't use watchEffect, it run before Mounted.
-  () => [props.pnRoot],
-  (...newAndold) => {
-    // newAndold[1]:old
-    // newAndold[0]:new
-    console.debug('watch:' + newAndold[1] + ' ---> ' + newAndold[0])
-
-    doUpdate()
-  }
-)
 </script>

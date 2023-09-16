@@ -1,3 +1,12 @@
+<!--
+* @Author                : Robert Huang<56649783@qq.com>
+* @CreatedDate           : 2023-06-23 02:56:00
+* @LastEditors           : Robert Huang<56649783@qq.com>
+* @LastEditDate          : 2023-06-23 02:56:41
+* @FilePath              : src/pages/StockSummaryPage.vue
+* @CopyRight             : Dedienne Aerospace China ZhuHai
+-->
+
 <template>
   <q-page>
     <ExceptionLottie :ErrorCode="403" v-if="!isAuthorized('CONSSAR')" />
@@ -10,8 +19,8 @@
         hide-bottom-space
         debounce="1000"
         class="col-grow"
-        :label="$t('Input PN (support supplier\'s PN also) to filter-----Click PN to see its history')"
-        :hint="$t('All special character (\',\' \'.\' \'/\' \'-\' \'_\') will be ignored to match.')"
+        :label="$t('S.FILTER_PN')"
+        :hint="$t('S.FILTER_PN_HINT')"
         input-class="text-uppercase"
         v-model="PNfilter"
       >

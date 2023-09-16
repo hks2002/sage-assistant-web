@@ -1,17 +1,16 @@
-/***
- * @Author         : Robert Huang<56649783@qq.com>
- * @Date           : 2022-04-01 10:30:43
- * @LastEditors    : Robert Huang<56649783@qq.com>
- * @LastEditTime   : 2022-05-28 23:17:00
- * @FilePath       : \web2\src\mock\services\financials.js
- * @CopyRight      : Dedienne Aerospace China ZhuHai
- */
+/*********************************************************************************************************************
+ * @Author                : Robert Huang<56649783@qq.com>                                                            *
+ * @CreatedDate           : 2022-04-01 10:30:00                                                                      *
+ * @LastEditors           : Robert Huang<56649783@qq.com>                                                            *
+ * @LastEditDate          : 2023-06-15 16:38:01                                                                      *
+ * @FilePath              : src/mock/services/invoicePay.js                                                          *
+ * @CopyRight             : Dedienne Aerospace China ZhuHai                                                          *
+ ********************************************************************************************************************/
+
 import { getQueryParameters } from '@/assets/mockExt'
 import Mock from 'mockjs'
 
 Mock.mock(RegExp('^(/Data/FinancialInvoicePay)' + '.*'), (options) => {
-  console.debug('\u001b[35m' + '[Mocking] ', 'FinancialInvoicePay')
-
   const query = getQueryParameters(options)
   const CustomerCode = query['CustomerCode']
 
@@ -51,8 +50,6 @@ Mock.mock(RegExp('^(/Data/FinancialInvoicePay)' + '.*'), (options) => {
 })
 
 Mock.mock(RegExp('^(/Data/FinancialInvoicePayPro)' + '.*'), (options) => {
-  console.debug('\u001b[35m' + '[Mocking] ', 'FinancialInvoicePay')
-
   const query = getQueryParameters(options)
   const CustomerCode = query['CustomerCode']
 

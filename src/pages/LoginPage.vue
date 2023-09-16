@@ -1,3 +1,12 @@
+<!--
+* @Author                : Robert Huang<56649783@qq.com>
+* @CreatedDate           : 2022-05-24 09:38:00
+* @LastEditors           : Robert Huang<56649783@qq.com>
+* @LastEditDate          : 2023-09-06 11:56:23
+* @FilePath              : sage-assistant-web/src/pages/LoginPage.vue
+* @CopyRight             : Dedienne Aerospace China ZhuHai
+-->
+
 <template>
   <q-page class="flex flex-center" style="height: 100%">
     <q-card style="width: 60vw; min-width: 300px" :flat="!isLgXs">
@@ -11,10 +20,10 @@
         <q-card-section align="center" class="col-4">
           <!-- horizontal=true make col inactive -->
           <div class="text-h3 text-primary">
-            {{ $t('Sage Assistant') }}
+            {{ $t('W.APP_NAME') }}
           </div>
           <q-banner dense class="bg-white text-red text-subtitle1" style="min-height: 100px">
-            {{ $t(loginMessage) }}
+            {{ $t('{VAR_HOLD}', { VAR_HOLD: loginMessage }) }}
           </q-banner>
           <q-form>
             <!--  -->
@@ -22,7 +31,7 @@
               v-model="username"
               standout="bg-teal text-white"
               bottom-slots
-              :label="$t('Your PC Account')"
+              :label="$t('S.LOGIN_NAME_NOTE')"
               autocomplete="username"
               @keydown="checkEnterKey($event)"
             >
@@ -37,7 +46,7 @@
               class="login-input"
               standout="bg-teal text-white"
               bottom-slots
-              :label="$t('Password')"
+              :label="$t('W.PASSWORD')"
               :type="isPwd ? 'password' : 'text'"
               autocomplete="current-password"
               @keydown="checkEnterKey($event)"
@@ -64,7 +73,7 @@
               style="font-size: large"
               @click="doLogin"
             >
-              {{ $t('Login') }}
+              {{ $t('W.LOGIN') }}
             </q-btn>
           </q-form>
         </q-card-section>
@@ -75,7 +84,7 @@
 
 <script setup>
 import { fetchAuthorityData, fetchUserProfiles } from '@/assets/auth'
-import { axios } from '@/assets/axios'
+import { axiosPost } from '@/assets/axiosActions'
 import LottiePlayer from '@/components/lottie/LottiePlayer.vue'
 import { SessionStorage, useQuasar } from 'quasar'
 import { onMounted, ref } from 'vue'
@@ -139,24 +148,29 @@ const checkEnterKey = (event) => {
 const doLogin = async () => {
   loading.value = true
   const token = authToken('basic', username.value, password.value)
+  SessionStorage.set('authorization', token)
 
-  await axios
-    .post('/auth/login/submit', {}, { headers: { authorization: token, accept: 'application/json' } })
+  await axiosPost('/Data/Login', { username: username.value })
     .then(
       (response) => {
-        if (response.status === 200) {
+        if (response.success) {
+          loginMessage.value = t('S.LOAD_PROFILE')
+
           Promise.all([fetchUserProfiles(), fetchAuthorityData()]).then(() => {
-            SessionStorage.set('authorization', token)
             $router.push({ name: 'Home' })
           })
         } else {
           SessionStorage.remove('authorization')
-          loginMessage.value = t('Oops!')
+          loginMessage.value = response.msg
         }
       },
       (error) => {
         SessionStorage.remove('authorization')
-        loginMessage.value = error.response.data.$diagnoses[0].$message
+        if (error.msg) {
+          loginMessage.value = error.msg
+        } else {
+          loginMessage.value = t('W.OOPS')
+        }
       }
     )
     .finally(() => {

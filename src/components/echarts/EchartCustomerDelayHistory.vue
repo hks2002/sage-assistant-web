@@ -1,6 +1,15 @@
+<!--
+* @Author                : Robert Huang<56649783@qq.com>
+* @CreatedDate           : 2023-06-14 15:54:00
+* @LastEditors           : Robert Huang<56649783@qq.com>
+* @LastEditDate          : 2023-08-27 23:33:05
+* @FilePath              : sage-assistant-web/src/components/echarts/EchartCustomerDelayHistory.vue
+* @CopyRight             : Dedienne Aerospace China ZhuHai
+-->
+
 <template>
   <q-item>
-    <div id="EchartCustomerDelayHistory" style="height: 100%; width: 100%" />
+    <base-echart :e-chart-option="eChartOption" />
     <q-inner-loading :showing="showLoading">
       <q-spinner-ios size="50px" color="primary" />
     </q-inner-loading>
@@ -9,22 +18,23 @@
 
 <script setup>
 import { axiosGet } from '@/assets/axiosActions'
+import { jsonToMultiLine } from '@/assets/dataUtils'
 import {
   defaultDataZoom,
   defaultLegend,
   defaultToolbox,
   defaultTooltip,
   defaultXAxisTime,
-  echarts,
-  jsonToMultLine,
   mergerOption
-} from '@/assets/echartsCfg.js'
+} from '@/assets/echartsCfg'
+import BaseEchart from './BaseEchart.vue'
+
 import _forEach from 'lodash/forEach'
 import _groupBy from 'lodash/groupBy'
 import _map from 'lodash/map'
 import _uniq from 'lodash/uniq'
 import { date } from 'quasar'
-import { onActivated, onBeforeUnmount, onDeactivated, onMounted, ref, watch } from 'vue'
+import { onMounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 const props = defineProps({
@@ -38,42 +48,39 @@ const { t } = useI18n()
 const showLoading = ref(false)
 
 // echart vars
-let eChart = null
+let eChartOption = {}
 let data = []
 let legend = []
 let dataByLegend = []
 let dataset = []
 let series = []
 const dimensions = [
-  'Site',
-  'CustomerCode',
-  'OrderNO',
-  'ProjectNO',
+  'site',
+  'customerCode',
+  'orderNO',
+  'projectNO',
   'PN',
-  'Description',
-  'ShipDate',
-  'DemandDate',
-  'OrderDate',
-  'DeliveryNO',
-  'DaysDelay'
+  'description',
+  'shipDate',
+  'demandDate',
+  'orderDate',
+  'deliveryNO',
+  'daysDelay'
 ]
 
 // actions
-const doUpdate = () => {
+function doUpdate() {
   if (!props.customerCode || !date.isValid(props.dateFrom) || !date.isValid(props.dateTo)) {
     return
   }
 
   showLoading.value = true
 
-  axiosGet(
-    '/Data/CustomerDelayHistory?CustomerCode=' +
-      props.customerCode +
-      '&DateFrom=' +
-      props.dateFrom +
-      '&DateTo=' +
-      props.dateTo
-  )
+  axiosGet('/Data/CustomerDelayHistory', {
+    customerCode: props.customerCode,
+    dateFrom: props.dateFrom,
+    dateTo: props.dateTo
+  })
     .then((response) => {
       data = response
       prepareData()
@@ -84,9 +91,9 @@ const doUpdate = () => {
     })
 }
 
-const prepareData = () => {
-  legend = _uniq(_map(data, 'Site'))
-  dataByLegend = _groupBy(data, 'Site')
+function prepareData() {
+  legend = _uniq(_map(data, 'site'))
+  dataByLegend = _groupBy(data, 'site')
   dataset = []
   series = []
 
@@ -102,88 +109,55 @@ const prepareData = () => {
       tooltip: {
         trigger: 'item',
         formatter: (params) => {
-          return jsonToMultLine(dimensions, params.data)
+          return jsonToMultiLine(dimensions, params.data)
         }
       },
       dimensions: dimensions,
       encode: {
-        x: 'ShipDate',
-        y: 'DaysDelay'
+        x: 'shipDate',
+        y: 'daysDelay'
       }
     }
   })
 }
 
-const setEchart = () => {
+function setEchart() {
   // data is ready,set echart option
-  eChart.setOption(
-    {
-      title: {
-        text: `${t('Label.Delay History')} ( ${props.dateFrom}-->${props.dateTo})`,
-        subtext: '',
-        left: 'center'
-      },
-      legend: defaultLegend,
-      toolbox: defaultToolbox(dimensions, data, `${t('Label.Delay History')} ( ${props.dateFrom}-->${props.dateTo})`),
-      tooltip: defaultTooltip,
-      dataZoom: defaultDataZoom('x'),
-      xAxis: mergerOption(defaultXAxisTime, { name: 'Except' }),
-      yAxis: {
-        min: 0,
-        max: function (value) {
-          if (isNaN(value.max)) {
-            return 90
-          } else {
-            return null
-          }
-        },
-        minInterval: 1
-      },
-      dataset: dataset,
-      series: series
+  eChartOption = {
+    title: {
+      text: `${t('S.DELAY_HISTORY')} ( ${props.dateFrom}-->${props.dateTo})`,
+      subtext: '',
+      left: 'center'
     },
-    true
-  )
-}
-
-const resize = () => {
-  eChart.resize()
+    legend: defaultLegend,
+    toolbox: defaultToolbox(dimensions, data, `${t('S.DELAY_HISTORY')} ( ${props.dateFrom}-->${props.dateTo})`),
+    tooltip: defaultTooltip,
+    dataZoom: defaultDataZoom('x'),
+    xAxis: mergerOption(defaultXAxisTime, { name: 'Except' }),
+    yAxis: {
+      min: 0,
+      max: function (value) {
+        if (isNaN(value.max)) {
+          return 90
+        } else {
+          return null
+        }
+      },
+      minInterval: 1
+    },
+    dataset: dataset,
+    series: series
+  }
 }
 
 // events
 onMounted(() => {
-  eChart = echarts.init(document.getElementById('EchartCustomerDelayHistory'))
-  // when not use keep alive, use mounted/unmounted
-  window.addEventListener('resize', resize)
   doUpdate()
 })
 
-onBeforeUnmount(() => {
-  // when not use keep alive, use mounted/unmounted
-  window.removeEventListener('resize', resize)
-  eChart.dispose()
+watch(props, (value, oldValue) => {
+  console.debug('watch:', oldValue, '--->', value)
+
+  doUpdate()
 })
-
-onActivated(() => {
-  // when use keep alive, must use activated/deactivated
-  window.addEventListener('resize', resize)
-  resize()
-})
-
-onDeactivated(() => {
-  // when use keep alive, must use activated/deactivated
-  window.removeEventListener('resize', resize)
-})
-
-watch(
-  // Don't use watchEffect, it run before Mounted.
-  () => [props.customerCode, props.dateFrom, props.dateTo],
-  (...newAndold) => {
-    // newAndold[1]:old
-    // newAndold[0]:new
-    console.debug('watch:' + newAndold[1] + ' ---> ' + newAndold[0])
-
-    doUpdate()
-  }
-)
 </script>

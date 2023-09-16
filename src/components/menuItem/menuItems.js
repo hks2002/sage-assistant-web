@@ -1,20 +1,22 @@
-/***
- * @Author         : Robert Huang<56649783@qq.com>
- * @Date           : 2022-05-26 17:31:51
- * @LastEditors    : Robert Huang<56649783@qq.com>
- * @LastEditTime   : 2022-05-28 23:10:20
- * @FilePath       : \web2\src\components\menuItem\menuItems.js
- * @CopyRight      : Dedienne Aerospace China ZhuHai
- */
+/*********************************************************************************************************************
+ * @Author                : Robert Huang<56649783@qq.com>                                                            *
+ * @CreatedDate           : 2022-05-26 17:31:00                                                                      *
+ * @LastEditors           : Robert Huang<56649783@qq.com>                                                            *
+ * @LastEditDate          : 2023-09-05 10:34:51                                                                      *
+ * @FilePath              : sage-assistant-web/src/components/menuItem/menuItems.js                                  *
+ * @CopyRight             : Dedienne Aerospace China ZhuHai                                                          *
+ ********************************************************************************************************************/
+
 import { i18n } from '@/boot/i18n'
 
 const { t } = i18n.global
 
 /**
- * name: English text only, it used at router.push(),
- *       and cloulc be erapped by i18n function also.
+ * name: ❗️❗️❗️the name should match to xxxPage.vue name, blank will be ignored❗️❗️❗️.
+ *       English text only, it used at router.push(), work with paras name
+ *       and could be wrapped by i18n function also.
  *       such as $t(name), t(name)
- * title: Not neccesary, mainly purpose is remaind developer don't foget to write i18n translation text,
+ * title: Not necessary, mainly purpose is remind developer don't forget to write i18n translation text,
  *        when use global search t('*') to extracting all text needed by i18n files.
  */
 
@@ -32,7 +34,7 @@ export default [
   {
     path: '/Todo',
     name: 'Todo',
-    title: 'Todo',
+    title: t('W.TODO'),
     caption: '',
     icon: 'fas fa-tasks',
     split: false,
@@ -42,7 +44,7 @@ export default [
   {
     path: '/Products',
     name: 'Products',
-    title: 'Products',
+    title: t('W.PRODUCTS'),
     caption: '',
     icon: 'fas fa-cubes',
     split: false,
@@ -51,7 +53,7 @@ export default [
   },
   {
     name: 'Stock',
-    title: 'Stock',
+    title: t('W.STOCK'),
     caption: '',
     icon: 'fas fa-th',
     split: false,
@@ -61,7 +63,7 @@ export default [
       {
         path: '/Stock',
         name: 'Stock Summary',
-        title: 'Summary',
+        title: t('W.SUMMARY'),
         caption: '',
         icon: 'fas fa-th',
         split: false,
@@ -70,7 +72,7 @@ export default [
       {
         path: '/Stock',
         name: 'Stock History',
-        title: 'History',
+        title: t('W.HISTORY'),
         caption: '',
         icon: 'fas fa-th',
         split: false,
@@ -81,7 +83,7 @@ export default [
   {
     path: '/Customers',
     name: 'Customers',
-    title: 'Customers',
+    title: t('W.CUSTOMERS'),
     caption: '',
     icon: 'fas fa-users',
     split: false,
@@ -91,7 +93,7 @@ export default [
   {
     path: '/Sales',
     name: 'Sales',
-    title: 'Sales',
+    title: t('W.SALES'),
     caption: '',
     icon: 'fas fa-trophy',
     split: false,
@@ -101,7 +103,7 @@ export default [
   {
     path: '/Suppliers',
     name: 'Suppliers',
-    title: 'Suppliers',
+    title: t('W.SUPPLIERS'),
     caption: '',
     icon: 'fas fa-puzzle-piece',
     split: false,
@@ -111,7 +113,7 @@ export default [
   {
     path: '/Purchases',
     name: 'Purchases',
-    title: 'Purchases',
+    title: t('W.PURCHASES'),
     caption: '',
     icon: 'fas fa-shopping-cart',
     split: false,
@@ -121,7 +123,7 @@ export default [
   {
     path: '/Logistics',
     name: 'Logistics',
-    title: 'Logistics',
+    title: t('W.LOGISTICS'),
     caption: '',
     icon: 'fas fa-truck',
     split: false,
@@ -129,8 +131,8 @@ export default [
     enable: false
   },
   {
-    name: 'Financials',
-    title: 'Financials',
+    name: 'Financial',
+    title: t('W.FINANCIAL'),
     caption: '',
     icon: 'fas fa-dollar-sign',
     split: false,
@@ -140,7 +142,7 @@ export default [
       {
         path: '/Fapiao',
         name: 'Fapiao',
-        title: 'Fapiao',
+        title: t('W.FAPIAO'),
         caption: '',
         icon: 'fas fa-dollar-sign',
         split: false,
@@ -149,7 +151,7 @@ export default [
       {
         path: '/InvoicePay',
         name: 'Invoice Pay',
-        title: 'InvoicePay',
+        title: t('W.INVOICE_PAY'),
         caption: '',
         icon: 'fas fa-dollar-sign',
         split: false,
@@ -158,7 +160,7 @@ export default [
       {
         path: '/Balance',
         name: 'Balance',
-        title: 'Balance',
+        title: t('W.BALANCE'),
         caption: '',
         icon: 'fas fa-dollar-sign',
         split: false,
@@ -166,30 +168,30 @@ export default [
       }
     ]
   },
-  {
-    name: 'Analysis',
-    title: 'Analysis',
-    caption: '',
-    icon: 'fas fa-search-dollar',
-    split: false,
-    expansion: true,
-    enable: true,
-    children: [
-      {
-        path: '/QuoteSalesCost',
-        name: 'Quote Sales Cost',
-        title: 'Quote Sales Cost',
-        caption: '',
-        icon: 'fas fa-search-dollar',
-        split: false,
-        enable: true
-      }
-    ]
-  },
+  // {
+  //   name: 'Analysis',
+  //   title: t('W.ANALYSIS'),
+  //   caption: '',
+  //   icon: 'fas fa-search-dollar',
+  //   split: false,
+  //   expansion: true,
+  //   enable: true,
+  //   children: [
+  //     {
+  //       path: '/QuoteSalesCost',
+  //       name: 'Quote Sales Cost',
+  //       title: t('W.QUOTE_SALES_COST'),
+  //       caption: '',
+  //       icon: 'fas fa-search-dollar',
+  //       split: false,
+  //       enable: true
+  //     }
+  //   ]
+  // },
   {
     path: '/Reports',
     name: 'Reports',
-    title: 'Reports',
+    title: t('W.REPORTS'),
     caption: '',
     icon: 'fas fa-print',
     split: false,
@@ -199,7 +201,7 @@ export default [
   {
     path: '/About',
     name: 'About',
-    title: 'About',
+    title: t('W.ABOUT'),
     caption: '',
     icon: 'fas fa-info-circle',
     split: true,

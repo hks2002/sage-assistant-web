@@ -1,11 +1,12 @@
 <!--
- * @Author         : Robert Huang<56649783@qq.com>
- * @Date           : 2022-05-29 19:44:59
- * @LastEditors    : Robert Huang<56649783@qq.com>
- * @LastEditTime   : 2022-10-09 17:49:49
- * @FilePath       : \web2\src\components\lottie\ExceptionLottie.vue
- * @CopyRight      : Dedienne Aerospace China ZhuHai
+* @Author                : Robert Huang<56649783@qq.com>
+* @CreatedDate           : 2022-05-29 19:44:00
+* @LastEditors           : Robert Huang<56649783@qq.com>
+* @LastEditDate          : 2023-06-10 09:59:52
+* @FilePath              : src/components/lottie/ExceptionLottie.vue
+* @CopyRight             : Dedienne Aerospace China ZhuHai
 -->
+
 <template>
   <LottiePlayer :animationLink="'/json/' + ErrorCode + '.json'" :height="400" :width="400" class="flex fixed-center" />
 </template>

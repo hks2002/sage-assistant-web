@@ -1,6 +1,15 @@
+<!--
+* @Author                : Robert Huang<56649783@qq.com>
+* @CreatedDate           : 2023-06-22 21:33:00
+* @LastEditors           : Robert Huang<56649783@qq.com>
+* @LastEditDate          : 2023-08-28 00:02:43
+* @FilePath              : sage-assistant-web/src/components/echarts/EchartSupplierOpenAmount.vue
+* @CopyRight             : Dedienne Aerospace China ZhuHai
+-->
+
 <template>
   <q-item>
-    <div id="EchartSupplierOpenAmount" style="height: 100%; width: 100%" />
+    <base-echart :e-chart-option="eChartOption" />
     <q-inner-loading :showing="showLoading">
       <q-spinner-ios size="50px" color="primary" />
     </q-inner-loading>
@@ -9,13 +18,14 @@
 
 <script setup>
 import { axiosGet } from '@/assets/axiosActions'
-import { defaultBarStackedSerial, defaultLegend, defaultToolbox, defaultTooltip, echarts } from '@/assets/echartsCfg.js'
+import { defaultBarStackedSerial, defaultLegend, defaultToolbox, defaultTooltip } from '@/assets/echartsCfg.js'
 import _forEach from 'lodash/forEach'
 import _groupBy from 'lodash/groupBy'
 import _map from 'lodash/map'
 import _uniq from 'lodash/uniq'
-import { onActivated, onBeforeUnmount, onDeactivated, onMounted, ref, watch } from 'vue'
+import { onMounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
+import BaseEchart from './BaseEchart.vue'
 
 const props = defineProps({
   supplierCode: String,
@@ -27,22 +37,24 @@ const { t } = useI18n()
 const showLoading = ref(false)
 
 // echart vars
-let eChart = null
+let eChartOption = {}
 let data = []
 let legend = []
 let dataByLegend = []
 let sites = []
 let dataset = []
 let series = []
-const dimensions = ['Site', 'SupplierCode', 'Amount', 'Currency', 'USD', 'Rate']
+const dimensions = ['site', 'supplierCode', 'amount', 'currency', 'USD', 'rate']
 
 // actions
-const doUpdate = () => {
+function doUpdate() {
   if (!props.supplierCode) return
 
   showLoading.value = true
 
-  axiosGet('/Data/SupplierOpenAmount?SupplierCode=' + props.supplierCode)
+  axiosGet('/Data/SupplierOpenAmount', {
+    supplierCode: props.supplierCode
+  })
     .then((response) => {
       data = response
       prepareData()
@@ -53,88 +65,55 @@ const doUpdate = () => {
     })
 }
 
-const prepareData = () => {
-  legend = _uniq(_map(data, 'Currency'))
-  dataByLegend = _groupBy(data, 'Currency')
-  sites = _uniq(_map(data, 'Site'))
+function prepareData() {
+  legend = _uniq(_map(data, 'currency'))
+  dataByLegend = _groupBy(data, 'currency')
+  sites = _uniq(_map(data, 'site'))
   dataset = []
   series = []
 
   _forEach(legend, (value, index) => {
     dataset[index] = { source: dataByLegend[value] }
-    series[index] = defaultBarStackedSerial(index, value, '{@USD}', dimensions, 'Site', 'USD')
+    series[index] = defaultBarStackedSerial(index, value, '{@USD}', dimensions, 'site', 'USD')
   })
 }
 
-const setEchart = () => {
+function setEchart() {
   // data is ready,set echart option
-  eChart.setOption(
-    {
-      title: {
-        text: t('Label.Open Amount(All)'),
-        subtext: '',
-        left: 'center'
-      },
-      legend: defaultLegend,
-      toolbox: defaultToolbox(dimensions, data, t('Label.Open Amount(All)')),
-      tooltip: defaultTooltip,
-      xAxis: {
-        type: 'category',
-        data: sites
-      },
-      yAxis: {
-        type: 'value',
-        name: 'USD',
-        nameLocation: 'start',
-        axisLabel: {
-          formatter: '{value}'
-        }
-      },
-      dataset: dataset,
-      series: series
+  eChartOption = {
+    title: {
+      text: t('S.OPEN_AMOUNT_ALL'),
+      subtext: '',
+      left: 'center'
     },
-    true
-  )
-}
-
-const resize = () => {
-  eChart.resize()
+    legend: defaultLegend,
+    toolbox: defaultToolbox(dimensions, data, t('S.OPEN_AMOUNT_ALL')),
+    tooltip: defaultTooltip,
+    xAxis: {
+      type: 'category',
+      data: sites
+    },
+    yAxis: {
+      type: 'value',
+      name: 'USD',
+      nameLocation: 'start',
+      axisLabel: {
+        formatter: '{value}'
+      }
+    },
+    dataset: dataset,
+    series: series
+  }
 }
 
 // events
 onMounted(() => {
-  eChart = echarts.init(document.getElementById('EchartSupplierOpenAmount'))
-  // when not use keep alive, use mounted/unmounted
-  window.addEventListener('resize', resize)
   doUpdate()
 })
 
-onBeforeUnmount(() => {
-  // when not use keep alive, use mounted/unmounted
-  window.removeEventListener('resize', resize)
-  eChart.dispose()
+watch(props, (value, oldValue) => {
+  console.debug('watch:', oldValue, '--->', value)
+
+  doUpdate()
 })
-
-onActivated(() => {
-  // when use keep alive, must use activated/deactivated
-  window.addEventListener('resize', resize)
-  resize()
-})
-
-onDeactivated(() => {
-  // when use keep alive, must use activated/deactivated
-  window.removeEventListener('resize', resize)
-})
-
-watch(
-  // Don't use watchEffect, it run before Mounted.
-  () => [props.supplierCode, props.dateFrom, props.dateTo],
-  (...newAndold) => {
-    // newAndold[1]:old
-    // newAndold[0]:new
-    console.debug('watch:' + newAndold[1] + ' ---> ' + newAndold[0])
-
-    doUpdate()
-  }
-)
 </script>

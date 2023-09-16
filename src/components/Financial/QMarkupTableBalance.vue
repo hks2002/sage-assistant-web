@@ -1,13 +1,23 @@
+<!--
+* @Author                : Robert Huang<56649783@qq.com>
+* @CreatedDate           : 2023-06-22 22:48:00
+* @LastEditors           : Robert Huang<56649783@qq.com>
+* @LastEditDate          : 2023-09-03 01:09:34
+* @FilePath              : sage-assistant-web/src/components/Financial/QMarkupTableBalance.vue
+* @CopyRight             : Dedienne Aerospace China ZhuHai
+-->
+
 <template>
   <!-- set height and width in parent -->
   <q-markup-table dense>
     <thead style="position: sticky; top: 0px; z-index: 1">
       <tr>
         <td :colspan="colspan" class="bg-teal text-h6 text-white shadow-2">
+          {{ $t('F.AccountNO') }}:
           {{
-            $t('AccountNO: {accountNO} Balance of {year}', {
-              accountNO: accountNO,
-              year: year
+            $t('S.{ACCOUNT_NO} BALANCE OF {YEAR}', {
+              ACCOUNT_NO: accountNO,
+              YEAR: year
             })
           }}
           <q-btn dense flat icon="fas fa-download" @click="download()" />
@@ -15,9 +25,8 @@
       </tr>
       <tr class="bg-primary text-white">
         <th class="text-center text-caption">#</th>
-        <th class="text-left">Site</th>
-        <th class="text-left">AccountNO</th>
-        <th class="text-left">Currency</th>
+        <th class="text-left">{{ $t('F.AccountNO') }}</th>
+        <th class="text-left">{{ $t('F.Currency') }}</th>
         <template v-for="month in 13" :key="month">
           <template v-if="showBalance">
             <th class="text-right">B{{ month - 1 }}</th>
@@ -43,27 +52,26 @@
     <tbody>
       <tr v-for="(item, index) in balanceItems" :key="index">
         <td class="text-center">{{ index }}</td>
-        <td>{{ item['Site'] }}</td>
-        <td class="text-left">{{ item['AccountNO'] }}</td>
-        <td class="text-left">{{ item['Currency'] }}</td>
+        <td class="text-left">{{ item['accountNO'] }}</td>
+        <td class="text-left">{{ item['currency'] }}</td>
         <template v-for="month in 13" :key="month">
           <template v-if="showBalance">
-            <td class="text-right">{{ item['B' + (month - 1)] }}</td>
+            <td class="text-right">{{ item['b' + (month - 1)] }}</td>
           </template>
         </template>
         <template v-for="month in 13" :key="month">
           <template v-if="showCredit">
-            <td class="text-right">{{ item['C' + (month - 1)] }}</td>
+            <td class="text-right">{{ item['c' + (month - 1)] }}</td>
           </template>
         </template>
         <template v-for="month in 13" :key="month">
           <template v-if="showDebit">
-            <td class="text-right">{{ item['D' + (month - 1)] }}</td>
+            <td class="text-right">{{ item['d' + (month - 1)] }}</td>
           </template>
         </template>
         <template v-for="month in 13" :key="month">
           <template v-if="showMovement">
-            <td class="text-right">{{ item['M' + (month - 1)] }}</td>
+            <td class="text-right">{{ item['m' + (month - 1)] }}</td>
           </template>
         </template>
       </tr>
@@ -108,7 +116,11 @@ const doUpdate = () => {
   colspan.value = props.showMovement ? colspan.value + 13 : colspan.value
   colspan.value = props.showBalance ? colspan.value + 13 : colspan.value
 
-  axiosGet('/Data/FinancialBalance' + '?Site=' + props.site + '&AccountNO=' + props.accountNO + '&Year=' + props.year)
+  axiosGet('/Data/FinancialBalance', {
+    Site: props.site,
+    AccountNO: props.accountNO,
+    Year: props.year
+  })
     .then((response) => {
       balanceItems.value = response
     })
@@ -118,7 +130,7 @@ const doUpdate = () => {
 }
 
 const download = () => {
-  const header = ['Site', 'AccountNO', 'Currency']
+  const header = ['AccountNO', 'Currency']
   for (let idx = 0; idx <= 12; idx++) {
     if (props.showBalance) {
       header.push('B' + idx)
@@ -142,14 +154,9 @@ onMounted(() => {
   doUpdate()
 })
 
-// Don't use watchEffect, it run before Mounted.
-watch(
-  () => [props.accountNO, props.year, props.site],
-  (...newAndold) => {
-    // newAndold[1]:old
-    // newAndold[0]:new
-    console.debug('watch:' + newAndold[1] + ' ---> ' + newAndold[0])
-    doUpdate()
-  }
-)
+watch(props, (value, oldValue) => {
+  console.debug('watch:', oldValue, '--->', value)
+
+  doUpdate()
+})
 </script>

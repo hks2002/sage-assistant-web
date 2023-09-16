@@ -1,11 +1,12 @@
-/***
- * @Author         : Robert Huang<56649783@qq.com>
- * @Date           : 2022-07-14 15:05:31
- * @LastEditors    : Robert Huang<56649783@qq.com>
- * @LastEditTime   : 2022-07-14 15:05:31
- * @FilePath       : \web2\src\components\todo\Utils.js
- * @CopyRight      : Dedienne Aerospace China ZhuHai
- */
+/*********************************************************************************************************************
+ * @Author                : Robert Huang<56649783@qq.com>                                                            *
+ * @CreatedDate           : 2022-07-14 15:05:00                                                                      *
+ * @LastEditors           : Robert Huang<56649783@qq.com>                                                            *
+ * @LastEditDate          : 2023-05-26 01:32:46                                                                      *
+ * @FilePath              : src/assets/clsUtils.js                                                                   *
+ * @CopyRight             : Dedienne Aerospace China ZhuHai                                                          *
+ ********************************************************************************************************************/
+
 const mergeBg = (cls, newBg) => {
   return cls.replace(/bg\S*/, newBg)
 }

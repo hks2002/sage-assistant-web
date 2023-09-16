@@ -1,11 +1,12 @@
 <!--
- * @Author         : Robert Huang<56649783@qq.com>
- * @Date           : 2022-10-09 17:38:23
- * @LastEditors    : Robert Huang<56649783@qq.com>
- * @LastEditTime   : 2022-10-09 17:48:17
- * @FilePath       : \web2\src\components\lottie\LottiePlayer.vue
- * @CopyRight      : Mer Bleue Aviation Limited
+* @Author                : Robert Huang<56649783@qq.com>
+* @CreatedDate           : 2022-10-09 17:38:00
+* @LastEditors           : Robert Huang<56649783@qq.com>
+* @LastEditDate          : 2023-06-10 09:59:31
+* @FilePath              : src/components/lottie/LottiePlayer.vue
+* @CopyRight             : Dedienne Aerospace China ZhuHai
 -->
+
 <template>
   <div ref="lottieplayer"></div>
 </template>

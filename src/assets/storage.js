@@ -1,4 +1,13 @@
-import _merge from 'lodash/merge'
+/*********************************************************************************************************************
+ * @Author                : Robert Huang<56649783@qq.com>                                                            *
+ * @CreatedDate           : 2023-06-14 16:00:27                                                                      *
+ * @LastEditors           : Robert Huang<56649783@qq.com>                                                            *
+ * @LastEditDate          : 2023-06-14 16:01:53                                                                      *
+ * @FilePath              : src/assets/storage.js                                                                    *
+ * @CopyRight             : Dedienne Aerospace China ZhuHai                                                          *
+ ********************************************************************************************************************/
+
+import { keys, merge } from 'lodash'
 import { Cookies, LocalStorage, SessionStorage } from 'quasar'
 
 export const storageKey = {
@@ -51,11 +60,11 @@ export function removeToken() {
 // SessionStorage token
 
 export function getAll() {
-  return _merge(LocalStorage.getAll(), Cookies.getAll())
+  return merge(LocalStorage.getAll(), Cookies.getAll())
 }
 
 export function getAllKeys() {
-  return _merge(LocalStorage.getAllKeys(), _.keys(Cookies.getAll()))
+  return merge(LocalStorage.getAllKeys(), keys(Cookies.getAll()))
 }
 
 export default {

@@ -1,30 +1,27 @@
-/***
- * @Author         : Robert Huang<56649783@qq.com>
- * @Date           : 2022-03-25 11:01:23
- * @LastEditors    : Robert Huang<56649783@qq.com>
- * @LastEditTime   : 2022-05-28 23:04:29
- * @FilePath       : \web2\src\assets\reportUtils.js
- * @CopyRight      : Dedienne Aerospace China ZhuHai
- */
+/*********************************************************************************************************************
+ * @Author                : Robert Huang<56649783@qq.com>                                                            *
+ * @CreatedDate           : 2022-03-25 11:01:00                                                                      *
+ * @LastEditors           : Robert Huang<56649783@qq.com>                                                            *
+ * @LastEditDate          : 2023-09-06 02:10:18                                                                      *
+ * @FilePath              : sage-assistant-web/src/assets/reportUtils.js                                             *
+ * @CopyRight             : Dedienne Aerospace China ZhuHai                                                          *
+ ********************************************************************************************************************/
+
 import { axios } from '@/assets/axios'
-import { notifyError } from '@/assets/common'
+import { i18n } from 'boot/i18n'
+import { Notify } from 'quasar'
+const { t } = i18n.global
 
 const validateInput = (rpt, value) => {
   let rtn = false
   switch (rpt) {
-    case 'SA': {
+    case 'SalesOrder': {
       const reg1 = /^[A-Z]CC[\d]{6}$/
       const reg2 = /^[A-Z]DSR[P|C][\d]{6}$/
       const reg3 = /^[A-Z]REP[\d]{7}$/
       const reg4 = /^[A-Z]RCL[\d]{7}$/
       const reg5 = /^[A-Z]LC[\d]{6}$/
-      if (
-        reg1.test(value) ||
-        reg2.test(value) ||
-        reg3.test(value) ||
-        reg4.test(value) ||
-        reg5.test(value)
-      ) {
+      if (reg1.test(value) || reg2.test(value) || reg3.test(value) || reg4.test(value) || reg5.test(value)) {
         rtn = true
       }
       break
@@ -34,12 +31,7 @@ const validateInput = (rpt, value) => {
       const reg2 = /^[A-Z]DSR[P|C][\d]{6}$/
       const reg3 = /^[A-Z]REP[\d]{7}-[\d]{1,3}$/
       const reg4 = /^[A-Z]RCL[\d]{7}-[\d]{1,3}$/
-      if (
-        reg1.test(value) ||
-        reg2.test(value) ||
-        reg3.test(value) ||
-        reg4.test(value)
-      ) {
+      if (reg1.test(value) || reg2.test(value) || reg3.test(value) || reg4.test(value)) {
         rtn = true
       }
       break
@@ -55,23 +47,6 @@ const validateInput = (rpt, value) => {
       const reg1 = /^[A-Z]FC[\d]{7}$/
       const reg2 = /^[A-Z]PC[\d]{6}$/
       if (reg1.test(value) || reg2.test(value)) {
-        rtn = true
-      }
-      break
-    }
-    case 'Invoice2': {
-      const reg1 = /^[A-Z]CC[\d]{6}$/
-      const reg2 = /^[A-Z]DSR[P|C][\d]{6}$/
-      const reg3 = /^[A-Z]REP[\d]{7}$/
-      const reg4 = /^[A-Z]RCL[\d]{7}$/
-      const reg5 = /^[A-Z]LC[\d]{6}$/
-      if (
-        reg1.test(value) ||
-        reg2.test(value) ||
-        reg3.test(value) ||
-        reg4.test(value) ||
-        reg5.test(value)
-      ) {
         rtn = true
       }
       break
@@ -118,18 +93,18 @@ const validateInput = (rpt, value) => {
   }
 
   if (rtn === false) {
-    notifyError('Wrong Input')
+    Notify.create({ type: 'error', message: t('S.WRONG_INPUT') })
   }
 
   return rtn
 }
 
-const pdfUrltoDataUri = async (url) => {
-  // return the datauri
+const pdfUrlToDataUri = async (url) => {
+  // return the dataURI
   return await axios({
     methods: 'GET',
     url: url,
-    responseType: 'arraybuffer' // * This is very important, without it, it doesn't work, <mockjs> ndeed change it also, done by mockExt */
+    responseType: 'arraybuffer' // * This is very important, without it, it doesn't work, <mockjs> need change it also, done by mockExt */
   }).then(
     (response) => {
       return pdfArraybufferToBase64(response.data)
@@ -151,4 +126,4 @@ const pdfArraybufferToBase64 = (buffer) => {
   return 'data:application/pdf;base64,' + window.btoa(binary)
 }
 
-export { validateInput, pdfUrltoDataUri }
+export { pdfUrlToDataUri, validateInput }

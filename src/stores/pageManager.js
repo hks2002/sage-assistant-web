@@ -1,51 +1,54 @@
-/***
- * @Author         : Robert Huang<56649783@qq.com>
- * @Date           : 2022-05-26 14:52:28
- * @LastEditors    : Robert Huang<56649783@qq.com>
- * @LastEditTime   : 2022-05-28 23:12:00
- * @FilePath       : \web2\src\stores\pageManager.js
- * @CopyRight      : Dedienne Aerospace China ZhuHai
- */
-import { ebus } from '@/assets/ebus'
-import { i18n } from '@/boot/i18n'
-import { defineStore } from 'pinia'
+/*********************************************************************************************************************
+ * @Author                : Robert Huang<56649783@qq.com>                                                            *
+ * @CreatedDate           : 2022-05-26 14:52:00                                                                      *
+ * @LastEditors           : Robert Huang<56649783@qq.com>                                                            *
+ * @LastEditDate          : 2023-08-19 17:59:53                                                                      *
+ * @FilePath              : sage-assistant-web/src/stores/pageManager.js                                             *
+ * @CopyRight             : Dedienne Aerospace China ZhuHai                                                          *
+ ********************************************************************************************************************/
 
-const { t } = i18n.global
+import { defineStore } from 'pinia'
 
 const usePagesStore = defineStore('pages', {
   state: () => ({
     activeId: 'Home',
     activeName: 'Home',
-    activeLabel: 'Home',
     activeQuery: {},
     activeParams: {},
     activeModel: {},
-    // { name:'Home', label: 'Home'}
+
     pages: [
       {
-        name: 'Home',
-        label: t('Home'),
         id: 'Home',
-        query: {},
-        params: {},
-        model: {}
+        name: 'Home',
+        label: 'Home'
       }
     ]
   }),
-
   getters: {},
+  persist: {
+    enabled: true
+  },
 
   actions: {
+    getRouteById(pageId) {
+      const idx = this.pages.findIndex((r) => r.id === pageId)
+
+      return idx > -1
+        ? {
+            name: this.pages[idx].name,
+            query: this.pages[idx].query,
+            params: this.pages[idx].params
+          }
+        : {}
+    },
     addPage(page) {
-      if (!this.pages.find((r) => r.id === page.id)) {
-        page.label = t(page.name)
-        this.pages.push(page)
-      }
+      this.pages.push(page)
+
       this.activeId = page.id
       this.activeName = page.name
       this.activeQuery = page.query
       this.activeParams = page.params
-      this.activeLabel = page.label
       this.activeModel = null
     },
     removePage(pageId) {
@@ -56,7 +59,6 @@ const usePagesStore = defineStore('pages', {
           // it's the last page
           this.activeId = this.pages[idx - 1].id
           this.activeName = this.pages[idx - 1].name
-          this.activeLabel = this.pages[idx - 1].label
           this.activeQuery = this.pages[idx - 1].query
           this.activeParams = this.pages[idx - 1].params
           this.activeModel = this.pages[idx - 1].model
@@ -64,7 +66,6 @@ const usePagesStore = defineStore('pages', {
           // it's not the last page
           this.activeId = this.pages[idx + 1].id
           this.activeName = this.pages[idx + 1].name
-          this.activeLabel = this.pages[idx + 1].label
           this.activeQuery = this.pages[idx + 1].query
           this.activeParams = this.pages[idx + 1].params
           this.activeModel = this.pages[idx + 1].model
@@ -81,7 +82,6 @@ const usePagesStore = defineStore('pages', {
       if (pageFind) {
         this.activeId = pageFind.id
         this.activeName = pageFind.name
-        this.activeLabel = pageFind.label
         this.activeQuery = pageFind.query
         this.activeParams = pageFind.params
         this.activeModel = pageFind.model
@@ -96,18 +96,8 @@ const usePagesStore = defineStore('pages', {
     hasPage(pageId) {
       const idx = this.pages.findIndex((r) => r.id === pageId)
       return idx < 0 ? false : true
-    },
-    updateLabel() {
-      this.pages.forEach((r, idx) => {
-        this.pages[idx].label = t(r.name)
-      })
     }
   }
-})
-
-// language change handing
-ebus.on('changeLanguage', () => {
-  usePagesStore().updateLabel()
 })
 
 export { usePagesStore }

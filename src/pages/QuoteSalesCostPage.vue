@@ -1,3 +1,12 @@
+<!--
+* @Author                : Robert Huang<56649783@qq.com>
+* @CreatedDate           : 2023-06-17 23:08:00
+* @LastEditors           : Robert Huang<56649783@qq.com>
+* @LastEditDate          : 2023-09-03 01:32:10
+* @FilePath              : sage-assistant-web/src/pages/QuoteSalesCostPage.vue
+* @CopyRight             : Dedienne Aerospace China ZhuHai
+-->
+
 <template>
   <q-page>
     <WaitInputLottieVue v-if="!categoryCode && !pnRoot && isAuthorized('GESSQH')" />
@@ -13,7 +22,7 @@
         hide-bottom-space
         clearable
         debounce="1000"
-        :label="$t('Product Group2 Code')"
+        :label="$t('S.PRODUCT_GROUP2_CODE')"
         input-style="font-weight:bolder;font-size:25px;text-transform:uppercase"
         @update:model-value="doUpdate"
       />
@@ -26,7 +35,7 @@
         hide-bottom-space
         clearable
         debounce="1000"
-        :label="$t('PN Root Code')"
+        :label="$t('S.PN_ROOT_CODE')"
         input-style="font-weight:bolder;font-size:25px;text-transform:uppercase"
         @update:model-value="doUpdate"
       />
@@ -39,7 +48,7 @@
         class="col-2"
         debounce="1000"
         type="date"
-        :label="$t('From')"
+        :label="$t('W.FROM')"
         @update:model-value="doUpdate"
       />
       <q-input
@@ -51,7 +60,7 @@
         class="col-2"
         debounce="1000"
         type="date"
-        :label="$t('To')"
+        :label="$t('W.TO')"
         @update:model-value="doUpdate"
       />
       <q-input
@@ -63,9 +72,9 @@
         class="col-1"
         debounce="1000"
         type="number"
-        :label="$t('Limit last N Records')"
+        :label="$t('S.Limit last N Records')"
         :rules="[
-          (val) => (val !== null && val !== '') || 'Please type last N limmit',
+          (val) => (val !== null && val !== '') || 'Please type last N limit',
           (val) => (val > 0 && val <= 10) || 'Limit between from 1 to 10'
         ]"
         @update:model-value="doUpdate"
@@ -80,8 +89,8 @@
       indicator-color="primary"
       narrow-indicator
     >
-      <q-tab name="YourSite" :label="$t('Your-Site')" />
-      <q-tab name="AllSites" :label="$t('All-Sites')" />
+      <q-tab name="YourSite" :label="$t('S.YOUR_SITE')" />
+      <q-tab name="AllSites" :label="$t('S.ALL_SITES')" />
     </q-tabs>
 
     <q-tab-panels v-model="tab" keep-alive>
@@ -102,7 +111,7 @@
             <q-toolbar class="bg-teal text-white shadow-2">
               <q-toolbar-title class="text-left"
                 >{{
-                  $t('Products of group2 {categoryCode} and PN {pnRoot} in {site} from {dateFrom} to {dateTo}', {
+                  $t('S.PRODUCTS_IN_SITE_FROM_TO', {
                     categoryCode: categoryCode,
                     pnRoot: pnRoot,
                     site: site,
@@ -138,7 +147,7 @@
             <q-toolbar class="bg-teal text-white shadow-2">
               <q-toolbar-title class="text-left"
                 >{{
-                  $t('Products of group2 {categoryCode} and PN {pnRoot} in all sites from {dateFrom} to {dateTo}', {
+                  $t('S.PRODUCTS_IN_ALLSITE_FROM_TO', {
                     categoryCode: categoryCode,
                     pnRoot: pnRoot,
                     dateFrom: dateFrom,
@@ -193,17 +202,16 @@
 
 <script setup>
 import { axiosGet } from '@/assets/axiosActions'
-import { ebus } from '@/assets/ebus'
 import ExceptionLottieVue from '@/components/lottie/ExceptionLottie.vue'
 import WaitInputLottieVue from '@/components/lottie/WaitInputLottie.vue'
 import { isAuthorized } from 'assets/auth'
 import { jsonToExcel } from 'assets/dataUtils'
-import { getCookies } from 'assets/storage'
+import {} from 'assets/storage'
 import _groupBy from 'lodash/groupBy'
 import _map from 'lodash/map'
 import _values from 'lodash/values'
-import { date } from 'quasar'
-import { computed, onBeforeUnmount, ref } from 'vue'
+import { LocalStorage, date } from 'quasar'
+import { computed, inject, onBeforeUnmount, ref } from 'vue'
 
 /* eslint-disable */
 const props = defineProps({
@@ -211,13 +219,14 @@ const props = defineProps({
 })
 
 // common vars
+const ebus = inject('ebus')
 const showLoading = ref(false)
 
 // page vars
 const site = ref('')
-site.value = getCookies('site')
+site.value = LocalStorage.getItem('site')
 const siteList = ref([])
-siteList.value = getCookies('siteList')
+siteList.value = LocalStorage.getItem('siteList') || []
 const siteN = siteList.value.length
 
 const tab = ref('YourSite')
@@ -256,7 +265,7 @@ const columns = [
     headerClasses: 'bg-primary text-white'
   },
   {
-    name: 'Description',
+    name: 'description',
     label: 'Description',
     align: 'left',
     field: (row) => row.Description,
@@ -277,7 +286,7 @@ const columns = [
     headerClasses: 'bg-positive text-white'
   },
   {
-    name: 'MinQPrice',
+    name: 'minQPrice',
     label: 'MinQPrice',
     align: 'right',
     format: (val) => (isNaN(parseInt(val, 10)) ? '' : parseInt(val, 10)),
@@ -285,7 +294,7 @@ const columns = [
     headerClasses: 'bg-info text-white'
   },
   {
-    name: 'AvgQPrice',
+    name: 'avgQPrice',
     label: 'AvgQPrice',
     align: 'right',
     format: (val) => (isNaN(parseInt(val, 10)) ? '' : parseInt(val, 10)),
@@ -293,7 +302,7 @@ const columns = [
     headerClasses: 'bg-info text-white'
   },
   {
-    name: 'MaxQPrice',
+    name: 'maxQPrice',
     label: 'MaxQPrice',
     align: 'right',
     format: (val) => (isNaN(parseInt(val, 10)) ? '' : parseInt(val, 10)),
@@ -317,7 +326,7 @@ const columnsAll = [
     headerClasses: 'bg-primary text-white'
   },
   {
-    name: 'Description',
+    name: 'description',
     label: 'Description',
     align: 'left',
     field: (row) => row[0].Description,
@@ -343,7 +352,7 @@ const doUpdateOne = () => {
   showLoading.value = true
 
   axiosGet(
-    `/Data/AnalysisQuoteSalesCost?Site=${site.value}&CategoryCode=${categoryCode.value}&PnRoot=${pnRoot.value}&DateFrom=${dateFrom.value}&DateTo=${dateTo.value}&Limit=${limitN.value}`
+    `/Data/AnalysesQuoteSalesCost?Site=${site.value}&CategoryCode=${categoryCode.value}&PnRoot=${pnRoot.value}&DateFrom=${dateFrom.value}&DateTo=${dateTo.value}&Limit=${limitN.value}`
   )
     .then((response) => {
       analysisQuoteSalesCost.value = response
@@ -362,7 +371,7 @@ const doUpdateAll = () => {
   showLoading.value = true
 
   axiosGet(
-    `/Data/AnalysisQuoteSalesCost?Site=ALL&CategoryCode=${categoryCode.value}&PnRoot=${pnRoot.value}&DateFrom=${dateFrom.value}&DateTo=${dateTo.value}&Limit=${limitN.value}`
+    `/Data/AnalysesQuoteSalesCost?Site=ALL&CategoryCode=${categoryCode.value}&PnRoot=${pnRoot.value}&DateFrom=${dateFrom.value}&DateTo=${dateTo.value}&Limit=${limitN.value}`
   )
     .then((response) => {
       analysisQuoteSalesCostAll = response
@@ -392,18 +401,18 @@ const checkInput = () => {
 const addColumns = () => {
   for (let i = 0; i < limitN.value; ++i) {
     const o = {
-      name: 'LastQPrice' + (i + 1),
+      name: 'lastqprice' + (i + 1),
       label: 'LastQPrice' + (i + 1),
       align: 'right',
       format: (val) => (isNaN(parseInt(val, 10)) ? '' : parseInt(val, 10)),
-      field: (row) => row['LastQPrice' + (i + 1)],
+      field: (row) => row['lastQPrice' + (i + 1)],
       headerClasses: 'bg-info text-white'
     }
     columns.push(o)
   }
   let o = {}
   o = {
-    name: 'SCnt',
+    name: 'scnt',
     label: 'SCnt',
     align: 'center',
     field: (row) => row.SCnt,
@@ -411,7 +420,7 @@ const addColumns = () => {
   }
   columns.push(o)
   o = {
-    name: 'SQty',
+    name: 'sqty',
     label: 'SQty',
     align: 'center',
     field: (row) => row.SQty,
@@ -419,60 +428,60 @@ const addColumns = () => {
   }
   columns.push(o)
   o = {
-    name: 'MinSPrice',
+    name: 'minSPrice',
     label: 'MinSPrice',
     align: 'right',
     format: (val) => (isNaN(parseInt(val, 10)) ? '' : parseInt(val, 10)),
-    field: (row) => row.AvgSPrice,
+    field: (row) => row.minSPrice,
     headerClasses: 'bg-accent text-white'
   }
   columns.push(o)
   o = {
-    name: 'AvgSPrice',
+    name: 'avgSPrice',
     label: 'AvgSPrice',
     align: 'right',
     format: (val) => (isNaN(parseInt(val, 10)) ? '' : parseInt(val, 10)),
-    field: (row) => row.AvgSPrice,
+    field: (row) => row.avgSPrice,
     headerClasses: 'bg-accent text-white'
   }
   columns.push(o)
   o = {
-    name: 'MaxSPrice',
+    name: 'maxSPrice',
     label: 'MaxSPrice',
     align: 'right',
     format: (val) => (isNaN(parseInt(val, 10)) ? '' : parseInt(val, 10)),
-    field: (row) => row.MaxSPrice,
+    field: (row) => row.maxSPrice,
     headerClasses: 'bg-accent text-white'
   }
   columns.push(o)
   for (let i = 0; i < limitN.value; ++i) {
     const o = {
-      name: 'LastSPrice' + (i + 1),
+      name: 'lastsprice' + (i + 1),
       label: 'LastSPrice' + (i + 1),
       align: 'right',
       format: (val) => (isNaN(parseInt(val, 10)) ? '' : parseInt(val, 10)),
-      field: (row) => row['LastSPrice' + (i + 1)],
+      field: (row) => row['lastSPrice' + (i + 1)],
       headerClasses: 'bg-accent text-white'
     }
     columns.push(o)
   }
   for (let i = 0; i < limitN.value; ++i) {
     const o = {
-      name: 'LastPJT' + (i + 1),
+      name: 'lastpjt' + (i + 1),
       label: 'LastPJT' + (i + 1),
       align: 'right',
-      field: (row) => row['LastPJT' + (i + 1)],
+      field: (row) => row['lastPJT' + (i + 1)],
       headerClasses: 'bg-warning text-white'
     }
     columns.push(o)
   }
   for (let i = 0; i < limitN.value; ++i) {
     const o = {
-      name: 'LastCost' + (i + 1),
+      name: 'lastcost' + (i + 1),
       label: 'LastCost' + (i + 1),
       align: 'right',
       format: (val) => (isNaN(parseInt(val, 10)) ? '' : parseInt(val, 10)),
-      field: (row) => row['LastCost' + (i + 1)],
+      field: (row) => row['lastCost' + (i + 1)],
       headerClasses: 'bg-primary text-white'
     }
     columns.push(o)
@@ -510,7 +519,7 @@ const addColumnsAll = () => {
   for (let i = 0; i < siteN; ++i) {
     let o = {}
     o = {
-      name: 'QCnt' + siteList.value[i],
+      name: 'qcnt' + siteList.value[i],
       label: siteList.value[i],
       align: 'center',
       field: (row) => getSiteValue(row, siteList.value[i], 'QCnt'),
@@ -521,7 +530,7 @@ const addColumnsAll = () => {
   for (let i = 0; i < siteN; ++i) {
     let o = {}
     o = {
-      name: 'QQty' + siteList.value[i],
+      name: 'qqty' + siteList.value[i],
       label: siteList.value[i],
       align: 'center',
       field: (row) => getSiteValue(row, siteList.value[i], 'QQty'),
@@ -532,11 +541,11 @@ const addColumnsAll = () => {
   for (let i = 0; i < siteN; ++i) {
     let o = {}
     o = {
-      name: 'MinQPrice' + siteList.value[i],
+      name: 'minqprice' + siteList.value[i],
       label: siteList.value[i],
       align: 'right',
       format: (val) => (isNaN(parseInt(val, 10)) ? '' : parseInt(val, 10)),
-      field: (row) => getSiteValue(row, siteList.value[i], 'MinQPrice'),
+      field: (row) => getSiteValue(row, siteList.value[i], 'minQPrice'),
       headerClasses: 'bg-indigo-6 text-white'
     }
     columnsAll.push(o)
@@ -544,11 +553,11 @@ const addColumnsAll = () => {
   for (let i = 0; i < siteN; ++i) {
     let o = {}
     o = {
-      name: 'AvgQPrice' + siteList.value[i],
+      name: 'avgqprice' + siteList.value[i],
       label: siteList.value[i],
       align: 'right',
       format: (val) => (isNaN(parseInt(val, 10)) ? '' : parseInt(val, 10)),
-      field: (row) => getSiteValue(row, siteList.value[i], 'AvgQPrice'),
+      field: (row) => getSiteValue(row, siteList.value[i], 'avgQPrice'),
       headerClasses: 'bg-indigo-4 text-white'
     }
     columnsAll.push(o)
@@ -556,11 +565,11 @@ const addColumnsAll = () => {
   for (let i = 0; i < siteN; ++i) {
     let o = {}
     o = {
-      name: 'MaxQPrice' + siteList.value[i],
+      name: 'maxqprice' + siteList.value[i],
       label: siteList.value[i],
       align: 'right',
       format: (val) => (isNaN(parseInt(val, 10)) ? '' : parseInt(val, 10)),
-      field: (row) => getSiteValue(row, siteList.value[i], 'MaxQPrice'),
+      field: (row) => getSiteValue(row, siteList.value[i], 'maxQPrice'),
       headerClasses: 'bg-indigo-2 text-white'
     }
     columnsAll.push(o)
@@ -569,11 +578,11 @@ const addColumnsAll = () => {
     for (let i = 0; i < siteN; ++i) {
       let o = {}
       o = {
-        name: 'LastQPrice' + (ii + 1) + siteList.value[i],
+        name: 'lastqprice' + (ii + 1) + siteList.value[i],
         label: siteList.value[i],
         align: 'right',
         format: (val) => (isNaN(parseInt(val, 10)) ? '' : parseInt(val, 10)),
-        field: (row) => getSiteValue(row, siteList.value[i], 'LastQPrice' + (ii + 1)),
+        field: (row) => getSiteValue(row, siteList.value[i], 'lastQPrice' + (ii + 1)),
         headerClasses: 'bg-cyan-' + (14 - ii) + ' text-white'
       }
       columnsAll.push(o)
@@ -582,7 +591,7 @@ const addColumnsAll = () => {
   for (let i = 0; i < siteN; ++i) {
     let o = {}
     o = {
-      name: 'SCnt' + siteList.value[i],
+      name: 'scnt' + siteList.value[i],
       label: siteList.value[i],
       align: 'center',
       field: (row) => getSiteValue(row, siteList.value[i], 'SCnt'),
@@ -593,7 +602,7 @@ const addColumnsAll = () => {
   for (let i = 0; i < siteN; ++i) {
     let o = {}
     o = {
-      name: 'SQty' + siteList.value[i],
+      name: 'sqty' + siteList.value[i],
       label: siteList.value[i],
       align: 'center',
       field: (row) => getSiteValue(row, siteList.value[i], 'SQty'),
@@ -604,11 +613,11 @@ const addColumnsAll = () => {
   for (let i = 0; i < siteN; ++i) {
     let o = {}
     o = {
-      name: 'MinSPrice' + siteList.value[i],
+      name: 'minsprice' + siteList.value[i],
       label: siteList.value[i],
       align: 'right',
       format: (val) => (isNaN(parseInt(val, 10)) ? '' : parseInt(val, 10)),
-      field: (row) => getSiteValue(row, siteList.value[i], 'MinSPrice'),
+      field: (row) => getSiteValue(row, siteList.value[i], 'minSPrice'),
       headerClasses: 'bg-indigo-6 text-white'
     }
     columnsAll.push(o)
@@ -616,11 +625,11 @@ const addColumnsAll = () => {
   for (let i = 0; i < siteN; ++i) {
     let o = {}
     o = {
-      name: 'AvgSPrice' + siteList.value[i],
+      name: 'avgsprice' + siteList.value[i],
       label: siteList.value[i],
       align: 'right',
       format: (val) => (isNaN(parseInt(val, 10)) ? '' : parseInt(val, 10)),
-      field: (row) => getSiteValue(row, siteList.value[i], 'AvgSPrice'),
+      field: (row) => getSiteValue(row, siteList.value[i], 'avgSPrice'),
       headerClasses: 'bg-indigo-4 text-white'
     }
     columnsAll.push(o)
@@ -628,11 +637,11 @@ const addColumnsAll = () => {
   for (let i = 0; i < siteN; ++i) {
     let o = {}
     o = {
-      name: 'MaxSPrice' + siteList.value[i],
+      name: 'maxsprice' + siteList.value[i],
       label: siteList.value[i],
       align: 'right',
       format: (val) => (isNaN(parseInt(val, 10)) ? '' : parseInt(val, 10)),
-      field: (row) => getSiteValue(row, siteList.value[i], 'MaxSPrice'),
+      field: (row) => getSiteValue(row, siteList.value[i], 'maxSPrice'),
       headerClasses: 'bg-indigo-2 text-white'
     }
     columnsAll.push(o)
@@ -641,11 +650,11 @@ const addColumnsAll = () => {
     for (let i = 0; i < siteN; ++i) {
       let o = {}
       o = {
-        name: 'LastSPrice' + (ii + 1) + siteList.value[i],
+        name: 'lastsprice' + (ii + 1) + siteList.value[i],
         label: siteList.value[i],
         align: 'right',
         format: (val) => (isNaN(parseInt(val, 10)) ? '' : parseInt(val, 10)),
-        field: (row) => getSiteValue(row, siteList.value[i], 'LastSPrice' + (ii + 1)),
+        field: (row) => getSiteValue(row, siteList.value[i], 'lastSPrice' + (ii + 1)),
         headerClasses: 'bg-blue-' + (14 - ii) + ' text-white'
       }
       columnsAll.push(o)
@@ -655,11 +664,11 @@ const addColumnsAll = () => {
     for (let i = 0; i < siteN; ++i) {
       let o = {}
       o = {
-        name: 'LastCost' + (ii + 1) + siteList.value[i],
+        name: 'lastcost' + (ii + 1) + siteList.value[i],
         label: siteList.value[i],
         align: 'right',
         format: (val) => (isNaN(parseInt(val, 10)) ? '' : parseInt(val, 10)),
-        field: (row) => getSiteValue(row, siteList.value[i], 'LastCost' + (ii + 1)),
+        field: (row) => getSiteValue(row, siteList.value[i], 'lastCost' + (ii + 1)),
         headerClasses: 'bg-orange-' + (14 - ii) + ' text-white'
       }
       columnsAll.push(o)
@@ -699,7 +708,7 @@ const downloadAll = () => {
   )
 }
 
-// run funs
+// run functions
 addColumns()
 addColumnsAll()
 
