@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.1](https://github.com/hks2002/sage-assistant-web/compare/v1.0.0...v1.0.1) (2023-09-17)
+
+
+### Bug Fixes
+
+* 🐛fix SOA Customer can't working ([7ca2dca](https://github.com/hks2002/sage-assistant-web/commit/7ca2dca8ca0883815e8a1700f4c851e747c6c2ce))
+
 ## 1.0.0 (2023-09-16)
 
 
