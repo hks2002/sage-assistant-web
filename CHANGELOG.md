@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.3](https://github.com/hks2002/sage-assistant-web/compare/v1.0.2...v1.0.3) (2023-11-08)
+
+
+### Bug Fixes
+
+* 🐛fix file list display bug ([91e9589](https://github.com/hks2002/sage-assistant-web/commit/91e9589358223f3025332a03c398708baa8bcf48))
+
 ## [1.0.2](https://github.com/hks2002/sage-assistant-web/compare/v1.0.1...v1.0.2) (2023-11-08)
 
 
