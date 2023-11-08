@@ -140,7 +140,7 @@
     "SALES_HISTORY": "销售历史",
     "SEARCH_CUSTOMER": "搜索客户（代码或名字）",
     "SEARCH_PRODUCT": "搜索产品",
-    "SEARCH_PRODUCT_HINT": "需要大量查询产品时, 请使用 EXCEL 公式 =webService(\"https://sageassistant/Data/AnalysesSales\") 或 =webService(\"https://sageassistant/Data/AnalysesQuote\") 或 =webService(\"https://sageassistant/Data/AnalysesPurchase\")",
+    "SEARCH_PRODUCT_HINT": "需要大量查询产品时, 请使用 EXCEL 公式 =webService(\"http://sageassistant/Data/AnalysesSales\") 或 =webService(\"http://sageassistant/Data/AnalysesQuote\") 或 =webService(\"http://sageassistant/Data/AnalysesPurchase\")",
     "SEARCH_SUPPLIER": "搜索供应商 （代码或名字）",
     "SERVER_ERROR": "服务器错误",
     "SHOW_BOM_DETAILS": "显示Bom详情",
