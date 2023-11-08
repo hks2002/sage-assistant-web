@@ -2,8 +2,7 @@
  * @Author                : Robert Huang<56649783@qq.com>                     *
  * @CreatedDate           : 2022-04-09 23:09:37                               *
  * @LastEditors           : Robert Huang<56649783@qq.com>                     *
- * @LastEditDate          : 2023-09-16 17:28:25                               *
- * @FilePath              : sage-assistant-web/quasar.conf.js                 *
+ * @LastEditDate          : 2023-11-08 21:27:59                               *
  * @CopyRight             : MerBleueAviation                                  *
  *****************************************************************************/
 
@@ -148,7 +147,7 @@ module.exports = configure(function (ctx) {
       // please using Nginx to provide proxy first, then let devServer proxy to Nginx
       proxy: {
         '/Data': {
-          target: 'http://192.168.0.246'
+          target: 'http://192.168.10.12'
         }
       }
     },

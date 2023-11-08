@@ -2,9 +2,8 @@
 * @Author                : Robert Huang<56649783@qq.com>
 * @CreatedDate           : 2023-06-23 00:16:00
 * @LastEditors           : Robert Huang<56649783@qq.com>
-* @LastEditDate          : 2023-09-08 22:14:45
-* @FilePath              : sage-assistant-web/src/components/products/QItemLabelFileList.vue
-* @CopyRight             : Dedienne Aerospace China ZhuHai
+* @LastEditDate          : 2023-11-08 22:06:27
+* @CopyRight             : MerBleueAviation
 -->
 
 <template>
@@ -12,28 +11,28 @@
     <div class="q-gutter-sm">
       <q-btn
         v-for="file in files"
-        :key="file.ROWID"
+        :key="file.Path"
         type="a"
         size="xs"
-        :icon="getDocIcon(file.docType)"
-        @click="clickBtn(file.path)"
+        :icon="getDocIcon(file.DocType)"
+        @click="clickBtn(file.Path)"
         dense
       >
-        <q-badge v-if="file.cat === 'drawing'" floating>D</q-badge>
-        <q-badge v-else-if="file.cat === 'manual'" floating>M</q-badge>
-        <q-badge v-else-if="file.cat === 'certificate'" floating>C</q-badge>
+        <q-badge v-if="file.Cat === 'Drawing'" floating>D</q-badge>
+        <q-badge v-else-if="file.Cat === 'Manual'" floating>M</q-badge>
+        <q-badge v-else-if="file.Cat === 'Certificate'" floating>C</q-badge>
         <q-badge v-else floating>?</q-badge>
-        <q-tooltip v-if="file.cat === 'drawing'" floating>{{ t('W.DRAWING') }}:{{ file.file }}</q-tooltip>
-        <q-tooltip v-else-if="file.cat === 'manual'" floating>{{ t('W.MANUAL') }}:{{ file.file }}</q-tooltip>
-        <q-tooltip v-else-if="file.cat === 'certificate'" floating>{{ t('W.CERTIFICATE') }}:{{ file.file }}</q-tooltip>
-        <q-tooltip v-else floating>{{ t('S.UNKNOWN_CATEGORY') }}:{{ file.file }}</q-tooltip>
+        <q-tooltip v-if="file.Cat === 'Drawing'" floating>{{ t('W.DRAWING') }}:{{ file.File }}</q-tooltip>
+        <q-tooltip v-else-if="file.Cat === 'Manual'" floating>{{ t('W.MANUAL') }}:{{ file.File }}</q-tooltip>
+        <q-tooltip v-else-if="file.Cat === 'Certificate'" floating>{{ t('W.CERTIFICATE') }}:{{ file.File }}</q-tooltip>
+        <q-tooltip v-else floating>{{ t('S.UNKNOWN_CATEGORY') }}:{{ file.File }}</q-tooltip>
         <q-menu touch-position context-menu>
           <q-btn
             icon="fas fa-trash-alt"
             color="teal"
             size="sm"
             v-if="isFromChina"
-            @click="doDeleteFile(file.path)"
+            @click="doDeleteFile(file.Path)"
             dense
           />
         </q-menu>
@@ -163,7 +162,7 @@ const doUpdate = () => {
     .then((data) => {
       files.value = data[0]
       if (isFromChina.value) {
-        files.value.concat(data[1])
+        files.value = [...data[0], ...data[1]]
       }
       showFileUploader.value = false
     })
@@ -182,6 +181,8 @@ onMounted(() => {
   axiosGet('/Data/ClientIP').then((ip) => {
     if (ip.startsWith('192.168.0') || ip.startsWith('192.168.8') || ip.startsWith('192.168.253')) {
       isFromChina.value = true
+    } else {
+      isFromChina.value = false
     }
   })
 
