@@ -10,7 +10,33 @@
   <q-item-label class="relative-position">
     <div class="q-gutter-sm">
       <q-btn
-        v-for="file in files"
+        v-for="file in filesInTLSSrv"
+        :key="file.path"
+        type="a"
+        size="xs"
+        :icon="getDocIcon(file.docType)"
+        @click="clickBtn(file.path)"
+        dense
+      >
+        <q-badge v-if="file.cat === 'Drawing'" color="light-green-7" floating
+          >D
+          <q-tooltip>{{ t('W.DRAWING') }}:{{ file.file }}</q-tooltip>
+        </q-badge>
+        <q-badge v-else-if="file.cat === 'Manual'" color="light-green-7" floating
+          >M
+          <q-tooltip>{{ t('W.MANUAL') }}:{{ file.file }}</q-tooltip>
+        </q-badge>
+        <q-badge v-else-if="file.cat === 'Certificate'" color="light-green-7" floating
+          >C
+          <q-tooltip>{{ t('W.CERTIFICATE') }}:{{ file.file }}</q-tooltip>
+        </q-badge>
+        <q-badge v-else color="light-green-7" floating
+          >?
+          <q-tooltip>{{ t('S.UNKNOWN_CATEGORY') }}:{{ file.file }}</q-tooltip>
+        </q-badge>
+      </q-btn>
+      <q-btn
+        v-for="file in filesInZHUSrv"
         :key="file.Path"
         type="a"
         size="xs"
@@ -18,14 +44,23 @@
         @click="clickBtn(file.Path)"
         dense
       >
-        <q-badge v-if="file.Cat === 'Drawing'" floating>D</q-badge>
-        <q-badge v-else-if="file.Cat === 'Manual'" floating>M</q-badge>
-        <q-badge v-else-if="file.Cat === 'Certificate'" floating>C</q-badge>
-        <q-badge v-else floating>?</q-badge>
-        <q-tooltip v-if="file.Cat === 'Drawing'" floating>{{ t('W.DRAWING') }}:{{ file.File }}</q-tooltip>
-        <q-tooltip v-else-if="file.Cat === 'Manual'" floating>{{ t('W.MANUAL') }}:{{ file.File }}</q-tooltip>
-        <q-tooltip v-else-if="file.Cat === 'Certificate'" floating>{{ t('W.CERTIFICATE') }}:{{ file.File }}</q-tooltip>
-        <q-tooltip v-else floating>{{ t('S.UNKNOWN_CATEGORY') }}:{{ file.File }}</q-tooltip>
+        <q-badge v-if="file.Cat === 'Drawing'" color="orange-10" floating
+          >D
+          <q-tooltip>{{ t('W.DRAWING') }}:{{ file.File }}</q-tooltip>
+        </q-badge>
+        <q-badge v-else-if="file.Cat === 'Manual'" color="orange-10" floating
+          >M
+          <q-tooltip>{{ t('W.MANUAL') }}:{{ file.File }}</q-tooltip>
+        </q-badge>
+        <q-badge v-else-if="file.Cat === 'Certificate'" color="orange-10" floating
+          >C
+          <q-tooltip>{{ t('W.CERTIFICATE') }}:{{ file.File }}</q-tooltip>
+        </q-badge>
+        <q-badge v-else color="orange-10" floating
+          >?
+          <q-tooltip>{{ t('S.UNKNOWN_CATEGORY') }}:{{ file.File }}</q-tooltip>
+        </q-badge>
+
         <q-menu touch-position context-menu>
           <q-btn
             icon="fas fa-trash-alt"
@@ -90,7 +125,8 @@ const props = defineProps({
 })
 
 const isFromChina = ref(false)
-const files = ref([])
+const filesInZHUSrv = ref([])
+const filesInTLSSrv = ref([])
 const showLoading = ref(false)
 const showFileUploader = ref(false)
 const upLoadFileCategory = ref('Drawing')
@@ -144,7 +180,7 @@ const doDeleteFile = (path) => {
     .then((data) => {
       Notify.create({ type: 'success', message: data })
     })
-    .catch((e) => {
+    .catch(() => {
       Notify.create({
         type: 'error',
         message: t('W.DELETE') + t('{VAR_HOLD_WITH_SPACE}', path) + t('W.FAILED')
@@ -160,13 +196,13 @@ const doUpdate = () => {
     axiosGet('/Data/AttachmentPathForChina', { Pn: props.pn })
   ])
     .then((data) => {
-      files.value = data[0]
+      filesInTLSSrv.value = data[0]
       if (isFromChina.value) {
-        files.value = [...data[0], ...data[1]]
+        filesInZHUSrv.value = data[1]
       }
       showFileUploader.value = false
     })
-    .catch((e) => {
+    .catch(() => {
       Notify.create({
         type: 'error',
         message: t('W.LOADING') + t('{VAR_HOLD_WITH_SPACE}', t('W.ATTACHMENT')) + t('W.FAILED')
