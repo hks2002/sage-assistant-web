@@ -410,7 +410,7 @@
       </q-tr>
     </template>
     <template v-slot:pagination="props">
-      {{ $t('S.Tracking lines') }}: {{ rows.length }}
+      {{ $t('S.TRACKING_LINES') }}: {{ rows.length }}
       <q-pagination
         size="sm"
         boundary-numbers
