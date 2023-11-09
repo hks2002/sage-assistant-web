@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.4](https://github.com/hks2002/sage-assistant-web/compare/v1.0.3...v1.0.4) (2023-11-09)
+
+
+### Bug Fixes
+
+* 🐛fix i18n bug ([82e22b5](https://github.com/hks2002/sage-assistant-web/commit/82e22b523a51555a16f8ca371397b5e51b71ecff))
+
 ## [1.0.3](https://github.com/hks2002/sage-assistant-web/compare/v1.0.2...v1.0.3) (2023-11-08)
 
 
