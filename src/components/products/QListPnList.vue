@@ -12,6 +12,11 @@
     <q-item dense class="q-px-sm q-pt-none" v-if="pnRoot">
       <q-item-label class="text-teal" style="font-weight: bolder; font-size: 20px"
         >{{ $t('S.PART_NUM_INFO') }}
+        <template v-for="(pn, index) in pnsInFamily" :key="pn.ROWID">
+          <span v-if="index < 2" class="q-gutter-xl">
+            <SpanFileList :pn="pn.PN" />
+          </span>
+        </template>
       </q-item-label>
     </q-item>
     <template v-for="pn in pnsInFamily" :key="pn.ROWID">
@@ -21,7 +26,7 @@
           <q-item-label v-if="pn.desc1">{{ pn.desc1 }}</q-item-label>
           <q-item-label v-if="pn.desc2">{{ pn.desc2 }}</q-item-label>
           <q-item-label v-if="pn.desc3">{{ pn.desc3 }}</q-item-label>
-          <QItemLabelFileList :pn="pn.PN" />
+          <QItemLabelFileUpload :pn="pn.PN" />
         </q-item-section>
         <q-item-section :class="labClass(pn.status)" side top>
           <q-item-label style="font-size: 18px">{{ date.formatDate(pn.createDate, 'YYYY-MM-DD') }}</q-item-label>
@@ -39,7 +44,8 @@
 
 <script setup>
 import { axiosGet } from '@/assets/axiosActions'
-import QItemLabelFileList from '@/components/products/QItemLabelFileList'
+import QItemLabelFileUpload from '@/components/products/QItemLabelFileUpload'
+import SpanFileList from '@/components/products/SpanFileList'
 import { date, Notify } from 'quasar'
 import { onMounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
