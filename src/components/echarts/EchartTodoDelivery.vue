@@ -23,6 +23,7 @@ import {
   defaultLegend,
   defaultScatterSerial,
   defaultToolbox,
+  defaultTooltip,
   defaultXAxisTime
 } from '@/assets/echartsCfg.js'
 import _groupBy from 'lodash/groupBy'
@@ -60,7 +61,6 @@ const dimensions = [
   'customerName',
   'currency',
   'netPrice',
-  'USD',
   'rate',
   'orderDate',
   'requestDate',
@@ -88,11 +88,11 @@ function doUpdate() {
 }
 
 function prepareData() {
-  const newDate = new Date()
+  const nowDate = new Date()
   data.forEach((row) => {
-    const requestDate = new Date(row.RequestDate)
-    const planedDate = new Date(row.PlanedDate)
-    row.DaysLeft = date.getDateDiff(Math.min(requestDate, planedDate), newDate, 'days')
+    const requestDate = new Date(row.requestDate)
+    const planedDate = new Date(row.planedDate)
+    row.daysLeft = date.getDateDiff(Math.min(requestDate, planedDate), nowDate, 'days')
   })
   data = _sortBy(data, ['daysLeft'])
   legend = _uniq(_map(data, 'orderType'))
@@ -115,6 +115,7 @@ function setEchart() {
     },
     legend: defaultLegend,
     toolbox: defaultToolbox(dimensions, data, t('S.TODO_TO_BE_DELIVERED') + ` [${props.site}]`),
+    tooltip: defaultTooltip,
     xAxis: defaultXAxisTime,
     grid: [{ left: 40, right: 40, bottom: 50 }],
     yAxis: [

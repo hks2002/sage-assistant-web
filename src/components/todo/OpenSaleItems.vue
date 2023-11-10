@@ -56,7 +56,7 @@
           dense
           v-model="filterCustomer"
           outlined
-          :label="$t('W.CUSTOMER')"
+          :label="$t('F.Customer')"
           class="col-1"
           debounce="1000"
           @update:model-value="updatePage(1)"
@@ -66,7 +66,17 @@
           dense
           v-model="filterSupplier"
           outlined
-          :label="$t('W.SUPPLIER')"
+          :label="$t('F.Vendor')"
+          class="col-1"
+          style="height: 20px"
+          debounce="1000"
+          @update:model-value="updatePage(1)"
+        />
+        <q-input
+          dense
+          v-model="filterProjectNO"
+          outlined
+          :label="$t('F.ProjectNO')"
           class="col-1"
           style="height: 20px"
           debounce="1000"
@@ -455,6 +465,7 @@ const showBomDetail = ref(true)
 const showPODetail = ref(true)
 const filterCustomer = ref('')
 const filterSupplier = ref('')
+const filterProjectNO = ref('')
 
 const pagination = ref({
   sortBy: 'daysLeft',
@@ -541,11 +552,12 @@ const doUpdate = (requestProp) => {
   const orderTypeClause = orderType.value ? `&OrderType=${orderType.value}` : ''
   const customerClause = filterCustomer.value ? `&CustomerCode=${filterCustomer.value}` : ''
   const vendorClause = filterSupplier.value ? `&VendorCode=${filterSupplier.value}` : ''
+  const projectNOClause = filterProjectNO.value ? `&ProjectNO=${filterProjectNO.value}` : ''
   const offsetClause = `&Offset=${Offset}`
   const limitClause = `&Limit=${Limit}`
   const sortByClause = `&SortBy=${sortBy}&Descending=${descending ? 'DESC' : 'ASC'}`
 
-  const queryClause = `${siteClause}${orderTypeClause}${customerClause}${vendorClause}${offsetClause}${limitClause}${sortByClause}`
+  const queryClause = `${siteClause}${orderTypeClause}${customerClause}${vendorClause}${projectNOClause}${offsetClause}${limitClause}${sortByClause}`
 
   Promise.all([
     getData(`/Data/TobeTrackingSalesOrderLineCnt?${queryClause}`),
