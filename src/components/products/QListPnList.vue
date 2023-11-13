@@ -14,7 +14,7 @@
         >{{ $t('S.PART_NUM_INFO') }}
         <template v-for="(pn, index) in pnsInFamily" :key="pn.ROWID">
           <span v-if="index < 2" class="q-gutter-xl">
-            <SpanFileList :pn="pn.PN" />
+            <SpanFileList :pn="pn.PN" :version="pn.version" />
           </span>
         </template>
       </q-item-label>

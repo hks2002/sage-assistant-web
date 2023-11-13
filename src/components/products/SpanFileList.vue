@@ -18,6 +18,7 @@
       text-color="orange-10"
       dense
     >
+      <q-badge color="orange" floating>{{ props.version }}</q-badge>
       <q-tooltip>{{ getFileToolTip(file.Cat, file.File) }}</q-tooltip>
       <q-menu touch-position context-menu>
         <q-btn
@@ -40,6 +41,7 @@
       text-color="primary"
       dense
     >
+      <q-badge color="orange" floating>{{ props.version }}</q-badge>
       <q-tooltip>{{ getFileToolTip(file.cat, file.file) }}</q-tooltip>
     </q-btn>
   </span>
