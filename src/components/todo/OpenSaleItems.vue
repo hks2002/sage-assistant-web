@@ -902,7 +902,7 @@ td {
 }
 
 .strip td {
-  background-image: -webkit-linear-gradient(transparent, rgba(69, 49, 67, 0.1) 50%, transparent) !important;
+  background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.15) 15%, rgba(255, 255, 255, 0.15)) !important;
 }
 
 :v-deep(.q-table .q-field__control),
