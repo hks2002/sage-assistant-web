@@ -1,11 +1,10 @@
-/*********************************************************************************************************************
- * @Author                : Robert Huang<56649783@qq.com>                                                            *
- * @CreatedDate           : 2022-05-26 17:31:00                                                                      *
- * @LastEditors           : Robert Huang<56649783@qq.com>                                                            *
- * @LastEditDate          : 2023-09-05 10:34:51                                                                      *
- * @FilePath              : sage-assistant-web/src/components/menuItem/menuItems.js                                  *
- * @CopyRight             : Dedienne Aerospace China ZhuHai                                                          *
- ********************************************************************************************************************/
+/******************************************************************************
+ * @Author                : Robert Huang<56649783@qq.com>                     *
+ * @CreatedDate           : 2022-05-26 17:31:00                               *
+ * @LastEditors           : Robert Huang<56649783@qq.com>                     *
+ * @LastEditDate          : 2023-11-15 23:17:05                               *
+ * @CopyRight             : Dedienne Aerospace China ZhuHai                   *
+ *****************************************************************************/
 
 import { i18n } from '@/boot/i18n'
 
@@ -168,7 +167,46 @@ export default [
       }
     ]
   },
-  // {
+  {
+    path: '/DirtyRecords',
+    name: 'Dirty Records',
+    title: t('W.DIRTY_RECORDS'),
+    caption: '',
+    icon: 'fas fa-user-nurse',
+    split: true,
+    enable: true,
+    expansion: false
+  },
+  {
+    name: 'Links',
+    title: t('W.LINKS'),
+    caption: '',
+    icon: 'fas fa-link',
+    split: true,
+    enable: true,
+    expansion: true,
+    children: [
+      {
+        path: '/LinkSalesOrderPurchaseOrderReceipt',
+        name: 'Link Sales Order Purchase Order Receipt',
+        title: t('W.SO_PO_RECEIPT'),
+        caption: '',
+        icon: 'fas fa-link',
+        split: false,
+        enable: true
+      },
+      {
+        path: '/LinkSalesOrderDeliveryInvoice',
+        name: 'Link Sales Order Delivery Invoice',
+        title: t('W.SO_DELIVERY_INVOICE'),
+        caption: '',
+        icon: 'fas fa-link',
+        split: false,
+        enable: true
+      }
+    ]
+  },
+  //
   //   name: 'Analysis',
   //   title: t('W.ANALYSIS'),
   //   caption: '',
@@ -194,7 +232,7 @@ export default [
     title: t('W.REPORTS'),
     caption: '',
     icon: 'fas fa-print',
-    split: false,
+    split: true,
     expansion: false,
     enable: true
   },
