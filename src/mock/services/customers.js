@@ -1,11 +1,10 @@
-/*********************************************************************************************************************
- * @Author                : Robert Huang<56649783@qq.com>                                                            *
- * @CreatedDate           : 2022-03-31 17:10:00                                                                      *
- * @LastEditors           : Robert Huang<56649783@qq.com>                                                            *
- * @LastEditDate          : 2023-06-15 16:36:05                                                                      *
- * @FilePath              : src/mock/services/customers.js                                                           *
- * @CopyRight             : Dedienne Aerospace China ZhuHai                                                          *
- ********************************************************************************************************************/
+/******************************************************************************
+ * @Author                : Robert Huang<56649783@qq.com>                     *
+ * @CreatedDate           : 2022-03-31 17:10:00                               *
+ * @LastEditors           : Robert Huang<56649783@qq.com>                     *
+ * @LastEditDate          : 2023-11-16 13:55:23                               *
+ * @CopyRight             : Dedienne Aerospace China ZhuHai                   *
+ *****************************************************************************/
 
 import { getQueryParameters } from '@/assets/mockExt'
 import { orderBy } from 'lodash'
@@ -27,8 +26,8 @@ Mock.mock(RegExp('^(/Data/CustomerHelper)' + '.*'), (options) => {
   const list = Mock.mock({
     'data|1-10': [
       {
-        CustomerCode: CodeOrName,
-        CustomerName: () => {
+        customerCode: CodeOrName,
+        customerName: () => {
           return CodeOrName + '_' + Mock.mock('@title(3, 5)')
         }
       }
@@ -45,36 +44,36 @@ Mock.mock(RegExp('^(/Data/CustomerDetails)' + '.*'), (options) => {
   const list = Mock.mock({
     'data|1-2': [
       {
-        CustomerCode: CustomerCode,
-        CustomerName0: () => {
+        customerCode: CustomerCode,
+        customerName0: () => {
           return Mock.mock('@title(3, 5)')
         },
-        CustomerName1: () => {
+        customerName1: () => {
           return Mock.mock('@title(3, 5)')
         },
-        PostCode: /[0-9]{6}/,
-        Country: /[A-Z]{3}/,
-        State: /[A-Z]{1}[a-z]{2,6}/,
-        City: /[A-Z]{1}[a-z]{2,6}/,
-        Address0: () => {
+        postCode: /[0-9]{6}/,
+        country: /[A-Z]{3}/,
+        state: /[A-Z]{1}[a-z]{2,6}/,
+        city: /[A-Z]{1}[a-z]{2,6}/,
+        address0: () => {
           return Mock.mock('@title(3, 5)')
         },
-        Address1: () => {
+        address1: () => {
           return Mock.mock('@title(3, 5)')
         },
-        Tel0: /\d{3}-\d{8}|\d{4}-\d{7}/,
-        Tel1: /\d{3}-\d{8}|\d{4}-\d{7}/,
-        Tel2: /\d{3}-\d{8}|\d{4}-\d{7}/,
-        Tel3: /\d{3}-\d{8}|\d{4}-\d{7}/,
-        Tel4: /\d{3}-\d{8}|\d{4}-\d{7}/,
-        Mobile0: /^(13[0-9]|14[5|7]|15[0|1|2|3|5|6|7|8|9]|18[0|1|2|3|5|6|7|8|9])\d{8}$/,
-        Fax0: /\d{3}-\d{8}|\d{4}-\d{7}/,
-        Email0: /^\w{2,6}@\w{2,6}\.\w{2,6}$/,
-        Email1: /^\w{2,6}@\w{2,6}\.\w{2,6}$/,
-        Email2: /^\w{2,6}@\w{2,6}\.\w{2,6}$/,
-        Email3: /^\w{2,6}@\w{2,6}\.\w{2,6}$/,
-        Email4: /^\w{2,6}@\w{2,6}\.\w{2,6}$/,
-        Website: /^\w+([-+.]\w+)@\w+\.\w+([-.]\w+)$/
+        tel0: /\d{3}-\d{8}|\d{4}-\d{7}/,
+        tel1: /\d{3}-\d{8}|\d{4}-\d{7}/,
+        tel2: /\d{3}-\d{8}|\d{4}-\d{7}/,
+        tel3: /\d{3}-\d{8}|\d{4}-\d{7}/,
+        tel4: /\d{3}-\d{8}|\d{4}-\d{7}/,
+        mobile0: /^(13[0-9]|14[5|7]|15[0|1|2|3|5|6|7|8|9]|18[0|1|2|3|5|6|7|8|9])\d{8}$/,
+        fax0: /\d{3}-\d{8}|\d{4}-\d{7}/,
+        email0: /^\w{2,6}@\w{2,6}\.\w{2,6}$/,
+        email1: /^\w{2,6}@\w{2,6}\.\w{2,6}$/,
+        email2: /^\w{2,6}@\w{2,6}\.\w{2,6}$/,
+        email3: /^\w{2,6}@\w{2,6}\.\w{2,6}$/,
+        email4: /^\w{2,6}@\w{2,6}\.\w{2,6}$/,
+        website: /^\w+([-+.]\w+)@\w+\.\w+([-.]\w+)$/
       }
     ]
   })
@@ -90,31 +89,31 @@ Mock.mock(RegExp('^(/Data/CustomerDeliveryHistory)' + '.*'), (options) => {
   const list = Mock.mock({
     'data|1-500': [
       {
-        Site: /ZHU|HKG|TLS|SGP|MIA|CIN|QAT/,
-        CustomerCode: CustomerCode,
-        OrderNO: /(H|Z|S|T|M)CC[0-9]{6}/,
-        ProjectNO: /(H|Z|S|T|M)CC[0-9]{6}-\d/,
+        site: /ZHU|HKG|TLS|SGP|MIA|CIN|QAT/,
+        customerCode: CustomerCode,
+        orderNO: /(H|Z|S|T|M)CC[0-9]{6}/,
+        projectNO: /(H|Z|S|T|M)CC[0-9]{6}-\d/,
         PN: /[A-Z]{5,8}/,
-        Description: () => {
+        description: () => {
           return Mock.mock('@title(3, 5)')
         },
-        ShipDate: () => {
+        shipDate: () => {
           return Mock.mock('@date("yyyy-MM-dd")')
         },
-        DemandDate: () => {
+        demandDate: () => {
           return Mock.mock('@date("yyyy-MM-dd")')
         },
-        OrderDate: () => {
+        orderDate: () => {
           return Mock.mock('@date("yyyy-MM-dd")')
         },
-        DeliveryNO: /(H|Z|S|T|M)BL[0-9]{6}/,
-        DaysNeed: () => {
+        deliveryNO: /(H|Z|S|T|M)BL[0-9]{6}/,
+        daysNeed: () => {
           return Mock.mock('@integer(20, 365)')
         }
       }
     ]
   })
-  return orderBy(list.data, ['ReceiptDate'], ['asc'])
+  return orderBy(list.data, ['receiptDate'], ['asc'])
 })
 
 Mock.mock(RegExp('^(/Data/CustomerDelayHistory)' + '.*'), (options) => {
@@ -125,25 +124,25 @@ Mock.mock(RegExp('^(/Data/CustomerDelayHistory)' + '.*'), (options) => {
   const list = Mock.mock({
     'data|1-500': [
       {
-        Site: /ZHU|HKG|TLS|SGP|MIA|CIN|QAT/,
-        CustomerCode: CustomerCode,
-        OrderNO: /(H|Z|S|T|M)CC[0-9]{6}/,
-        ProjectNO: /(H|Z|S|T|M)CC[0-9]{6}-\d/,
+        site: /ZHU|HKG|TLS|SGP|MIA|CIN|QAT/,
+        customerCode: CustomerCode,
+        orderNO: /(H|Z|S|T|M)CC[0-9]{6}/,
+        projectNO: /(H|Z|S|T|M)CC[0-9]{6}-\d/,
         PN: /[A-Z]{5,8}/,
-        Description: () => {
+        description: () => {
           return Mock.mock('@title(3, 5)')
         },
-        ShipDate: () => {
+        shipDate: () => {
           return Mock.mock('@date("yyyy-MM-dd")')
         },
-        DemandDate: () => {
+        demandDate: () => {
           return Mock.mock('@date("yyyy-MM-dd")')
         },
-        OrderDate: () => {
+        orderDate: () => {
           return Mock.mock('@date("yyyy-MM-dd")')
         },
-        DeliveryNO: /(H|Z|S|T|M)BL[0-9]{6}/,
-        DaysDelay: () => {
+        deliveryNO: /(H|Z|S|T|M)BL[0-9]{6}/,
+        daysDelay: () => {
           return Mock.mock('@integer(20, 365)')
         }
       }
@@ -161,44 +160,44 @@ Mock.mock(RegExp('^(/Data/CustomerOpenAmount)' + '.*'), (options) => {
   const list = Mock.mock({
     'data|1-5': [
       {
-        Site: /ZHU/,
-        CustomerCode: CustomerCode,
-        Currency: /(RMB|USD|EUR|HKD)/,
-        'Amount|1000-2000': 1,
+        site: /ZHU/,
+        customerCode: CustomerCode,
+        currency: /(RMB|USD|EUR|HKD)/,
+        'amount|1000-2000': 1,
         'USD|1000-20000': 1,
-        'Rate|6-9': 1
+        'rate|6-9': 1
       },
       {
-        Site: /HKG/,
-        CustomerCode: CustomerCode,
-        Currency: /(RMB|USD|EUR|HKD)/,
-        'Amount|1000-2000': 1,
+        site: /HKG/,
+        customerCode: CustomerCode,
+        currency: /(RMB|USD|EUR|HKD)/,
+        'amount|1000-2000': 1,
         'USD|1000-20000': 1,
-        'Rate|6-9': 1
+        'rate|6-9': 1
       },
       {
-        Site: /TLS/,
-        CustomerCode: CustomerCode,
-        Currency: /(RMB|USD|EUR|HKD)/,
-        'Amount|1000-2000': 1,
+        site: /TLS/,
+        customerCode: CustomerCode,
+        currency: /(RMB|USD|EUR|HKD)/,
+        'amount|1000-2000': 1,
         'USD|1000-20000': 1,
-        'Rate|6-9': 1
+        'rate|6-9': 1
       },
       {
-        Site: /SGP/,
-        CustomerCode: CustomerCode,
-        Currency: /(RMB|USD|EUR|HKD)/,
-        'Amount|1000-2000': 1,
+        site: /SGP/,
+        customerCode: CustomerCode,
+        currency: /(RMB|USD|EUR|HKD)/,
+        'amount|1000-2000': 1,
         'USD|1000-20000': 1,
-        'Rate|6-9': 1
+        'rate|6-9': 1
       },
       {
-        Site: /MIA/,
-        CustomerCode: CustomerCode,
-        Currency: /(RMB|USD|EUR|HKD)/,
-        'Amount|1000-2000': 1,
+        site: /MIA/,
+        customerCode: CustomerCode,
+        currency: /(RMB|USD|EUR|HKD)/,
+        'amount|1000-2000': 1,
         'USD|1000-20000': 1,
-        'Rate|6-9': 1
+        'rate|6-9': 1
       }
     ]
   })
@@ -213,24 +212,24 @@ Mock.mock(RegExp('^(/Data/CustomerOpenItems)' + '.*'), (options) => {
   const list = Mock.mock({
     'data|1-50': [
       {
-        Site: /ZHU|HKG|TLS|SGP|MIA|CIN|QAT/,
-        CustomerCode: CustomerCode,
-        OrderNO: /(H|Z|S|T|M)CF[0-9]{6}/,
-        ProjectNO: /(H|Z|S|T|M)CC[0-9]{6}-\d/,
+        site: /ZHU|HKG|TLS|SGP|MIA|CIN|QAT/,
+        customerCode: CustomerCode,
+        orderNO: /(H|Z|S|T|M)CF[0-9]{6}/,
+        projectNO: /(H|Z|S|T|M)CC[0-9]{6}-\d/,
         PN: /[A-Z]{5,8}/,
-        Description: () => {
+        description: () => {
           return Mock.mock('@title(3, 5)')
         },
-        ShipDate: () => {
+        shipDate: () => {
           return Mock.mock('@date("yyyy-MM-dd")')
         },
-        DemandDate: () => {
+        demandDate: () => {
           return Mock.mock('@date("yyyy-MM-dd")')
         },
-        OrderDate: () => {
+        orderDate: () => {
           return Mock.mock('@date("yyyy-MM-dd")')
         },
-        DaysDelay: () => {
+        daysDelay: () => {
           return Mock.mock('@integer(20, 365)')
         }
       }
@@ -247,58 +246,58 @@ Mock.mock(RegExp('^(/Data/CustomerOpenQty)' + '.*'), (options) => {
   const list = Mock.mock({
     'data|1-5': [
       {
-        Site: /ZHU/,
-        CustomerCode: CustomerCode,
-        CountType: /Item|Product|Project/,
-        Qty: () => {
+        site: /ZHU/,
+        customerCode: CustomerCode,
+        countType: /Item|Product|Project/,
+        qty: () => {
           return Mock.mock('@integer(20, 10000)')
         }
       },
       {
-        Site: /HKG/,
-        CustomerCode: CustomerCode,
-        CountType: /Item|Product|Project/,
-        Qty: () => {
+        site: /HKG/,
+        customerCode: CustomerCode,
+        countType: /Item|Product|Project/,
+        qty: () => {
           return Mock.mock('@integer(20, 10000)')
         }
       },
       {
-        Site: /TLS/,
-        CustomerCode: CustomerCode,
-        CountType: /Item|Product|Project/,
-        Qty: () => {
+        site: /TLS/,
+        customerCode: CustomerCode,
+        countType: /Item|Product|Project/,
+        qty: () => {
           return Mock.mock('@integer(20, 10000)')
         }
       },
       {
-        Site: /SGP/,
-        CustomerCode: CustomerCode,
-        CountType: /Item|Product|Project/,
-        Qty: () => {
+        site: /SGP/,
+        customerCode: CustomerCode,
+        countType: /Item|Product|Project/,
+        qty: () => {
           return Mock.mock('@integer(20, 10000)')
         }
       },
       {
-        Site: /MIA/,
-        CustomerCode: CustomerCode,
-        CountType: /Item|Product|Project/,
-        Qty: () => {
+        site: /MIA/,
+        customerCode: CustomerCode,
+        countType: /Item|Product|Project/,
+        qty: () => {
           return Mock.mock('@integer(20, 10000)')
         }
       },
       {
-        Site: /QAT/,
-        CustomerCode: CustomerCode,
-        CountType: /Item|Product|Project/,
-        Qty: () => {
+        site: /QAT/,
+        customerCode: CustomerCode,
+        countType: /Item|Product|Project/,
+        qty: () => {
           return Mock.mock('@integer(20, 10000)')
         }
       },
       {
-        Site: /CIN/,
-        CustomerCode: CustomerCode,
-        CountType: /Item|Product|Project/,
-        Qty: () => {
+        site: /CIN/,
+        customerCode: CustomerCode,
+        countType: /Item|Product|Project/,
+        qty: () => {
           return Mock.mock('@integer(20, 10000)')
         }
       }
@@ -315,44 +314,44 @@ Mock.mock(RegExp('^(/Data/CustomerTotalAmount)' + '.*'), (options) => {
   const list = Mock.mock({
     'data|1-5': [
       {
-        Site: /ZHU/,
-        CustomerCode: CustomerCode,
-        Currency: /(RMB|USD|EUR|HKD)/,
-        'Amount|1000-2000': 1,
+        site: /ZHU/,
+        customerCode: CustomerCode,
+        currency: /(RMB|USD|EUR|HKD)/,
+        'amount|1000-2000': 1,
         'USD|1000-20000': 1,
-        'Rate|6-9': 1
+        'rate|6-9': 1
       },
       {
-        Site: /HKG/,
-        CustomerCode: CustomerCode,
-        Currency: /(RMB|USD|EUR|HKD)/,
-        'Amount|1000-2000': 1,
+        site: /HKG/,
+        customerCode: CustomerCode,
+        currency: /(RMB|USD|EUR|HKD)/,
+        'amount|1000-2000': 1,
         'USD|1000-20000': 1,
-        'Rate|6-9': 1
+        'rate|6-9': 1
       },
       {
-        Site: /TLS/,
-        CustomerCode: CustomerCode,
-        Currency: /(RMB|USD|EUR|HKD)/,
-        'Amount|1000-2000': 1,
+        site: /TLS/,
+        customerCode: CustomerCode,
+        currency: /(RMB|USD|EUR|HKD)/,
+        'amount|1000-2000': 1,
         'USD|1000-20000': 1,
-        'Rate|6-9': 1
+        'rate|6-9': 1
       },
       {
-        Site: /SGP/,
-        CustomerCode: CustomerCode,
-        Currency: /(RMB|USD|EUR|HKD)/,
-        'Amount|1000-2000': 1,
+        site: /SGP/,
+        customerCode: CustomerCode,
+        currency: /(RMB|USD|EUR|HKD)/,
+        'amount|1000-2000': 1,
         'USD|1000-20000': 1,
-        'Rate|6-9': 1
+        'rate|6-9': 1
       },
       {
-        Site: /MIA/,
-        CustomerCode: CustomerCode,
-        Currency: /(RMB|USD|EUR|HKD)/,
-        'Amount|1000-2000': 1,
+        site: /MIA/,
+        customerCode: CustomerCode,
+        currency: /(RMB|USD|EUR|HKD)/,
+        'amount|1000-2000': 1,
         'USD|1000-20000': 1,
-        'Rate|6-9': 1
+        'rate|6-9': 1
       }
     ]
   })
@@ -367,59 +366,59 @@ Mock.mock(RegExp('^(/Data/CustomerTotalQty)' + '.*'), (options) => {
   const list = Mock.mock({
     'data|1-5': [
       {
-        Site: /ZHU/,
-        CustomerCode: CustomerCode,
-        CountType: /Item|Product|Project/,
-        Qty: () => {
-          return Mock.mock('@integer(20, 1000)')
+        site: /ZHU/,
+        customerCode: CustomerCode,
+        countType: /Item|Product|Project/,
+        qty: () => {
+          return Mock.mock('@integer(20, 10000)')
         }
       },
       {
-        Site: /HKG/,
-        CustomerCode: CustomerCode,
-        CountType: /Item|Product|Project/,
-        Qty: () => {
-          return Mock.mock('@integer(20, 1000)')
+        site: /HKG/,
+        customerCode: CustomerCode,
+        countType: /Item|Product|Project/,
+        qty: () => {
+          return Mock.mock('@integer(20, 10000)')
         }
       },
       {
-        Site: /TLS/,
-        CustomerCode: CustomerCode,
-        CountType: /Item|Product|Project/,
-        Qty: () => {
-          return Mock.mock('@integer(20, 1000)')
+        site: /TLS/,
+        customerCode: CustomerCode,
+        countType: /Item|Product|Project/,
+        qty: () => {
+          return Mock.mock('@integer(20, 10000)')
         }
       },
       {
-        Site: /SGP/,
-        CustomerCode: CustomerCode,
-        CountType: /Item|Product|Project/,
-        Qty: () => {
-          return Mock.mock('@integer(20, 1000)')
+        site: /SGP/,
+        customerCode: CustomerCode,
+        countType: /Item|Product|Project/,
+        qty: () => {
+          return Mock.mock('@integer(20, 10000)')
         }
       },
       {
-        Site: /MIA/,
-        CustomerCode: CustomerCode,
-        CountType: /Item|Product|Project/,
-        Qty: () => {
-          return Mock.mock('@integer(20, 1000)')
+        site: /MIA/,
+        customerCode: CustomerCode,
+        countType: /Item|Product|Project/,
+        qty: () => {
+          return Mock.mock('@integer(20, 10000)')
         }
       },
       {
-        Site: /QAT/,
-        CustomerCode: CustomerCode,
-        CountType: /Item|Product|Project/,
-        Qty: () => {
-          return Mock.mock('@integer(20, 1000)')
+        site: /QAT/,
+        customerCode: CustomerCode,
+        countType: /Item|Product|Project/,
+        qty: () => {
+          return Mock.mock('@integer(20, 10000)')
         }
       },
       {
-        Site: /CIN/,
-        CustomerCode: CustomerCode,
-        CountType: /Item|Product|Project/,
-        Qty: () => {
-          return Mock.mock('@integer(20, 1000)')
+        site: /CIN/,
+        customerCode: CustomerCode,
+        countType: /Item|Product|Project/,
+        qty: () => {
+          return Mock.mock('@integer(20, 10000)')
         }
       }
     ]

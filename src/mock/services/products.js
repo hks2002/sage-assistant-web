@@ -1,11 +1,10 @@
-/*********************************************************************************************************************
- * @Author                : Robert Huang<56649783@qq.com>                                                            *
- * @CreatedDate           : 2022-03-25 11:01:00                                                                      *
- * @LastEditors           : Robert Huang<56649783@qq.com>                                                            *
- * @LastEditDate          : 2023-06-15 16:38:46                                                                      *
- * @FilePath              : src/mock/services/products.js                                                            *
- * @CopyRight             : Dedienne Aerospace China ZhuHai                                                          *
- ********************************************************************************************************************/
+/******************************************************************************
+ * @Author                : Robert Huang<56649783@qq.com>                     *
+ * @CreatedDate           : 2022-03-25 11:01:00                               *
+ * @LastEditors           : Robert Huang<56649783@qq.com>                     *
+ * @LastEditDate          : 2023-11-16 13:42:57                               *
+ * @CopyRight             : Dedienne Aerospace China ZhuHai                   *
+ *****************************************************************************/
 
 import { getQueryParameters } from '@/assets/mockExt'
 import { orderBy } from 'lodash'
@@ -48,20 +47,20 @@ Mock.mock(RegExp('^(/Data/PNsInFamily)' + '.*'), (options) => {
         PN: () => {
           return PnRoot + '_' + Mock.mock('@character("ABCDEFG")')
         },
-        Cat: /(P|C|S)000[1-5]/,
-        Version: /[A-Z]/,
-        Comment: /[A-Z][A-Z]/,
-        Desc1: () => {
+        cat: /(P|C|S)000[1-5]/,
+        version: /[A-Z]/,
+        comment: /[A-Z][A-Z]/,
+        desc1: () => {
           return Mock.mock('@sentence(3, 5)')
         },
-        Desc2: () => {
+        desc2: () => {
           return Mock.mock('@sentence(3, 5)')
         },
-        Desc3: () => {
+        desc3: () => {
           return Mock.mock('@sentence(3, 5)')
         },
-        'Status|1-2': 1,
-        CreateDate: () => {
+        'status|1-2': 1,
+        createDate: () => {
           return Mock.mock('@datetime("yyyy-MM-dd")')
         }
       }
@@ -78,30 +77,30 @@ Mock.mock(RegExp('^(/Data/QuoteHistory)' + '.*'), (options) => {
   const list = Mock.mock({
     'data|1-10': [
       {
-        Currency: /(RMB|USD|EUR|HKD)/,
-        CustomerCode: /\d{5}/,
-        CustomerName: () => {
+        currency: /(RMB|USD|EUR|HKD)/,
+        customerCode: /\d{5}/,
+        customerName: () => {
           return Mock.mock('@title(3, 5)')
         },
-        'NetPrice|1000-2000': 1,
-        OrderFlag: /\d[01]/,
-        OrderNO: /((H|Z|S|T|M)CC[0-9]{6})?/,
+        'netPrice|1000-2000': 1,
+        orderFlag: /\d[01]/,
+        orderNO: /((H|Z|S|T|M)CC[0-9]{6})?/,
         PN: () => {
           return PnRoot + '_' + Mock.mock('@character("ABCDEFG")')
         },
-        'Qty|1-200': 1,
-        QuoteDate: () => {
+        'qty|1-200': 1,
+        quoteDate: () => {
           return Mock.mock('@date("yyyy-MM-dd")')
         },
-        QuoteNO: /(H|Z|S|T|M)DC[0-9]{6}/,
+        quoteNO: /(H|Z|S|T|M)DC[0-9]{6}/,
         'USD|1000-2000': 1,
-        'Rate|6-9': 1,
-        TradeTerm: /(DDU|CFR|FOB|DAF|CIP|EXW|DAP)/,
-        SalesSite: /(ZHU|HKG|SGP|TLS|MIA)/
+        'rate|6-9': 1,
+        tradeTerm: /(DDU|CFR|FOB|DAF|CIP|EXW|DAP)/,
+        salesSite: /(ZHU|HKG|SGP|TLS|MIA)/
       }
     ]
   })
-  return orderBy(list.data, ['OrderDate'], ['asc'])
+  return orderBy(list.data, ['orderDate'], ['asc'])
 })
 
 Mock.mock(RegExp('^(/Data/SalesHistory)' + '.*'), (options) => {
@@ -111,28 +110,28 @@ Mock.mock(RegExp('^(/Data/SalesHistory)' + '.*'), (options) => {
   const list = Mock.mock({
     'data|1-100': [
       {
-        Currency: /(RMB|USD|EUR|HKD)/,
-        CustomerCode: /\d{5}/,
-        CustomerName: () => {
+        currency: /(RMB|USD|EUR|HKD)/,
+        customerCode: /\d{5}/,
+        customerName: () => {
           return Mock.mock('@title(3, 5)')
         },
-        OrderDate: () => {
+        orderDate: () => {
           return Mock.mock('@date("yyyy-MM-dd")')
         },
-        OrderNO: /(H|Z|S|T|M)CC[0-9]{6}/,
-        'NetPrice|1000-2000': 1,
+        orderNO: /(H|Z|S|T|M)CC[0-9]{6}/,
+        'netPrice|1000-2000': 1,
         PN: () => {
           return PnRoot + '_' + Mock.mock('@character("ABCDEFG")')
         },
-        'Qty|1-100': 1,
-        'Rate|6-9': 1,
+        'qty|1-100': 1,
+        'rate|6-9': 1,
         'USD|1000-2000': 1,
-        TradeTerm: /(DDU|CFR|FOB|DAF|CIP|EXW|DAP)/,
-        SalesSite: /(ZHU|HKG|SGP|TLS|MIA)/
+        tradeTerm: /(DDU|CFR|FOB|DAF|CIP|EXW|DAP)/,
+        salesSite: /(ZHU|HKG|SGP|TLS|MIA)/
       }
     ]
   })
-  return orderBy(list.data, ['OrderDate'], ['asc'])
+  return orderBy(list.data, ['orderDate'], ['asc'])
 })
 
 Mock.mock(RegExp('^(/Data/CostHistory)' + '.*'), (options) => {
@@ -142,35 +141,35 @@ Mock.mock(RegExp('^(/Data/CostHistory)' + '.*'), (options) => {
   const list = Mock.mock({
     'data|1-10': [
       {
-        Currency: /(RMB|USD|EUR|HKD)/,
-        VendorCode: /\d{5}/,
-        VendorName: () => {
+        currency: /(RMB|USD|EUR|HKD)/,
+        vendorCode: /\d{5}/,
+        vendorName: () => {
           return Mock.mock('@title(3, 5)')
         },
-        OrderDate: () => {
+        orderDate: () => {
           return Mock.mock('@date("yyyy-MM-dd")')
         },
-        ProjectNO: /(H|Z|S|T|M)CC[0-9]{6}-[1-9]{1}/,
-        'NetPrice|1000-2000': 1,
-        OrderPN: () => {
+        projectNO: /(H|Z|S|T|M)CC[0-9]{6}-[1-9]{1}/,
+        'netPrice|1000-2000': 1,
+        orderPN: () => {
           return PnRoot + '_' + Mock.mock('@character("ABCDEFG")')
         },
-        PurchasePN: () => {
+        purchasePN: () => {
           return PnRoot + '_' + Mock.mock('@character("ABCDEFG")')
         },
-        PurchaseNO: /(H|Z|S|T|M)CF[0-9]{6}/,
-        Description: () => {
+        purchaseNO: /(H|Z|S|T|M)CF[0-9]{6}/,
+        description: () => {
           return Mock.mock('@title(3, 5)')
         },
-        Line: /[0-9]{1}/,
-        'Qty|1-100': 1,
-        'Rate|6-9': 1,
+        line: /[0-9]{1}/,
+        'qty|1-100': 1,
+        'rate|6-9': 1,
         'USD|1000-2000': 1,
-        PurchaseSite: /(ZHU|HKG|SGP|TLS|MIA)/
+        purchaseSite: /(ZHU|HKG|SGP|TLS|MIA)/
       }
     ]
   })
-  return orderBy(list.data, ['OrderDate'], ['asc'])
+  return orderBy(list.data, ['orderDate'], ['asc'])
 })
 
 Mock.mock(RegExp('^(/Data/InventoryStock)' + '.*'), (options) => {
@@ -180,11 +179,11 @@ Mock.mock(RegExp('^(/Data/InventoryStock)' + '.*'), (options) => {
   const list = Mock.mock({
     'data|1-10': [
       {
-        StockSite: /(ZHU|HKG|SGP|TLS|MIA)/,
+        stockSite: /(ZHU|HKG|SGP|TLS|MIA)/,
         PN: () => {
           return PnRoot + '_' + Mock.mock('@character("ABCDEFG")')
         },
-        'Qty|1-365': 1
+        'qty|1-365': 1
       }
     ]
   })
@@ -199,17 +198,17 @@ Mock.mock(RegExp('^(/Data/DeliveryDuration)' + '.*'), (options) => {
   const list = Mock.mock({
     'data|1-10': [
       {
-        SalesSite: /(ZHU|HKG|SGP|TLS|MIA)/,
+        salesSite: /(ZHU|HKG|SGP|TLS|MIA)/,
         PN: () => {
           return PnRoot + '_' + Mock.mock('@character("ABCDEFG")')
         },
-        OrderDate: () => {
+        orderDate: () => {
           return Mock.mock('@date("yyyy-MM-dd")')
         },
-        ShipDate: () => {
+        shipDate: () => {
           return Mock.mock('@date("yyyy-MM-dd")')
         },
-        'Duration|1-365': 1
+        'duration|1-365': 1
       }
     ]
   })

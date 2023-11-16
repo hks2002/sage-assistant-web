@@ -1,11 +1,10 @@
-/*********************************************************************************************************************
- * @Author                : Robert Huang<56649783@qq.com>                                                            *
- * @CreatedDate           : 2022-03-25 11:01:00                                                                      *
- * @LastEditors           : Robert Huang<56649783@qq.com>                                                            *
- * @LastEditDate          : 2023-06-15 16:41:51                                                                      *
- * @FilePath              : src/mock/services/stock.js                                                               *
- * @CopyRight             : Dedienne Aerospace China ZhuHai                                                          *
- ********************************************************************************************************************/
+/******************************************************************************
+ * @Author                : Robert Huang<56649783@qq.com>                     *
+ * @CreatedDate           : 2022-03-25 11:01:00                               *
+ * @LastEditors           : Robert Huang<56649783@qq.com>                     *
+ * @LastEditDate          : 2023-11-16 13:46:18                               *
+ * @CopyRight             : Dedienne Aerospace China ZhuHai                   *
+ *****************************************************************************/
 
 import { getQueryParameters } from '@/assets/mockExt'
 import _forEach from 'lodash/forEach'
@@ -18,14 +17,14 @@ Mock.mock(RegExp('^(/Data/StockSummary)' + '.*'), () => {
       {
         G: /[A-Z]/,
         A: '',
-        Location: /[A-Z]MAG\d{2}/,
+        location: /[A-Z]MAG\d{2}/,
         PN: /[0-9A-Z]{5,8}/,
-        OptionPN: /(123|456)/,
-        Description: () => {
+        optionPN: /(123|456)/,
+        description: () => {
           return Mock.mock('@title(5, 10)')
         },
-        'Qty|1-10': 1,
-        Cost: () => {
+        'qty|1-10': 1,
+        cost: () => {
           return Mock.mock('@float(60, 10000, 3, 5)')
         }
       }
@@ -49,34 +48,34 @@ Mock.mock(RegExp('^(/Data/StockHistory)' + '.*'), (options) => {
     const list = Mock.mock({
       'data|1-2000': [
         {
-          Location: /[A-Z]MAG\d{2}/,
-          Seq: () => {
+          lengthocation: /[A-Z]MAG\d{2}/,
+          seq: () => {
             return Mock.mock('@increment(1000)')
           },
           PN: () => {
             return PnOrName + Mock.mock('@word')
           },
-          Description: () => {
+          description: () => {
             return PnOrName + Mock.mock('@title(3, 5)')
           },
-          'Qty|1-10': 1,
-          Unit: 'UN',
-          Cost: () => {
+          'qty|1-10': 1,
+          unit: 'UN',
+          cost: () => {
             return Mock.mock('@float(60, 10000, 3, 5)')
           },
-          ProjectNO: /(H|Z|S|T|M)CC[0-9]{6}-[1-9]{1}/,
-          SourceNO: /(H|Z|S|T|M)CF[0-9]{6}/,
-          SourceLine: () => {
+          projectNO: /(H|Z|S|T|M)CC[0-9]{6}-[1-9]{1}/,
+          sourceNO: /(H|Z|S|T|M)CF[0-9]{6}/,
+          sourceLine: () => {
             return Mock.mock({ 'number|1-100': 100 }).number * 1000
           },
-          EntryNO: /(H|Z|S|T|M)RA[0-9]{6}/,
-          EntryLine: () => {
+          entryNO: /(H|Z|S|T|M)RA[0-9]{6}/,
+          entryLine: () => {
             return Mock.mock({ 'number|1-100': 100 }).number * 1000
           },
-          CreateUser: () => {
+          createUser: () => {
             return Mock.mock('@cname')
           },
-          CreateDate: () => {
+          createDate: () => {
             return Mock.mock('@date("yyyy-MM-dd")')
           }
         }
@@ -87,27 +86,27 @@ Mock.mock(RegExp('^(/Data/StockHistory)' + '.*'), (options) => {
     const list = Mock.mock({
       'data|1-20': [
         {
-          Location: /[A-Z]MAG\d{2}/,
-          Seq: () => {
+          location: /[A-Z]MAG\d{2}/,
+          seq: () => {
             return Mock.mock('@increment(1000)')
           },
-          'Qty|1-10': 1,
-          Cost: () => {
+          'qty|1-10': 1,
+          cost: () => {
             return Mock.mock('@float(60, 10000, 3, 5)')
           },
-          ProjectNO: /(H|Z|S|T|M)CC[0-9]{6}-[1-9]{1}/,
-          SourceNO: /(H|Z|S|T|M)CF[0-9]{6}/,
-          SourceLine: () => {
+          projectNO: /(H|Z|S|T|M)CC[0-9]{6}-[1-9]{1}/,
+          sourceNO: /(H|Z|S|T|M)CF[0-9]{6}/,
+          sourceLine: () => {
             return Mock.mock({ 'number|1-100': 100 }).number * 1000
           },
-          EntryNO: /(H|Z|S|T|M)RA[0-9]{6}/,
-          EntryLine: () => {
+          entryNO: /(H|Z|S|T|M)RA[0-9]{6}/,
+          entryLine: () => {
             return Mock.mock({ 'number|1-100': 100 }).number * 1000
           },
-          CreateUser: () => {
+          createUser: () => {
             return Mock.mock('@cname')
           },
-          CreateDate: () => {
+          createDate: () => {
             return Mock.mock('@date("yyyy-MM-dd")')
           }
         }
