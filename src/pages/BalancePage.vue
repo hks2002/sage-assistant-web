@@ -2,8 +2,7 @@
 * @Author                : Robert Huang<56649783@qq.com>
 * @CreatedDate           : 2023-06-17 23:04:00
 * @LastEditors           : Robert Huang<56649783@qq.com>
-* @LastEditDate          : 2023-08-27 11:15:57
-* @FilePath              : sage-assistant-web/src/pages/BalancePage.vue
+* @LastEditDate          : 2023-11-16 13:28:36
 * @CopyRight             : Dedienne Aerospace China ZhuHai
 -->
 
@@ -79,7 +78,6 @@
 
 <script setup>
 import { isAuthorized } from '@/assets/auth'
-import { getCookies } from '@/assets/storage'
 import EchartFinancialAccountBalanceVue from '@/components/echarts/EchartAccountBalance.vue'
 import QMarkupTableBalanceVue from '@/components/Financial/QMarkupTableBalance.vue'
 import ExceptionLottieVue from '@/components/lottie/ExceptionLottie.vue'
@@ -103,8 +101,8 @@ const showCredit = ref(true)
 const showMovement = ref(true)
 
 // events
-ebus.on('changeSite', () => {
-  site.value = getCookies('site')
+ebus.on('changeSite', (newSite) => {
+  site.value = newSite
 })
 
 onBeforeUnmount(() => {

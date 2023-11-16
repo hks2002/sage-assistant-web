@@ -2,8 +2,7 @@
 * @Author                : Robert Huang<56649783@qq.com>
 * @CreatedDate           : 2023-06-17 23:08:00
 * @LastEditors           : Robert Huang<56649783@qq.com>
-* @LastEditDate          : 2023-09-03 01:32:10
-* @FilePath              : sage-assistant-web/src/pages/QuoteSalesCostPage.vue
+* @LastEditDate          : 2023-11-16 13:34:13
 * @CopyRight             : Dedienne Aerospace China ZhuHai
 -->
 
@@ -223,8 +222,7 @@ const ebus = inject('ebus')
 const showLoading = ref(false)
 
 // page vars
-const site = ref('')
-site.value = LocalStorage.getItem('site')
+const site = ref(LocalStorage.getItem('site'))
 const siteList = ref([])
 siteList.value = LocalStorage.getItem('siteList') || []
 const siteN = siteList.value.length

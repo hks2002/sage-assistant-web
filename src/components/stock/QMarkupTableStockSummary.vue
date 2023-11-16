@@ -172,7 +172,7 @@ const download = () => {
   _forEach(strPNData, (value) => {
     value.PN = '#' + value.PN
   })
-  jsonToExcel(header, strPNData, t('{site} Stock Count {nowTime}', { site: site.value, nowTime: nowTime }))
+  jsonToExcel(header, strPNData, t('S.{site} STOCK COUNT {nowTime}', { site: site.value, nowTime: nowTime }))
 }
 
 const S2N = (S, n) => {

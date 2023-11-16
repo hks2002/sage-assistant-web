@@ -127,15 +127,13 @@ const download = () => {
   strPNData.forEach((value) => {
     value.PN = '#' + value.PN
   })
-  jsonToExcel(
-    header,
-    strPNData,
-    t('{site} Stock History-{dateFrom}_{dateTo}', {
-      site: site.value,
-      dateFrom: props.dateFrom,
-      dateTo: props.dateTo
-    })
-  )
+  const title = t('S.{site} STOCK HISTORY {dateFrom}_{dateTo}', {
+    site: site.value,
+    dateFrom: props.dateFrom,
+    dateTo: props.dateTo
+  })
+
+  jsonToExcel(header, strPNData, title)
 }
 
 // events

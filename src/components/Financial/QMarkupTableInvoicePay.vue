@@ -2,8 +2,7 @@
 * @Author                : Robert Huang<56649783@qq.com>
 * @CreatedDate           : 2023-06-22 23:52:00
 * @LastEditors           : Robert Huang<56649783@qq.com>
-* @LastEditDate          : 2023-08-28 16:56:38
-* @FilePath              : sage-assistant-web/src/components/Financial/QMarkupTableInvoicePay.vue
+* @LastEditDate          : 2023-11-14 15:55:09
 * @CopyRight             : Dedienne Aerospace China ZhuHai
 -->
 
@@ -14,7 +13,7 @@
       <tr>
         <td :colspan="colspan" class="bg-teal text-h6 text-white shadow-2">
           {{
-            $t('Invoice Pay of customer {customerCode} from {dateFrom} to {dateTo}', {
+            $t('S.INVOICE PAY OF CUSTOMER {customerCode} FROM {dateFrom} TO {dateTo}', {
               customerCode: customerCode,
               dateFrom: dateFrom,
               dateTo: dateTo
