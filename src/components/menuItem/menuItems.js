@@ -2,7 +2,7 @@
  * @Author                : Robert Huang<56649783@qq.com>                     *
  * @CreatedDate           : 2022-05-26 17:31:00                               *
  * @LastEditors           : Robert Huang<56649783@qq.com>                     *
- * @LastEditDate          : 2023-11-15 23:17:05                               *
+ * @LastEditDate          : 2023-11-17 13:14:44                               *
  * @CopyRight             : Dedienne Aerospace China ZhuHai                   *
  *****************************************************************************/
 
@@ -168,9 +168,9 @@ export default [
     ]
   },
   {
-    path: '/DirtyRecords',
-    name: 'Dirty Records',
-    title: t('W.DIRTY_RECORDS'),
+    path: '/SuspectDuplicateRecords',
+    name: 'Suspect Duplicate Records',
+    title: t('W.SUSPECT_DUPLICATE_RECORDS'),
     caption: '',
     icon: 'fas fa-user-nurse',
     split: true,
