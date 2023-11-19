@@ -2,7 +2,7 @@
 * @Author                : Robert Huang<56649783@qq.com>
 * @CreatedDate           : 2023-06-22 23:52:00
 * @LastEditors           : Robert Huang<56649783@qq.com>
-* @LastEditDate          : 2023-11-14 15:55:09
+* @LastEditDate          : 2023-11-17 11:30:02
 * @CopyRight             : Dedienne Aerospace China ZhuHai
 -->
 
@@ -108,6 +108,10 @@ const props = defineProps({
     type: String,
     require: true
   },
+  dateType: {
+    type: String,
+    require: true
+  },
   proSearch: {
     type: Boolean,
     require: false,
@@ -141,7 +145,8 @@ const doUpdate = () => {
     Site: props.site,
     CustomerCode: code,
     DateFrom: props.dateFrom,
-    DateTo: props.dateTo
+    DateTo: props.dateTo,
+    DateType: props.dateType
   })
     .then((response) => {
       invoicePayItems.value = response
@@ -152,22 +157,22 @@ const doUpdate = () => {
 }
 const download = () => {
   const header = [
-    'Site',
-    'Customer',
-    'Name',
-    'InvoiceNO',
-    'Currency',
-    'Amount',
-    'AmountLocal',
-    'Pay',
-    'PayLocal',
-    'OrderNO',
-    'CreateDate',
-    'DueDate',
-    'PayDate',
-    'Fapiao',
-    'CustRef',
-    'Status'
+    'site',
+    'customer',
+    'name',
+    'invoiceNO',
+    'currency',
+    'amount',
+    'amountLocal',
+    'pay',
+    'payLocal',
+    'orderNO',
+    'createDate',
+    'dueDate',
+    'payDate',
+    'fapiao',
+    'custRef',
+    'status'
   ]
   if (props.proSearch) {
     header.push('MatchedBy')
