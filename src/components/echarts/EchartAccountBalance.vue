@@ -2,8 +2,7 @@
 * @Author                : Robert Huang<56649783@qq.com>
 * @CreatedDate           : 2023-06-22 21:00:00
 * @LastEditors           : Robert Huang<56649783@qq.com>
-* @LastEditDate          : 2023-08-28 14:13:38
-* @FilePath              : sage-assistant-web/src/components/echarts/EchartAccountBalance.vue
+* @LastEditDate          : 2023-11-17 13:45:26
 * @CopyRight             : Dedienne Aerospace China ZhuHai
 -->
 
@@ -127,7 +126,7 @@ const setEchart = () => {
     tooltip: defaultTooltip,
     xAxis: {
       type: 'category',
-      data: [t('W.FINAICAL_OPEN'), ...Quasar.lang.props.date.monthsShort]
+      data: [t('W.FINANCIAL_OPEN'), ...Quasar.lang.props.date.monthsShort]
     },
     yAxis: {
       type: 'value',

@@ -2,8 +2,7 @@
 * @Author                : Robert Huang<56649783@qq.com>
 * @CreatedDate           : 2022-03-25 11:01:00
 * @LastEditors           : Robert Huang<56649783@qq.com>
-* @LastEditDate          : 2023-08-28 00:06:02
-* @FilePath              : sage-assistant-web/src/components/echarts/EchartTodoReceive.vue
+* @LastEditDate          : 2023-11-18 12:21:50
 * @CopyRight             : Dedienne Aerospace China ZhuHai
 -->
 
@@ -93,7 +92,7 @@ function doUpdate() {
 function prepareData() {
   const newDate = new Date()
   data.forEach((row) => {
-    row.DaysLeft = date.getDateDiff(row.ExpectDate, newDate, 'days')
+    row.daysLeft = date.getDateDiff(row.expectDate, newDate, 'days')
   })
   data = _sortBy(data, ['daysLeft'])
   legend = _uniq(_map(data, 'createUser'))

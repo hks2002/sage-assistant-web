@@ -2,8 +2,7 @@
 * @Author                : Robert Huang<56649783@qq.com>
 * @CreatedDate           : 2022-03-25 11:01:00
 * @LastEditors           : Robert Huang<56649783@qq.com>
-* @LastEditDate          : 2023-08-28 00:21:43
-* @FilePath              : sage-assistant-web/src/components/echarts/EchartTodoPurchaseBom.vue
+* @LastEditDate          : 2023-11-18 12:24:12
 * @CopyRight             : Dedienne Aerospace China ZhuHai
 -->
 
@@ -89,7 +88,7 @@ function doUpdate() {
 function prepareData() {
   const newDate = new Date()
   data.forEach((row) => {
-    row.Days = date.getDateDiff(row.CreateDate, newDate, 'days')
+    row.days = date.getDateDiff(row.createDate, newDate, 'days')
   })
   data = _sortBy(data, ['days'], ['desc'])
 

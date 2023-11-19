@@ -2,8 +2,7 @@
 * @Author                : Robert Huang<56649783@qq.com>
 * @CreatedDate           : 2022-03-25 11:01:00
 * @LastEditors           : Robert Huang<56649783@qq.com>
-* @LastEditDate          : 2023-08-28 00:23:37
-* @FilePath              : sage-assistant-web/src/components/echarts/EchartTodoDealWithOrderLine.vue
+* @LastEditDate          : 2023-11-18 12:24:44
 * @CopyRight             : Dedienne Aerospace China ZhuHai
 -->
 
@@ -88,7 +87,7 @@ function doUpdate() {
 function prepareData() {
   const newDate = new Date()
   data.forEach((row) => {
-    row.Days = date.getDateDiff(row.OrderDate, newDate, 'days')
+    row.days = date.getDateDiff(row.orderDate, newDate, 'days')
   })
   data = _sortBy(data, ['days'], ['desc'])
 
