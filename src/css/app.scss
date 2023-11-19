@@ -81,3 +81,20 @@ $sampleColor: #ff7875;
     transparent
   );
 }
+
+.my-sticky-header-table {
+  /* height or max-height is important */
+  height: 500px;
+
+  .q-table__top,
+  thead tr:first-child th {
+    /* bg color is important for th; just specify one */
+    background-color: $primary;
+    color: #fff;
+    position: sticky;
+    top : 0;
+    z-index: 1;
+  }
+  
+
+}
