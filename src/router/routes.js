@@ -2,7 +2,7 @@
  * @Author                : Robert Huang<56649783@qq.com>                     *
  * @CreatedDate           : 2022-03-25 11:01:00                               *
  * @LastEditors           : Robert Huang<56649783@qq.com>                     *
- * @LastEditDate          : 2023-11-15 23:17:13                               *
+ * @LastEditDate          : 2023-11-19 13:49:25                               *
  * @CopyRight             : Dedienne Aerospace China ZhuHai                   *
  *****************************************************************************/
 
@@ -78,9 +78,9 @@ const routes = [
         component: () => import('pages/CustomersPage.vue')
       },
       {
-        path: 'DirtyRecords',
-        name: 'Dirty Records',
-        component: () => import('pages/DirtyRecordsPage.vue')
+        path: 'SuspectDuplicateRecords',
+        name: 'Suspect Duplicate Records',
+        component: () => import('pages/SuspectDuplicateRecordsPage.vue')
       },
       {
         path: 'LinkSalesOrderPurchaseOrderReceipt',

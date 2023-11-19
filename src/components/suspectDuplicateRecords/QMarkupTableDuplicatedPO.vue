@@ -2,7 +2,7 @@
 * @Author                : Robert Huang<56649783@qq.com>
 * @CreatedDate           : 2023-11-14 15:52:00
 * @LastEditors           : Robert Huang<56649783@qq.com>
-* @LastEditDate          : 2023-11-16 13:07:43
+* @LastEditDate          : 2023-11-19 13:55:20
 * @CopyRight             : Dedienne Aerospace China ZhuHai
 -->
 
@@ -124,12 +124,9 @@ onMounted(() => {
   doUpdate()
 })
 
-watch(
-  () => props,
-  (value, oldValue) => {
-    console.debug('watch:', oldValue, '--->', value)
+watch(props, (value, oldValue) => {
+  console.debug('watch:', oldValue, '--->', value)
 
-    doUpdate()
-  }
-)
+  doUpdate()
+})
 </script>
