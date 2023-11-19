@@ -2,7 +2,7 @@
 * @Author                : Robert Huang<56649783@qq.com>
 * @CreatedDate           : 2023-06-22 23:52:00
 * @LastEditors           : Robert Huang<56649783@qq.com>
-* @LastEditDate          : 2023-11-19 20:53:33
+* @LastEditDate          : 2023-11-19 22:14:38
 * @CopyRight             : Dedienne Aerospace China ZhuHai
 -->
 
@@ -262,6 +262,9 @@ const doUpdate = () => {
         item.amountLocal = item.amountLocal.toFixed(2)
         item.pay = item.pay.toFixed(2)
         item.payLocal = item.payLocal.toFixed(2)
+        if (props.proSearch && item.payInPayNO) {
+          item.payInPayNO = item.payInPayNO.toFixed(2)
+        }
       })
       rows.value = response
     })
