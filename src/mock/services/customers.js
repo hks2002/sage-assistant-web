@@ -2,7 +2,7 @@
  * @Author                : Robert Huang<56649783@qq.com>                     *
  * @CreatedDate           : 2022-03-31 17:10:00                               *
  * @LastEditors           : Robert Huang<56649783@qq.com>                     *
- * @LastEditDate          : 2023-11-16 13:55:23                               *
+ * @LastEditDate          : 2023-11-17 12:14:24                               *
  * @CopyRight             : Dedienne Aerospace China ZhuHai                   *
  *****************************************************************************/
 
@@ -17,8 +17,8 @@ Mock.mock(RegExp('^(/Data/CustomerHelper)' + '.*'), (options) => {
   if (CodeOrName === '%%') {
     return [
       {
-        CustomerCode: '%%',
-        CustomerName: '%%'
+        customerCode: '%%',
+        customerName: '%%'
       }
     ]
   }
