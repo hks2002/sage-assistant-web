@@ -16,6 +16,8 @@ import { axiosPost } from './axiosActions'
  * @returns
  */
 const isAuthorized = (fun) => {
+  if (process.env.DEV) return true
+
   const authorizations = SessionStorage.getItem('authorizations')
   if (!authorizations) return false
 
