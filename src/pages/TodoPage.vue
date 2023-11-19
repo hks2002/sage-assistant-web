@@ -2,8 +2,7 @@
 * @Author                : Robert Huang<56649783@qq.com>
 * @CreatedDate           : 2023-06-17 23:09:00
 * @LastEditors           : Robert Huang<56649783@qq.com>
-* @LastEditDate          : 2023-08-30 22:44:22
-* @FilePath              : sage-assistant-web/src/pages/TodoPage.vue
+* @LastEditDate          : 2023-11-19 11:46:13
 * @CopyRight             : Dedienne Aerospace China ZhuHai
 -->
 
@@ -99,12 +98,12 @@ const ebus = inject('ebus')
 const tab = ref('Tracking')
 const site = ref(LocalStorage.getItem('site'))
 // provide by TabPages
-const tabPageBodyHeight = inject('tabPageBodyHeight')
+const bodyHeight = inject('bodyHeight')
 
 // computed vars
 const tabPanelHeight = computed(() => {
   /** for q-tab-panels */
-  return tabPageBodyHeight.value > 0 ? tabPageBodyHeight.value - props.tabHeaderHeight - 10 : 500
+  return bodyHeight.value > 0 ? bodyHeight.value - props.tabHeaderHeight - 10 : 500
 })
 
 // events

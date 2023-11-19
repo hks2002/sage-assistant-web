@@ -2,34 +2,31 @@
 * @Author                : Robert Huang<56649783@qq.com>
 * @CreatedDate           : 2023-06-23 02:56:00
 * @LastEditors           : Robert Huang<56649783@qq.com>
-* @LastEditDate          : 2023-06-23 02:56:41
-* @FilePath              : src/pages/StockSummaryPage.vue
+* @LastEditDate          : 2023-11-19 13:39:56
 * @CopyRight             : Dedienne Aerospace China ZhuHai
 -->
 
 <template>
-  <q-page>
-    <ExceptionLottie :ErrorCode="403" v-if="!isAuthorized('CONSSAR')" />
-    <q-list class="row q-gutter-sm q-pt-sm q-px-sm" v-if="isAuthorized('CONSSAR')">
-      <q-input
-        dense
-        clearable
-        outlined
-        hide-hint
-        hide-bottom-space
-        debounce="1000"
-        class="col-grow"
-        :label="$t('S.FILTER_PN')"
-        :hint="$t('S.FILTER_PN_HINT')"
-        input-class="text-uppercase"
-        v-model="PNfilter"
-      >
-      </q-input>
-    </q-list>
-    <q-list class="row q-gutter-sm q-pt-sm q-px-sm" v-if="isAuthorized('CONSSAR')">
-      <QMarkupTableStockSummaryVue :PNfilter="PNfilter" :style="{ height: tableHeight + 'px' }" />
-    </q-list>
-  </q-page>
+  <ExceptionLottie :ErrorCode="403" v-if="!isAuthorized('CONSSAR')" />
+  <q-list class="row q-gutter-sm q-pt-sm q-px-sm" v-if="isAuthorized('CONSSAR')">
+    <q-input
+      dense
+      clearable
+      outlined
+      hide-hint
+      hide-bottom-space
+      debounce="1000"
+      class="col-grow"
+      :label="$t('S.FILTER_PN')"
+      :hint="$t('S.FILTER_PN_HINT')"
+      input-class="text-uppercase"
+      v-model="PNfilter"
+    >
+    </q-input>
+  </q-list>
+  <q-list class="row q-gutter-sm q-pt-sm q-px-sm" v-if="isAuthorized('CONSSAR')">
+    <QMarkupTableStockSummaryVue :PNfilter="PNfilter" :style="{ height: tableHeight + 'px' }" />
+  </q-list>
 </template>
 
 <script setup>

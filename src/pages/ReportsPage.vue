@@ -2,13 +2,12 @@
 * @Author                : Robert Huang<56649783@qq.com>
 * @CreatedDate           : 2023-05-25 01:02:00
 * @LastEditors           : Robert Huang<56649783@qq.com>
-* @LastEditDate          : 2023-09-17 23:48:00
-* @FilePath              : sage-assistant-web/src/pages/ReportsPage.vue
-* @CopyRight             : MerBleueAviation
+* @LastEditDate          : 2023-11-19 13:39:19
+* @CopyRight             : Dedienne Aerospace China ZhuHai
 -->
 
 <template>
-  <q-page class="row">
+  <div class="row">
     <div class="column col-md-4 col-lg-4 col-xl-3 q-pa-xs">
       <q-item>
         <q-item-section avatar>
@@ -16,20 +15,39 @@
           <q-tooltip>{{ $t('W.ACK') }}</q-tooltip>
         </q-item-section>
         <q-item-section>
-          <q-input v-model="OrderNO" :label="$t('F.OrderNO')" outlined clearable hint="ZCC200002 ZREP2019001"
-            :hide-hint="true" input-class="text-uppercase" class="q-pa-xs"
-            @keydown="clickTarget($event, 'showSalesOrder')">
+          <q-input
+            v-model="OrderNO"
+            :label="$t('F.OrderNO')"
+            outlined
+            clearable
+            hint="ZCC200002 ZREP2019001"
+            :hide-hint="true"
+            input-class="text-uppercase"
+            class="q-pa-xs"
+            @keydown="clickTarget($event, 'showSalesOrder')"
+          >
           </q-input>
         </q-item-section>
         <q-item-section side>
-          <q-btn id="showSalesOrder" text-color="orange-10" dense icon="fas fa-file-pdf" @click="showPdf('SalesOrder')" />
+          <q-btn
+            id="showSalesOrder"
+            text-color="orange-10"
+            dense
+            icon="fas fa-file-pdf"
+            @click="showPdf('SalesOrder')"
+          />
         </q-item-section>
         <q-item-section side>
           <q-btn text-color="indigo-7" dense icon="fas fa-file-word" @click="exportWord('SalesOrder')" />
         </q-item-section>
         <q-item-section side>
-          <q-btn id="showSalesOrder" text-color="light-green-7" dense icon="fas fa-file-pdf"
-            @click="showPdf('SalesOrder', 'sage')" />
+          <q-btn
+            id="showSalesOrder"
+            text-color="light-green-7"
+            dense
+            icon="fas fa-file-pdf"
+            @click="showPdf('SalesOrder', 'sage')"
+          />
         </q-item-section>
       </q-item>
 
@@ -39,9 +57,17 @@
           <q-tooltip>{{ $t('W.COC') }}</q-tooltip>
         </q-item-section>
         <q-item-section>
-          <q-input v-model="COCProj" :label="$t('ProjectNO & Order Line')" outlined clearable
-            hint="ZCC200002-1 ZCC190001-11 ZREP2019001-1 ZDSRP190001" :hide-hint="true" input-class="text-uppercase"
-            class="q-pa-xs" @keydown="clickTarget($event, 'showCOC')">
+          <q-input
+            v-model="COCProj"
+            :label="$t('ProjectNO & Order Line')"
+            outlined
+            clearable
+            hint="ZCC200002-1 ZCC190001-11 ZREP2019001-1 ZDSRP190001"
+            :hide-hint="true"
+            input-class="text-uppercase"
+            class="q-pa-xs"
+            @keydown="clickTarget($event, 'showCOC')"
+          >
           </q-input>
         </q-item-section>
         <q-item-section side>
@@ -61,8 +87,17 @@
           <q-tooltip>{{ $t('W.DELIVERY') }}</q-tooltip>
         </q-item-section>
         <q-item-section>
-          <q-input :label="$t('F.DeliveryNO')" v-model="DeliveryNO" outlined clearable hint="ZBL190001" :hide-hint="true"
-            input-class="text-uppercase" @keydown="clickTarget($event, 'showDelivery')" class="q-pa-xs">
+          <q-input
+            :label="$t('F.DeliveryNO')"
+            v-model="DeliveryNO"
+            outlined
+            clearable
+            hint="ZBL190001"
+            :hide-hint="true"
+            input-class="text-uppercase"
+            @keydown="clickTarget($event, 'showDelivery')"
+            class="q-pa-xs"
+          >
           </q-input>
         </q-item-section>
         <q-item-section side>
@@ -72,8 +107,13 @@
           <q-btn text-color="indigo-7" dense icon="fas fa-file-word" @click="exportWord('Delivery')" />
         </q-item-section>
         <q-item-section side>
-          <q-btn id="showDeliverySage" text-color="light-green-7" dense icon="fas fa-file-pdf"
-            @click="showPdf('Delivery', 'sage')" />
+          <q-btn
+            id="showDeliverySage"
+            text-color="light-green-7"
+            dense
+            icon="fas fa-file-pdf"
+            @click="showPdf('Delivery', 'sage')"
+          />
         </q-item-section>
       </q-item>
 
@@ -83,8 +123,17 @@
           <q-tooltip>{{ $t('W.INVOICE') }}</q-tooltip>
         </q-item-section>
         <q-item-section>
-          <q-input :label="$t('F.InvoiceNO')" v-model="InvoiceNO" outlined clearable hint="ZFC1901001 ZPC190001"
-            :hide-hint="true" input-class="text-uppercase" @keydown="clickTarget($event, 'showInvoice')" class="q-pa-xs">
+          <q-input
+            :label="$t('F.InvoiceNO')"
+            v-model="InvoiceNO"
+            outlined
+            clearable
+            hint="ZFC1901001 ZPC190001"
+            :hide-hint="true"
+            input-class="text-uppercase"
+            @keydown="clickTarget($event, 'showInvoice')"
+            class="q-pa-xs"
+          >
           </q-input>
         </q-item-section>
         <q-item-section side>
@@ -94,8 +143,13 @@
           <q-btn text-color="indigo-7" dense icon="fas fa-file-word" @click="exportWord('Invoice')" />
         </q-item-section>
         <q-item-section side>
-          <q-btn id="showInvoiceSage" text-color="light-green-7" dense icon="fas fa-file-pdf"
-            @click="showPdf('Invoice', 'sage')" />
+          <q-btn
+            id="showInvoiceSage"
+            text-color="light-green-7"
+            dense
+            icon="fas fa-file-pdf"
+            @click="showPdf('Invoice', 'sage')"
+          />
         </q-item-section>
       </q-item>
 
@@ -105,8 +159,17 @@
           <q-tooltip>{{ $t('W.PURCHASE_ORDER') }}</q-tooltip>
         </q-item-section>
         <q-item-section>
-          <q-input :label="$t('F.PurchaseNO')" v-model="PurchaseNO" outlined clearable hint="HCF2100015" :hide-hint="true"
-            input-class="text-uppercase" @keydown="clickTarget($event, 'showPO')" class="q-pa-xs">
+          <q-input
+            :label="$t('F.PurchaseNO')"
+            v-model="PurchaseNO"
+            outlined
+            clearable
+            hint="HCF2100015"
+            :hide-hint="true"
+            input-class="text-uppercase"
+            @keydown="clickTarget($event, 'showPO')"
+            class="q-pa-xs"
+          >
             <q-checkbox v-model="POtax" label="Tax" />
           </q-input>
         </q-item-section>
@@ -117,8 +180,13 @@
           <q-btn text-color="indigo-7" dense icon="fas fa-file-word" @click="exportWord('PurchaseOrder')" />
         </q-item-section>
         <q-item-section side>
-          <q-btn id="showPurchaseOrderSage" text-color="light-green-7" dense icon="fas fa-file-pdf"
-            @click="showPdf('PurchaseOrder', 'sage')" />
+          <q-btn
+            id="showPurchaseOrderSage"
+            text-color="light-green-7"
+            dense
+            icon="fas fa-file-pdf"
+            @click="showPdf('PurchaseOrder', 'sage')"
+          />
         </q-item-section>
       </q-item>
 
@@ -128,8 +196,17 @@
           <q-tooltip>{{ $t('W.RECEIPT') }}</q-tooltip>
         </q-item-section>
         <q-item-section>
-          <q-input :label="$t('F.ReceiptNO')" v-model="ReceiptNO" outlined clearable hint="ZRA1900607" :hide-hint="true"
-            input-class="text-uppercase" @keydown="clickTarget($event, 'showReceipt')" class="q-pa-xs">
+          <q-input
+            :label="$t('F.ReceiptNO')"
+            v-model="ReceiptNO"
+            outlined
+            clearable
+            hint="ZRA1900607"
+            :hide-hint="true"
+            input-class="text-uppercase"
+            @keydown="clickTarget($event, 'showReceipt')"
+            class="q-pa-xs"
+          >
           </q-input>
         </q-item-section>
         <q-item-section side>
@@ -149,9 +226,17 @@
           <q-tooltip>{{ $t('S.R2_TOOLTIP') }}</q-tooltip>
         </q-item-section>
         <q-item-section>
-          <q-input :label="$t('S.SITE_VENDOR_CODE_DURATION')" v-model="PurchaseSiteVendorCodeDuration" outlined clearable
-            hint="ZHU-20715-20201001-20201031" :hide-hint="true" input-class="text-uppercase"
-            @keydown="clickTarget($event, 'showReceipt2')" class="q-pa-xs">
+          <q-input
+            :label="$t('S.SITE_VENDOR_CODE_DURATION')"
+            v-model="PurchaseSiteVendorCodeDuration"
+            outlined
+            clearable
+            hint="ZHU-20715-20201001-20201031"
+            :hide-hint="true"
+            input-class="text-uppercase"
+            @keydown="clickTarget($event, 'showReceipt2')"
+            class="q-pa-xs"
+          >
           </q-input>
         </q-item-section>
         <q-item-section side>
@@ -171,9 +256,17 @@
           <q-tooltip>{{ $t('W.WORKER_ORDER') }}</q-tooltip>
         </q-item-section>
         <q-item-section>
-          <q-input :label="$t('W.PROJECT_OR_WORK_ORDER_NO')" v-model="ProjectOrWorkOrderNO" outlined clearable
-            hint="HCC200033-1 OR ZOF1901001" :hide-hint="true" input-class="text-uppercase"
-            @keydown="clickTarget($event, 'showWO')" class="q-pa-xs">
+          <q-input
+            :label="$t('W.PROJECT_OR_WORK_ORDER_NO')"
+            v-model="ProjectOrWorkOrderNO"
+            outlined
+            clearable
+            hint="HCC200033-1 OR ZOF1901001"
+            :hide-hint="true"
+            input-class="text-uppercase"
+            @keydown="clickTarget($event, 'showWO')"
+            class="q-pa-xs"
+          >
           </q-input>
         </q-item-section>
         <q-item-section side>
@@ -193,8 +286,17 @@
           <q-tooltip>{{ $t('W.SOA') }}</q-tooltip>
         </q-item-section>
         <q-item-section>
-          <q-input :label="$t('W.SITE_AND_BP_CODE')" v-model="SiteAndBPCode" outlined clearable hint="ZHU00870 OR ZHU"
-            :hide-hint="true" input-class="text-uppercase" @keydown="clickTarget($event, 'showSOA')" class="q-pa-xs">
+          <q-input
+            :label="$t('W.SITE_AND_BP_CODE')"
+            v-model="SiteAndBPCode"
+            outlined
+            clearable
+            hint="ZHU00870 OR ZHU"
+            :hide-hint="true"
+            input-class="text-uppercase"
+            @keydown="clickTarget($event, 'showSOA')"
+            class="q-pa-xs"
+          >
           </q-input>
         </q-item-section>
         <q-item-section side>
@@ -213,7 +315,7 @@
       <iframe id="pdfWin" frameborder="0" class="fit" :src="UrlShow" @load="onSubFrameLoad" />
       <iframe frameborder="0" width="0" height="0" :src="UrlExport" />
     </div>
-  </q-page>
+  </div>
 </template>
 
 <script setup>
@@ -398,7 +500,8 @@ const getSageAssistantUrl = (rpt, vals, type) => {
       url =
         vals.val.length === 3
           ? `/Report/SOA/${type}?Site=${vals.val.slice(0, 3)}&FileName=${vals.val}`
-          : `/Report/SOA-VENDOR/${type}?Site=` + `${vals.val.slice(0, 3)}&Customer=${vals.val.slice(3, 8)}&FileName=${vals.val}`
+          : `/Report/SOA-VENDOR/${type}?Site=` +
+            `${vals.val.slice(0, 3)}&Customer=${vals.val.slice(3, 8)}&FileName=${vals.val}`
       break
     default:
       url = '/#/Exception/500'

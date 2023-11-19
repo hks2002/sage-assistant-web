@@ -2,201 +2,199 @@
 * @Author                : Robert Huang<56649783@qq.com>
 * @CreatedDate           : 2023-06-17 23:08:00
 * @LastEditors           : Robert Huang<56649783@qq.com>
-* @LastEditDate          : 2023-11-16 13:34:13
+* @LastEditDate          : 2023-11-19 13:38:12
 * @CopyRight             : Dedienne Aerospace China ZhuHai
 -->
 
 <template>
-  <q-page>
-    <WaitInputLottieVue v-if="!categoryCode && !pnRoot && isAuthorized('GESSQH')" />
-    <ExceptionLottieVue :ErrorCode="403" v-if="!isAuthorized('GESSQH')" />
+  <WaitInputLottieVue v-if="!categoryCode && !pnRoot && isAuthorized('GESSQH')" />
+  <ExceptionLottieVue :ErrorCode="403" v-if="!isAuthorized('GESSQH')" />
 
-    <div class="row q-gutter-sm q-pa-sm" v-if="isAuthorized('GESSQH')">
-      <q-input
-        v-model="categoryCode"
-        class="col-grow"
-        dense
-        outlined
-        hide-hint
-        hide-bottom-space
-        clearable
-        debounce="1000"
-        :label="$t('S.PRODUCT_GROUP2_CODE')"
-        input-style="font-weight:bolder;font-size:25px;text-transform:uppercase"
-        @update:model-value="doUpdate"
-      />
-      <q-input
-        v-model="pnRoot"
-        class="col-grow"
-        dense
-        outlined
-        hide-hint
-        hide-bottom-space
-        clearable
-        debounce="1000"
-        :label="$t('S.PN_ROOT_CODE')"
-        input-style="font-weight:bolder;font-size:25px;text-transform:uppercase"
-        @update:model-value="doUpdate"
-      />
-      <q-input
-        v-model="dateFrom"
-        dense
-        outlined
-        hide-hint
-        hide-bottom-space
-        class="col-2"
-        debounce="1000"
-        type="date"
-        :label="$t('W.FROM')"
-        @update:model-value="doUpdate"
-      />
-      <q-input
-        v-model="dateTo"
-        dense
-        outlined
-        hide-hint
-        hide-bottom-space
-        class="col-2"
-        debounce="1000"
-        type="date"
-        :label="$t('W.TO')"
-        @update:model-value="doUpdate"
-      />
-      <q-input
-        v-model="limitN"
-        dense
-        outlined
-        hide-hint
-        hide-bottom-space
-        class="col-1"
-        debounce="1000"
-        type="number"
-        :label="$t('S.Limit last N Records')"
-        :rules="[
-          (val) => (val !== null && val !== '') || 'Please type last N limit',
-          (val) => (val > 0 && val <= 10) || 'Limit between from 1 to 10'
-        ]"
-        @update:model-value="doUpdate"
-      />
-    </div>
-    <q-tabs
-      v-model="tab"
+  <div class="row q-gutter-sm q-pa-sm" v-if="isAuthorized('GESSQH')">
+    <q-input
+      v-model="categoryCode"
+      class="col-grow"
       dense
-      align="left"
-      class="text-grey"
-      active-color="primary"
-      indicator-color="primary"
-      narrow-indicator
-    >
-      <q-tab name="YourSite" :label="$t('S.YOUR_SITE')" />
-      <q-tab name="AllSites" :label="$t('S.ALL_SITES')" />
-    </q-tabs>
+      outlined
+      hide-hint
+      hide-bottom-space
+      clearable
+      debounce="1000"
+      :label="$t('S.PRODUCT_GROUP2_CODE')"
+      input-style="font-weight:bolder;font-size:25px;text-transform:uppercase"
+      @update:model-value="doUpdate"
+    />
+    <q-input
+      v-model="pnRoot"
+      class="col-grow"
+      dense
+      outlined
+      hide-hint
+      hide-bottom-space
+      clearable
+      debounce="1000"
+      :label="$t('S.PN_ROOT_CODE')"
+      input-style="font-weight:bolder;font-size:25px;text-transform:uppercase"
+      @update:model-value="doUpdate"
+    />
+    <q-input
+      v-model="dateFrom"
+      dense
+      outlined
+      hide-hint
+      hide-bottom-space
+      class="col-2"
+      debounce="1000"
+      type="date"
+      :label="$t('W.FROM')"
+      @update:model-value="doUpdate"
+    />
+    <q-input
+      v-model="dateTo"
+      dense
+      outlined
+      hide-hint
+      hide-bottom-space
+      class="col-2"
+      debounce="1000"
+      type="date"
+      :label="$t('W.TO')"
+      @update:model-value="doUpdate"
+    />
+    <q-input
+      v-model="limitN"
+      dense
+      outlined
+      hide-hint
+      hide-bottom-space
+      class="col-1"
+      debounce="1000"
+      type="number"
+      :label="$t('S.Limit last N Records')"
+      :rules="[
+        (val) => (val !== null && val !== '') || 'Please type last N limit',
+        (val) => (val > 0 && val <= 10) || 'Limit between from 1 to 10'
+      ]"
+      @update:model-value="doUpdate"
+    />
+  </div>
+  <q-tabs
+    v-model="tab"
+    dense
+    align="left"
+    class="text-grey"
+    active-color="primary"
+    indicator-color="primary"
+    narrow-indicator
+  >
+    <q-tab name="YourSite" :label="$t('S.YOUR_SITE')" />
+    <q-tab name="AllSites" :label="$t('S.ALL_SITES')" />
+  </q-tabs>
 
-    <q-tab-panels v-model="tab" keep-alive>
-      <q-tab-panel name="YourSite" class="q-pa-none">
-        <q-table
-          v-model:pagination="pagination"
-          row-key="index"
-          dense
-          :virtual-scroll-sticky-size-start="48"
-          :rows="analysisQuoteSalesCost"
-          :columns="columns"
-          :rows-per-page-options="[0]"
-          :loading="showLoading"
-          class="q-mx-sm q-mb-sm my-sticky"
-          :style="{ height: tableHeight + 'px' }"
-        >
-          <template v-slot:top>
-            <q-toolbar class="bg-teal text-white shadow-2">
-              <q-toolbar-title class="text-left"
-                >{{
-                  $t('S.PRODUCTS_IN_SITE_FROM_TO', {
-                    categoryCode: categoryCode,
-                    pnRoot: pnRoot,
-                    site: site,
-                    dateFrom: dateFrom,
-                    dateTo: dateTo
-                  })
-                }}
-                <q-btn dense flat icon="fas fa-download" @click="download()" />
-              </q-toolbar-title>
-            </q-toolbar>
-          </template>
-          <template v-slot:loading>
-            <q-inner-loading showing>
-              <q-spinner-ios size="50px" color="primary" />
-            </q-inner-loading>
-          </template>
-        </q-table>
-      </q-tab-panel>
-      <q-tab-panel name="AllSites" class="q-pa-none">
-        <q-table
-          v-model:pagination="pagination"
-          row-key="index"
-          dense
-          :virtual-scroll-sticky-size-start="48"
-          :rows="analysisQuoteSalesCostAllKeyed"
-          :columns="columnsAll"
-          :rows-per-page-options="[0]"
-          :loading="showLoading"
-          class="q-mx-sm q-mb-sm my-sticky"
-          :style="{ height: tableHeight + 'px' }"
-        >
-          <template v-slot:top>
-            <q-toolbar class="bg-teal text-white shadow-2">
-              <q-toolbar-title class="text-left"
-                >{{
-                  $t('S.PRODUCTS_IN_ALLSITE_FROM_TO', {
-                    categoryCode: categoryCode,
-                    pnRoot: pnRoot,
-                    dateFrom: dateFrom,
-                    dateTo: dateTo
-                  })
-                }}
-                <q-btn dense flat icon="fas fa-download" @click="downloadAll()" />
-              </q-toolbar-title>
-            </q-toolbar>
-          </template>
-          <template v-slot:header="props">
-            <q-tr :props="props">
-              <q-th class="bg-primary text-white"> </q-th>
-              <q-th class="bg-primary text-white"> </q-th>
-              <q-th class="bg-primary text-white"> </q-th>
-              <q-th :colspan="siteN" class="bg-light-green text-white"> QCnt </q-th>
-              <q-th :colspan="siteN" class="bg-green text-white"> QQty </q-th>
-              <q-th :colspan="siteN" class="bg-indigo-6 text-white"> MinQPrice </q-th>
-              <q-th :colspan="siteN" class="bg-indigo-4 text-white"> AvgQPrice </q-th>
-              <q-th :colspan="siteN" class="bg-indigo-2 text-white"> MaxQPrice </q-th>
-              <template v-for="li in limitN" :key="li">
-                <q-th :colspan="siteN" :class="'bg-cyan-' + (15 - li) + ' text-white'"> LastQPrice{{ li }} </q-th>
-              </template>
-              <q-th :colspan="siteN" class="bg-light-green text-white"> SCnt </q-th>
-              <q-th :colspan="siteN" class="bg-green text-white"> SQty </q-th>
-              <q-th :colspan="siteN" class="bg-indigo-6 text-white"> MinSPrice </q-th>
-              <q-th :colspan="siteN" class="bg-indigo-4 text-white"> AvgSPrice </q-th>
-              <q-th :colspan="siteN" class="bg-indigo-2 text-white"> MaxSPrice </q-th>
-              <template v-for="li in limitN" :key="li">
-                <q-th :colspan="siteN" :class="'bg-blue-' + (15 - li) + ' text-white'"> LastSPrice{{ li }} </q-th>
-              </template>
-              <template v-for="li in limitN" :key="li">
-                <q-th :colspan="siteN" :class="'bg-orange-' + (15 - li) + ' text-white'"> LastCost{{ li }} </q-th>
-              </template>
-            </q-tr>
-            <q-tr :props="props">
-              <q-th v-for="col in props.cols" :key="col['name']" :props="props">
-                {{ col['label'] }}
-              </q-th>
-            </q-tr>
-          </template>
-          <template v-slot:loading>
-            <q-inner-loading showing>
-              <q-spinner-ios size="50px" color="primary" />
-            </q-inner-loading>
-          </template>
-        </q-table>
-      </q-tab-panel>
-    </q-tab-panels>
-  </q-page>
+  <q-tab-panels v-model="tab" keep-alive>
+    <q-tab-panel name="YourSite" class="q-pa-none">
+      <q-table
+        v-model:pagination="pagination"
+        row-key="index"
+        dense
+        :virtual-scroll-sticky-size-start="48"
+        :rows="analysisQuoteSalesCost"
+        :columns="columns"
+        :rows-per-page-options="[0]"
+        :loading="showLoading"
+        class="q-mx-sm q-mb-sm my-sticky"
+        :style="{ height: tableHeight + 'px' }"
+      >
+        <template v-slot:top>
+          <q-toolbar class="bg-teal text-white shadow-2">
+            <q-toolbar-title class="text-left"
+              >{{
+                $t('S.PRODUCTS_IN_SITE_FROM_TO', {
+                  categoryCode: categoryCode,
+                  pnRoot: pnRoot,
+                  site: site,
+                  dateFrom: dateFrom,
+                  dateTo: dateTo
+                })
+              }}
+              <q-btn dense flat icon="fas fa-download" @click="download()" />
+            </q-toolbar-title>
+          </q-toolbar>
+        </template>
+        <template v-slot:loading>
+          <q-inner-loading showing>
+            <q-spinner-ios size="50px" color="primary" />
+          </q-inner-loading>
+        </template>
+      </q-table>
+    </q-tab-panel>
+    <q-tab-panel name="AllSites" class="q-pa-none">
+      <q-table
+        v-model:pagination="pagination"
+        row-key="index"
+        dense
+        :virtual-scroll-sticky-size-start="48"
+        :rows="analysisQuoteSalesCostAllKeyed"
+        :columns="columnsAll"
+        :rows-per-page-options="[0]"
+        :loading="showLoading"
+        class="q-mx-sm q-mb-sm my-sticky"
+        :style="{ height: tableHeight + 'px' }"
+      >
+        <template v-slot:top>
+          <q-toolbar class="bg-teal text-white shadow-2">
+            <q-toolbar-title class="text-left"
+              >{{
+                $t('S.PRODUCTS_IN_ALLSITE_FROM_TO', {
+                  categoryCode: categoryCode,
+                  pnRoot: pnRoot,
+                  dateFrom: dateFrom,
+                  dateTo: dateTo
+                })
+              }}
+              <q-btn dense flat icon="fas fa-download" @click="downloadAll()" />
+            </q-toolbar-title>
+          </q-toolbar>
+        </template>
+        <template v-slot:header="props">
+          <q-tr :props="props">
+            <q-th class="bg-primary text-white"> </q-th>
+            <q-th class="bg-primary text-white"> </q-th>
+            <q-th class="bg-primary text-white"> </q-th>
+            <q-th :colspan="siteN" class="bg-light-green text-white"> QCnt </q-th>
+            <q-th :colspan="siteN" class="bg-green text-white"> QQty </q-th>
+            <q-th :colspan="siteN" class="bg-indigo-6 text-white"> MinQPrice </q-th>
+            <q-th :colspan="siteN" class="bg-indigo-4 text-white"> AvgQPrice </q-th>
+            <q-th :colspan="siteN" class="bg-indigo-2 text-white"> MaxQPrice </q-th>
+            <template v-for="li in limitN" :key="li">
+              <q-th :colspan="siteN" :class="'bg-cyan-' + (15 - li) + ' text-white'"> LastQPrice{{ li }} </q-th>
+            </template>
+            <q-th :colspan="siteN" class="bg-light-green text-white"> SCnt </q-th>
+            <q-th :colspan="siteN" class="bg-green text-white"> SQty </q-th>
+            <q-th :colspan="siteN" class="bg-indigo-6 text-white"> MinSPrice </q-th>
+            <q-th :colspan="siteN" class="bg-indigo-4 text-white"> AvgSPrice </q-th>
+            <q-th :colspan="siteN" class="bg-indigo-2 text-white"> MaxSPrice </q-th>
+            <template v-for="li in limitN" :key="li">
+              <q-th :colspan="siteN" :class="'bg-blue-' + (15 - li) + ' text-white'"> LastSPrice{{ li }} </q-th>
+            </template>
+            <template v-for="li in limitN" :key="li">
+              <q-th :colspan="siteN" :class="'bg-orange-' + (15 - li) + ' text-white'"> LastCost{{ li }} </q-th>
+            </template>
+          </q-tr>
+          <q-tr :props="props">
+            <q-th v-for="col in props.cols" :key="col['name']" :props="props">
+              {{ col['label'] }}
+            </q-th>
+          </q-tr>
+        </template>
+        <template v-slot:loading>
+          <q-inner-loading showing>
+            <q-spinner-ios size="50px" color="primary" />
+          </q-inner-loading>
+        </template>
+      </q-table>
+    </q-tab-panel>
+  </q-tab-panels>
 </template>
 
 <script setup>

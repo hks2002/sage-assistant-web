@@ -2,8 +2,7 @@
 * @Author                : Robert Huang<56649783@qq.com>
 * @CreatedDate           : 2022-05-26 14:52:00
 * @LastEditors           : Robert Huang<56649783@qq.com>
-* @LastEditDate          : 2023-09-06 04:17:54
-* @FilePath              : sage-assistant-web/src/layouts/TabPages.vue
+* @LastEditDate          : 2023-11-18 23:26:16
 * @CopyRight             : Dedienne Aerospace China ZhuHai
 -->
 
@@ -56,8 +55,8 @@ const activeId = ref(pagesStore.activeId || 'Home')
 const activeName = ref(pagesStore.activeName || 'Home')
 
 // provide vars
-const tabPageBodyHeight = ref(0)
-provide('tabPageBodyHeight', tabPageBodyHeight)
+const bodyHeight = ref(0)
+provide('bodyHeight', bodyHeight)
 
 const pageStyle = (offset, height) => {
   // "offset" is a Number (pixels) that refers to the total height of header + footer that occupies on screen,
@@ -69,7 +68,7 @@ const pageStyle = (offset, height) => {
     // scroll body
     overflow: 'scroll'
   }
-  tabPageBodyHeight.value = height - offset - props.tabHeaderHeight
+  bodyHeight.value = height - offset - props.tabHeaderHeight
 
   return style
 }

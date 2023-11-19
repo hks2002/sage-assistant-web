@@ -2,8 +2,7 @@
 * @Author                : Robert Huang<56649783@qq.com>
 * @CreatedDate           : 2023-06-23 02:25:00
 * @LastEditors           : Robert Huang<56649783@qq.com>
-* @LastEditDate          : 2023-09-06 04:25:52
-* @FilePath              : sage-assistant-web/src/pages/HomePage.vue
+* @LastEditDate          : 2023-11-18 23:29:19
 * @CopyRight             : Dedienne Aerospace China ZhuHai
 -->
 
@@ -19,5 +18,5 @@
 <script setup>
 import LottiePlayer from '@/components/lottie/LottiePlayer.vue'
 import { inject } from 'vue'
-const height = inject('tabPageBodyHeight')
+const height = inject('bodyHeight')
 </script>
