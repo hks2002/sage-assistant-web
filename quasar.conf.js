@@ -2,7 +2,7 @@
  * @Author                : Robert Huang<56649783@qq.com>                     *
  * @CreatedDate           : 2022-04-09 23:09:37                               *
  * @LastEditors           : Robert Huang<56649783@qq.com>                     *
- * @LastEditDate          : 2023-11-15 18:50:10                               *
+ * @LastEditDate          : 2023-11-17 12:38:50                               *
  * @CopyRight             : Dedienne Aerospace China ZhuHai                   *
  *****************************************************************************/
 
@@ -147,7 +147,7 @@ module.exports = configure(function (ctx) {
       // please using Nginx to provide proxy first, then let devServer proxy to Nginx
       proxy: {
         '/Data': {
-          target: 'http://192.168.0.67'
+          target: 'http://127.0.0.1'
         }
       }
     },
