@@ -1,32 +1,33 @@
-/*********************************************************************************************************************
- * @Author                : Robert Huang<56649783@qq.com>                                                            *
- * @CreatedDate           : 2023-05-26 01:33:43                                                                      *
- * @LastEditors           : Robert Huang<56649783@qq.com>                                                            *
- * @LastEditDate          : 2023-07-03 15:39:47                                                                      *
- * @FilePath              : sage-assistant-web/src/assets/dataUtils.js                                               *
- * @CopyRight             : Dedienne Aerospace China ZhuHai                                                          *
- ********************************************************************************************************************/
+/******************************************************************************
+ * @Author                : Robert Huang<56649783@qq.com>                     *
+ * @CreatedDate           : 2023-11-17 23:43:19                               *
+ * @LastEditors           : Robert Huang<56649783@qq.com>                     *
+ * @LastEditDate          : 2023-11-18 14:16:40                               *
+ * @CopyRight             : Dedienne Aerospace China ZhuHai                   *
+ *****************************************************************************/
 
 import { upperFirst } from 'lodash'
-const jsonToTable = function (headers, jsonData, title) {
+import { utils, writeFileSync } from 'xlsx'
+
+const jsonToTable = function (sortedHeaders, jsonData, title) {
   let table =
     '<div class="q-markup-table q-table__container q-table__card q-table--horizontal-separator q-table--dense q-table--no-wrap q-pa-none"><table class="q-table">'
   table += '<thead style="position: sticky; top: 0px; z-index: 1;">'
-  table += '<tr><th colspan="' + headers.length + '" style="padding: 0px;">'
+  table += '<tr><th colspan="' + sortedHeaders.length + '" style="padding: 0px;">'
   table +=
     '<div class="q-toolbar row no-wrap items-center bg-teal text-white shadow-2"><div class="q-toolbar__title ellipsis">' +
     title +
     '</div></div>'
   table += '</th></tr>'
   table += '<tr class="bg-primary text-white text-left">'
-  for (let i = 0, l = headers.length; i < l; i++) {
-    table += '<th>' + upperFirst(headers[i]) + '</th>'
+  for (let i = 0, l = sortedHeaders.length; i < l; i++) {
+    table += '<th>' + upperFirst(sortedHeaders[i]) + '</th>'
   }
   table += '</tr></thead><tbody>'
   for (let i2 = 0, l2 = jsonData.length; i2 < l2; i2++) {
     table += '<tr>'
-    for (let i3 = 0, l3 = headers.length; i3 < l3; i3++) {
-      table += '<td style="white-space: nowrap">' + jsonData[i2][headers[i3]] + '</td>'
+    for (let i3 = 0, l3 = sortedHeaders.length; i3 < l3; i3++) {
+      table += '<td style="white-space: nowrap">' + jsonData[i2][sortedHeaders[i3]] + '</td>'
     }
     table += '</tr>'
   }
@@ -34,43 +35,23 @@ const jsonToTable = function (headers, jsonData, title) {
   return table
 }
 
-const jsonToExcel = function (headers, jsonData, filename) {
-  let str = '<tr>'
-  for (let i = 0, l = headers.length; i < l; i++) {
-    str += '<td style="background:#00B0F0;color:white">' + upperFirst(headers[i]) + '</td>'
-  }
-  str += '</tr>'
-
+const jsonToExcel = function (sortedHeaders, jsonData, filename) {
+  let sortedJsonData = []
   for (let i2 = 0, l2 = jsonData.length; i2 < l2; i2++) {
-    str += '<tr>'
-    for (let i3 = 0, l3 = headers.length; i3 < l3; i3++) {
-      // add \t to avoid number displays format change in excel
-      jsonData[i2][headers[i3]] ? (str += `<td>${jsonData[i2][headers[i3]] + '\t'}</td>`) : (str += '<td></td>')
+    let obj = {}
+    for (let i3 = 0, l3 = sortedHeaders.length; i3 < l3; i3++) {
+      obj[upperFirst(sortedHeaders[i3])] = jsonData[i2][sortedHeaders[i3]]
     }
-    str += '</tr>'
+    sortedJsonData.push(obj)
   }
 
-  const worksheet = 'Sheet1'
-  const uri = 'data:application/vnd.ms-excel;base64,'
+  let bookNew = utils.book_new()
+  let workSheet = utils.json_to_sheet(sortedJsonData)
 
-  const template = `<html xmlns:o="urn:schemas-microsoft-com:office:office" 
-      xmlns:x="urn:schemas-microsoft-com:office:excel" 
-      xmlns="http://www.w3.org/TR/REC-html40">
-      <head><!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet>
-        <x:Name>${worksheet}</x:Name>
-        <x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions></x:ExcelWorksheet>
-        </x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]-->
-        </head><body><table style="font-family:Arial;font-size:10.5px;">${str}</table></body></html>`
-
-  const link = document.createElement('a')
-  link.style.display = 'none'
-  link.href = uri + base64(template)
-  link.setAttribute('download', filename)
-  document.body.appendChild(link)
-  link.click()
-}
-function base64(s) {
-  return window.btoa(unescape(encodeURIComponent(s)))
+  // replace \ / ? * [ ] : with _
+  utils.book_append_sheet(bookNew, workSheet, filename.replace(/[\\/?*[\]:]/g, '_'))
+  writeFileSync(bookNew, filename + '.xlsx')
+  return
 }
 
 const jsonToMultiLine = function (fields, jsonObj) {
