@@ -2,7 +2,7 @@
 * @Author                : Robert Huang<56649783@qq.com>
 * @CreatedDate           : 2023-06-22 23:52:00
 * @LastEditors           : Robert Huang<56649783@qq.com>
-* @LastEditDate          : 2023-11-21 11:35:26
+* @LastEditDate          : 2023-11-21 13:31:50
 * @CopyRight             : Dedienne Aerospace China ZhuHai
 -->
 
@@ -10,7 +10,6 @@
   <!-- set height and width in parent -->
   <q-table
     dense
-    row-key="id"
     class="my-sticky-header-table"
     :rows="rows"
     :columns="columns"
@@ -36,6 +35,7 @@
 import { axiosGet } from '@/assets/axiosActions'
 import { jsonToExcel } from 'assets/dataUtils'
 import { toLower } from 'lodash'
+import { uid } from 'quasar'
 import { computed, inject, onMounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 
@@ -249,7 +249,6 @@ const doUpdate = () => {
 
   const code = props.customerCode === '%%' ? '' : props.customerCode
   const proSuffix = props.proSearch ? 'Pro' : ''
-  rows.value = []
 
   axiosGet('/Data/FinancialInvoicePay' + proSuffix, {
     Site: props.site,
@@ -261,6 +260,7 @@ const doUpdate = () => {
     .then((response) => {
       response.forEach((item, idx) => {
         item.idx = idx + 1
+        item.id = uid()
         item.amount = item.amount.toFixed(2)
         item.amountLocal = item.amountLocal.toFixed(2)
         item.pay = item.pay.toFixed(2)
