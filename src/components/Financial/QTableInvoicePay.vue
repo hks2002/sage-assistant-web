@@ -2,7 +2,7 @@
 * @Author                : Robert Huang<56649783@qq.com>
 * @CreatedDate           : 2023-06-22 23:52:00
 * @LastEditors           : Robert Huang<56649783@qq.com>
-* @LastEditDate          : 2023-11-19 22:14:38
+* @LastEditDate          : 2023-11-21 11:35:26
 * @CopyRight             : Dedienne Aerospace China ZhuHai
 -->
 
@@ -10,7 +10,7 @@
   <!-- set height and width in parent -->
   <q-table
     dense
-    row-key="name"
+    row-key="id"
     class="my-sticky-header-table"
     :rows="rows"
     :columns="columns"
@@ -22,7 +22,9 @@
       <div class="text-h6">{{ title }} <q-btn dense flat icon="fas fa-download" @click="download()" /></div>
     </template>
     <template v-slot:body-cell-status="{ row }">
-      <td :class="['text-center', row.status === 'U-Paid' ? 'unpaid' : '']">{{ row.status }}</td>
+      <td :class="['text-center', row.status === 'U-Paid' ? 'unpaid' : row.status === 'P-Paid' ? 'ppaid' : '']">
+        {{ row.status }}
+      </td>
     </template>
   </q-table>
   <q-inner-loading :showing="showLoading">
@@ -110,15 +112,15 @@ let columns = [
     align: 'right'
   },
   {
-    field: 'amountLocal',
-    label: t('F.AmountLocal'),
-    align: 'right'
-  },
-  {
     field: 'pay',
     label: t('F.Pay'),
     align: 'right',
     sortable: true
+  },
+  {
+    field: 'amountLocal',
+    label: t('F.AmountLocal'),
+    align: 'right'
   },
   {
     field: 'payLocal',
@@ -206,8 +208,8 @@ const header = [
   'invoiceNO',
   'currency',
   'amount',
-  'amountLocal',
   'pay',
+  'amountLocal',
   'payLocal',
   'orderNO',
   'createDate',
@@ -247,6 +249,7 @@ const doUpdate = () => {
 
   const code = props.customerCode === '%%' ? '' : props.customerCode
   const proSuffix = props.proSearch ? 'Pro' : ''
+  rows.value = []
 
   axiosGet('/Data/FinancialInvoicePay' + proSuffix, {
     Site: props.site,
@@ -291,5 +294,8 @@ watch(props, (value, oldValue) => {
 <style lang="scss">
 tr:has(> td.unpaid) {
   background-color: #ff8c8c;
+}
+tr:has(> td.ppaid) {
+  background-color: #cfcd4b;
 }
 </style>

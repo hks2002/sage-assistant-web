@@ -2,7 +2,7 @@
 * @Author                : Robert Huang<56649783@qq.com>
 * @CreatedDate           : 2023-06-17 23:07:00
 * @LastEditors           : Robert Huang<56649783@qq.com>
-* @LastEditDate          : 2023-11-19 14:06:34
+* @LastEditDate          : 2023-11-20 20:10:34
 * @CopyRight             : Dedienne Aerospace China ZhuHai
 -->
 
@@ -85,7 +85,7 @@ const dateType = ref('invoiceDate')
 const dateTypeOptions = [
   { label: t('F.InvoiceDate'), value: 'invoiceDate' },
   { label: t('F.DueDate'), value: 'dueDate' },
-  { label: t('F.PaymentDate'), value: 'paymentDate' }
+  { label: t('F.PaymentDate'), value: 'payDate' }
 ]
 
 const { formatDate, addToDate } = date
