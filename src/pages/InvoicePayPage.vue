@@ -2,7 +2,7 @@
 * @Author                : Robert Huang<56649783@qq.com>
 * @CreatedDate           : 2023-06-17 23:07:00
 * @LastEditors           : Robert Huang<56649783@qq.com>
-* @LastEditDate          : 2023-11-20 20:10:34
+* @LastEditDate          : 2023-11-21 17:52:53
 * @CopyRight             : Dedienne Aerospace China ZhuHai
 -->
 
@@ -24,7 +24,16 @@
       @update:model-value="searchCustomer"
     />
     <q-toggle v-model="proSearch" :label="$t('S.PRO_SEARCH')" class="col-1" />
-    <q-option-group v-model="dateType" :options="dateTypeOptions" inline class="col-3" />
+    <q-option-group
+      v-model="dateType"
+      :options="[
+        { label: $t('F.InvoiceDate'), value: 'invoiceDate' },
+        { label: $t('F.DueDate'), value: 'dueDate' },
+        { label: $t('F.PaymentDate'), value: 'payDate' }
+      ]"
+      inline
+      class="col-3"
+    />
     <q-input
       v-model="dateFrom"
       dense
@@ -66,7 +75,6 @@ import WaitInputLottieVue from '@/components/lottie/WaitInputLottie.vue'
 import QSelectAxios from '@/controls/QSelectAxios.vue'
 import { date, LocalStorage } from 'quasar'
 import { inject, onBeforeUnmount, ref } from 'vue'
-import { useI18n } from 'vue-i18n'
 
 /* eslint-disable */
 const props = defineProps({
@@ -76,17 +84,10 @@ const props = defineProps({
 // common vars
 const ebus = inject('ebus')
 const site = ref(LocalStorage.getItem('site'))
-const { t } = useI18n()
-
 // page vars
 const customerCode = ref(null)
 const proSearch = ref(false)
 const dateType = ref('invoiceDate')
-const dateTypeOptions = [
-  { label: t('F.InvoiceDate'), value: 'invoiceDate' },
-  { label: t('F.DueDate'), value: 'dueDate' },
-  { label: t('F.PaymentDate'), value: 'payDate' }
-]
 
 const { formatDate, addToDate } = date
 const nowTimeStamp = Date.now()
