@@ -12,7 +12,7 @@
     <thead style="position: sticky; top: 0px; z-index: 1">
       <tr>
         <td colspan="11" class="bg-teal text-h6 text-white shadow-2">
-          {{ $t('S.OPEN_ITEMS') }}({{ $t('W.ALL') }}-{{ customerOpenItems.length }})
+          {{ $t('S.OPEN_ITEMS') }}({{ $t('S.ALL') }}-{{ customerOpenItems.length }})
           <q-btn dense flat icon="fas fa-download" @click="download()" />
         </td>
       </tr>

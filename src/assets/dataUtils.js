@@ -2,7 +2,7 @@
  * @Author                : Robert Huang<56649783@qq.com>                     *
  * @CreatedDate           : 2023-11-17 23:43:19                               *
  * @LastEditors           : Robert Huang<56649783@qq.com>                     *
- * @LastEditDate          : 2023-11-18 14:16:40                               *
+ * @LastEditDate          : 2023-11-20 21:40:54                               *
  * @CopyRight             : Dedienne Aerospace China ZhuHai                   *
  *****************************************************************************/
 
@@ -45,13 +45,18 @@ const jsonToExcel = function (sortedHeaders, jsonData, filename) {
     sortedJsonData.push(obj)
   }
 
-  let bookNew = utils.book_new()
+  let workBook = utils.book_new()
   let workSheet = utils.json_to_sheet(sortedJsonData)
 
   // replace \ / ? * [ ] : with _
-  utils.book_append_sheet(bookNew, workSheet, filename.replace(/[\\/?*[\]:]/g, '_'))
-  writeFileSync(bookNew, filename + '.xlsx')
+  utils.book_append_sheet(workBook, workSheet, filename.replace(/[\\/?*[\]:]/g, '_'))
+  writeFileSync(workBook, filename + '.xlsx')
   return
+}
+
+const tableToExcel = function (tableId, filename) {
+  let workBook = utils.table_to_book(document.getElementById(tableId), { sheet: filename.replace(/[\\/?*[\]:]/g, '_') })
+  writeFileSync(workBook, filename + '.xlsx')
 }
 
 const jsonToMultiLine = function (fields, jsonObj) {
@@ -63,4 +68,4 @@ const jsonToMultiLine = function (fields, jsonObj) {
   return s
 }
 
-export { jsonToExcel, jsonToMultiLine, jsonToTable }
+export { jsonToExcel, jsonToMultiLine, jsonToTable, tableToExcel }

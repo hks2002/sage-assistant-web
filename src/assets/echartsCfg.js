@@ -1,15 +1,14 @@
-/*********************************************************************************************************************
- * @Author                : Robert Huang<56649783@qq.com>                                                            *
- * @CreatedDate           : 2022-03-25 11:01:00                                                                      *
- * @LastEditors           : Robert Huang<56649783@qq.com>                                                            *
- * @LastEditDate          : 2023-06-14 15:51:52                                                                      *
- * @FilePath              : src/assets/echartsCfg.js                                                                 *
- * @CopyRight             : Dedienne Aerospace China ZhuHai                                                          *
- ********************************************************************************************************************/
+/******************************************************************************
+ * @Author                : Robert Huang<56649783@qq.com>                     *
+ * @CreatedDate           : 2022-03-25 11:01:00                               *
+ * @LastEditors           : Robert Huang<56649783@qq.com>                     *
+ * @LastEditDate          : 2023-11-30 11:11:29                               *
+ * @CopyRight             : Dedienne Aerospace China ZhuHai                   *
+ *****************************************************************************/
 
 const echarts = require('echarts/lib/echarts')
 import { jsonToExcel, jsonToMultiLine, jsonToTable } from 'assets/dataUtils.js'
-import { BarChart, LineChart, PieChart, ScatterChart } from 'echarts/charts'
+import { BarChart, LineChart, PieChart, SankeyChart, ScatterChart } from 'echarts/charts'
 import {
   DataZoomComponent,
   GridComponent,
@@ -33,7 +32,8 @@ echarts.use([
   BarChart,
   LineChart,
   PieChart,
-  ScatterChart
+  ScatterChart,
+  SankeyChart
 ])
 
 // --------------------------------- default setting ------------------------------
@@ -326,19 +326,19 @@ function mergerOption(defaultOption, clientOption) {
 }
 
 export {
-  echarts,
-  defaultSeriesColor,
-  defaultTooltip,
-  defaultEchartOption,
-  defaultXAxisTime,
-  defaultYAxisUSD,
-  defaultLegend,
-  defaultDataZoom,
-  defaultToolbox,
-  defaultLineSerial,
   AttachedPieSerial,
   defaultBarSerial,
   defaultBarStackedSerial,
+  defaultDataZoom,
+  defaultEchartOption,
+  defaultLegend,
+  defaultLineSerial,
   defaultScatterSerial,
+  defaultSeriesColor,
+  defaultToolbox,
+  defaultTooltip,
+  defaultXAxisTime,
+  defaultYAxisUSD,
+  echarts,
   mergerOption
 }

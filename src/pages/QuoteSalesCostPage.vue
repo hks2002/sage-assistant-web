@@ -2,7 +2,7 @@
 * @Author                : Robert Huang<56649783@qq.com>
 * @CreatedDate           : 2023-06-17 23:08:00
 * @LastEditors           : Robert Huang<56649783@qq.com>
-* @LastEditDate          : 2023-11-19 13:38:12
+* @LastEditDate          : 2023-11-30 11:40:44
 * @CopyRight             : Dedienne Aerospace China ZhuHai
 -->
 
@@ -46,7 +46,7 @@
       class="col-2"
       debounce="1000"
       type="date"
-      :label="$t('W.FROM')"
+      :label="$t('S.FROM')"
       @update:model-value="doUpdate"
     />
     <q-input
@@ -58,7 +58,7 @@
       class="col-2"
       debounce="1000"
       type="date"
-      :label="$t('W.TO')"
+      :label="$t('S.TO')"
       @update:model-value="doUpdate"
     />
     <q-input
@@ -145,7 +145,7 @@
           <q-toolbar class="bg-teal text-white shadow-2">
             <q-toolbar-title class="text-left"
               >{{
-                $t('S.PRODUCTS_IN_ALLSITE_FROM_TO', {
+                $t('S.PRODUCTS_IN_ALL_SITE_FROM_TO', {
                   categoryCode: categoryCode,
                   pnRoot: pnRoot,
                   dateFrom: dateFrom,

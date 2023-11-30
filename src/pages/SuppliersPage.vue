@@ -29,7 +29,7 @@
       mask="date"
       type="date"
       class="col-3"
-      :label="$t('W.FROM')"
+      :label="$t('S.FROM')"
       v-model="dateFrom"
     />
     <q-input
@@ -39,7 +39,7 @@
       mask="date"
       type="date"
       class="col-3"
-      :label="$t('W.TO')"
+      :label="$t('S.TO')"
       v-model="dateTo"
     />
   </div>

@@ -90,7 +90,7 @@ function doUpdate() {
     .catch((e) => {
       Notify.create({
         type: 'error',
-        message: t('W.LOADING') + t('{VAR_HOLD_WITH_SPACE}', t('S.PURCHASE_COST_HISTORY')) + t('W.FAILED')
+        message: t('S.LOADING') + t('{VAR_HOLD_WITH_SPACE}', t('S.PURCHASE_COST_HISTORY')) + t('S.FAILED')
       })
     })
     .finally(() => {

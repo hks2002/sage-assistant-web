@@ -2,8 +2,7 @@
 * @Author                : Robert Huang<56649783@qq.com>
 * @CreatedDate           : 2022-04-01 16:30:00
 * @LastEditors           : Robert Huang<56649783@qq.com>
-* @LastEditDate          : 2023-09-03 00:15:45
-* @FilePath              : sage-assistant-web/src/components/stock/QMarkupTableStockHistory.vue
+* @LastEditDate          : 2023-11-30 12:56:27
 * @CopyRight             : Dedienne Aerospace China ZhuHai
 -->
 
@@ -12,8 +11,8 @@
     <thead style="position: sticky; top: 0px; z-index: 1">
       <tr>
         <td colspan="17" class="bg-teal text-white shadow-2">
-          {{ site }} {{ $t('S.STOCK_HISTORY') }} <span v-if="PnOrName">of {{ PnOrName }} </span> {{ $t('W.FROM') }}
-          {{ dateFrom }} {{ $t('W.TO') }}
+          {{ site }} {{ $t('S.STOCK_HISTORY') }} <span v-if="PnOrName">of {{ PnOrName }} </span> {{ $t('S.FROM') }}
+          {{ dateFrom }} {{ $t('S.TO') }}
           {{ dateTo }}
           <q-btn dense flat icon="fas fa-download" @click="download()" />
         </td>

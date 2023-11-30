@@ -2,7 +2,7 @@
 * @Author                : Robert Huang<56649783@qq.com>
 * @CreatedDate           : 2023-06-17 23:04:00
 * @LastEditors           : Robert Huang<56649783@qq.com>
-* @LastEditDate          : 2023-11-16 13:28:36
+* @LastEditDate          : 2023-11-30 11:00:14
 * @CopyRight             : Dedienne Aerospace China ZhuHai
 -->
 
@@ -17,17 +17,17 @@
       outlined
       debounce="1000"
       :label="$t('F.AccountNO')"
-      :hint="$t('S.SUCH_AS') + ': ' + '1001000 ' + $t('W.OR') + ' 1001000, 1001001, 1001002'"
+      :hint="$t('S.SUCH_AS') + ': ' + '1001000 ' + $t('S.OR') + ' 1001000, 1001001, 1001002'"
       hide-hint
       hide-bottom-space
       input-style="font-weight:bolder;font-size:25px;text-transform:uppercase"
       class="col-grow"
     />
-    <q-input v-model="year" dense outlined debounce="1000" :label="$t('W.YEAR')" class="col-1" />
-    <q-toggle v-model="showBalance" dense :label="$t('W.BALANCE')" class="col-1" />
-    <q-toggle v-model="showDebit" dense :label="$t('W.DEBIT')" class="col-1" />
-    <q-toggle v-model="showCredit" dense :label="$t('W.CREDIT')" class="col-1" />
-    <q-toggle v-model="showMovement" dense :label="$t('W.MOVEMENT')" class="col-1" />
+    <q-input v-model="year" dense outlined debounce="1000" :label="$t('S.YEAR')" class="col-1" />
+    <q-toggle v-model="showBalance" dense :label="$t('S.BALANCE')" class="col-1" />
+    <q-toggle v-model="showDebit" dense :label="$t('S.DEBIT')" class="col-1" />
+    <q-toggle v-model="showCredit" dense :label="$t('S.CREDIT')" class="col-1" />
+    <q-toggle v-model="showMovement" dense :label="$t('S.MOVEMENT')" class="col-1" />
   </div>
   <q-list class="q-pa-sm" v-if="accountNO">
     <div class="row" style="padding: 0px; height: 250px">

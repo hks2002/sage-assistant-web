@@ -2,19 +2,18 @@
 * @Author                : Robert Huang<56649783@qq.com>
 * @CreatedDate           : 2023-06-21 16:13:00
 * @LastEditors           : Robert Huang<56649783@qq.com>
-* @LastEditDate          : 2023-08-24 17:02:52
-* @FilePath              : sage-assistant-web/src/pages/AboutPage.vue
+* @LastEditDate          : 2023-11-30 10:59:22
 * @CopyRight             : Dedienne Aerospace China ZhuHai
 -->
 
 <template>
   <div class="flex flex-center">
     <q-card>
-      <div class="row text-h6 bg-primary text-white q-pl-sm">{{ $t('W.ABOUT') }} {{ $t('W.APP_NAME') }}</div>
+      <div class="row text-h6 bg-primary text-white q-pl-sm">{{ $t('S.ABOUT') }} {{ $t('S.APP_NAME') }}</div>
       <div />
 
       <div class="text-h6 q-pa-sm">
-        {{ $t('S.ABOUT') }}
+        {{ $t('S.ABOUT_CONTENT') }}
       </div>
 
       <div class="row">

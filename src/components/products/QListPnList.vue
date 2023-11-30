@@ -78,7 +78,7 @@ const doUpdate = () => {
       pnsInFamily.value = response
     })
     .catch(() => {
-      Notify.create({ type: 'error', message: t('W.LOADING') + t('{VAR_HOLD_WITH_SPACE}', t('F.PN')) + t('W.FAILED') })
+      Notify.create({ type: 'error', message: t('S.LOADING') + t('{VAR_HOLD_WITH_SPACE}', t('F.PN')) + t('S.FAILED') })
     })
     .finally(() => {
       showLoading.value = false

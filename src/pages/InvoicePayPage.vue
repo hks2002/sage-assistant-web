@@ -2,7 +2,7 @@
 * @Author                : Robert Huang<56649783@qq.com>
 * @CreatedDate           : 2023-06-17 23:07:00
 * @LastEditors           : Robert Huang<56649783@qq.com>
-* @LastEditDate          : 2023-11-21 17:52:53
+* @LastEditDate          : 2023-11-30 11:01:33
 * @CopyRight             : Dedienne Aerospace China ZhuHai
 -->
 
@@ -41,7 +41,7 @@
       debounce="1000"
       mask="date"
       type="date"
-      :label="$t('W.FROM')"
+      :label="$t('S.FROM')"
       class="col-2"
     />
     <q-input
@@ -51,7 +51,7 @@
       debounce="1000"
       mask="date"
       type="date"
-      :label="$t('W.TO')"
+      :label="$t('S.TO')"
       class="col-2"
     />
   </div>
@@ -91,7 +91,7 @@ const dateType = ref('invoiceDate')
 
 const { formatDate, addToDate } = date
 const nowTimeStamp = Date.now()
-const fromTimeStamp = addToDate(nowTimeStamp, { years: -3 })
+const fromTimeStamp = addToDate(nowTimeStamp, { years: -2 })
 const dateFrom = ref(formatDate(fromTimeStamp, 'YYYY-MM-DD'))
 const dateTo = ref(formatDate(nowTimeStamp, 'YYYY-MM-DD'))
 

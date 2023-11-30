@@ -44,16 +44,16 @@ let data = []
 let legend = []
 let dataByLegend = []
 let series = []
-let catText = t('W.FINANCIAL_BALANCE')
+let catText = t('S.FINANCIAL_BALANCE')
 
 if (props.cat === 'C') {
-  catText = t('W.FINANCIAL_CREDIT')
+  catText = t('S.FINANCIAL_CREDIT')
 } else if (props.cat === 'D') {
-  catText = t('W.FINANCIAL_DEBIT')
+  catText = t('S.FINANCIAL_DEBIT')
 } else if (props.cat === 'M') {
-  catText = t('W.FINANCIAL_MOVEMENT')
+  catText = t('S.FINANCIAL_MOVEMENT')
 } else {
-  catText = t('W.FINANCIAL_BALANCE')
+  catText = t('S.FINANCIAL_BALANCE')
 }
 
 const dimensions = ['accountNO', 'year', 'currency']
@@ -126,7 +126,7 @@ const setEchart = () => {
     tooltip: defaultTooltip,
     xAxis: {
       type: 'category',
-      data: [t('W.FINANCIAL_OPEN'), ...Quasar.lang.props.date.monthsShort]
+      data: [t('S.FINANCIAL_OPEN'), ...Quasar.lang.props.date.monthsShort]
     },
     yAxis: {
       type: 'value',

@@ -2,7 +2,7 @@
 * @Author                : Robert Huang<56649783@qq.com>
 * @CreatedDate           : 2023-06-17 23:09:00
 * @LastEditors           : Robert Huang<56649783@qq.com>
-* @LastEditDate          : 2023-11-19 11:46:13
+* @LastEditDate          : 2023-11-30 11:06:10
 * @CopyRight             : Dedienne Aerospace China ZhuHai
 -->
 
@@ -16,12 +16,12 @@
     indicator-color="primary"
     narrow-indicator
   >
-    <q-tab name="Tracking" :label="$t('W.TRACKING')" />
-    <q-tab name="Delivery" :label="$t('W.DELIVERY')" />
-    <q-tab name="Receive" :label="$t('W.RECEIVE')" />
-    <q-tab name="New-Order" :label="$t('W.NEW_ORDER')" />
-    <q-tab name="Short-Bom" :label="$t('W.SHORT_BOM')" />
-    <q-tab name="Orphan-WO" :label="$t('W.ORPHAN_WO')" />
+    <q-tab name="Tracking" :label="$t('S.TRACKING')" />
+    <q-tab name="Delivery" :label="$t('S.DELIVERY')" />
+    <q-tab name="Receive" :label="$t('S.RECEIVE')" />
+    <q-tab name="New-Order" :label="$t('S.NEW_ORDER')" />
+    <q-tab name="Short-Bom" :label="$t('S.SHORT_BOM')" />
+    <q-tab name="Orphan-WO" :label="$t('S.ORPHAN_WO')" />
   </q-tabs>
 
   <q-separator />

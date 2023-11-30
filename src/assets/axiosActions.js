@@ -71,7 +71,7 @@ const axiosDelete = async (url, params) => {
         /* Success */
         Notify.create({
           type: 'fail',
-          message: t('W.DELETE') + t(' {VAR_HOLD_WITH_SPACE} ', { VAR_HOLD: entity }) + t('W.SUCCESS')
+          message: t('S.DELETE') + t(' {VAR_HOLD_WITH_SPACE} ', { VAR_HOLD: entity }) + t('S.SUCCESS')
         })
 
         return new Promise.resolve('Success')
@@ -105,7 +105,7 @@ const axiosCreate = async (url, data) => {
         /* Success */
         Notify.create({
           type: 'success',
-          message: t('W.CREATE') + t(' {VAR_HOLD_WITH_SPACE} ', { VAR_HOLD: entity }) + t('W.SUCCESS')
+          message: t('S.CREATE') + t(' {VAR_HOLD_WITH_SPACE} ', { VAR_HOLD: entity }) + t('S.SUCCESS')
         })
 
         return new Promise.resolve('Success')
@@ -148,7 +148,7 @@ const axiosModify = async (url, params, data) => {
         /* Success */
         Notify.create({
           type: 'success',
-          message: t('W.MODIFY') + t(' {VAR_HOLD_WITH_SPACE} ', { VAR_HOLD: entity }) + t('W.SUCCESS')
+          message: t('S.MODIFY') + t(' {VAR_HOLD_WITH_SPACE} ', { VAR_HOLD: entity }) + t('S.SUCCESS')
         })
 
         return new Promise.resolve('Success')
@@ -156,7 +156,7 @@ const axiosModify = async (url, params, data) => {
         /* Error */
         Notify.create({
           type: 'fail',
-          message: t('W.MODIFY') + t(' {VAR_HOLD_WITH_SPACE} ', { VAR_HOLD: entity }) + t('W.FAILED')
+          message: t('S.MODIFY') + t(' {VAR_HOLD_WITH_SPACE} ', { VAR_HOLD: entity }) + t('S.FAILED')
         })
 
         return Promise.reject('Failed')

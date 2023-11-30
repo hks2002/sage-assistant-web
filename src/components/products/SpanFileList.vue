@@ -2,8 +2,8 @@
 * @Author                : Robert Huang<56649783@qq.com>
 * @CreatedDate           : 2023-06-23 00:16:00
 * @LastEditors           : Robert Huang<56649783@qq.com>
-* @LastEditDate          : 2023-11-08 22:06:27
-* @CopyRight             : MerBleueAviation
+* @LastEditDate          : 2023-11-30 12:55:19
+* @CopyRight             : Dedienne Aerospace China ZhuHai
 -->
 
 <template>
@@ -97,11 +97,11 @@ const getFileCat = (fileCat) => {
 
 const getFileToolTip = (fileCat, fileName) => {
   if (fileCat === 'Drawing') {
-    return t('W.DRAWING') + ':' + fileName
+    return t('S.DRAWING') + ':' + fileName
   } else if (fileCat === 'Manual') {
-    return t('W.MANUAL') + ':' + fileName
+    return t('S.MANUAL') + ':' + fileName
   } else if (fileCat === 'Certificate') {
-    return t('W.CERTIFICATE') + ':' + fileName
+    return t('S.CERTIFICATE') + ':' + fileName
   } else {
     return t('S.UNKNOWN_CATEGORY') + ':' + fileName
   }
@@ -125,7 +125,7 @@ const doDeleteFile = (path) => {
     .catch(() => {
       Notify.create({
         type: 'error',
-        message: t('W.DELETE') + t('{VAR_HOLD_WITH_SPACE}', path) + t('W.FAILED')
+        message: t('S.DELETE') + t('{VAR_HOLD_WITH_SPACE}', path) + t('S.FAILED')
       })
     })
 }
@@ -146,7 +146,7 @@ const doUpdate = () => {
     .catch(() => {
       Notify.create({
         type: 'error',
-        message: t('W.LOADING') + t('{VAR_HOLD_WITH_SPACE}', t('W.ATTACHMENT')) + t('W.FAILED')
+        message: t('S.LOADING') + t('{VAR_HOLD_WITH_SPACE}', t('S.ATTACHMENT')) + t('S.FAILED')
       })
     })
     .finally(() => {

@@ -16,7 +16,7 @@
           <img src="/imgs/logo.svg" style="background-color: white" />
         </q-avatar>
       </q-btn>
-      <q-toolbar-title>{{ $t('W.APP_NAME') }}{{ $route.path }}</q-toolbar-title>
+      <q-toolbar-title>{{ $t('S.APP_NAME') }}{{ $route.path }}</q-toolbar-title>
       <div class="q-gutter-xs q-ml-sm row items-center no-wrap">
         <q-select
           dense
@@ -55,7 +55,7 @@
           </q-avatar>
         </q-btn>
         <q-btn round dense size="sm" icon="fas fa-question-circle" @click="showHelp">
-          <q-tooltip>{{ $t('W.HELP') }}</q-tooltip>
+          <q-tooltip>{{ $t('S.HELP') }}</q-tooltip>
         </q-btn>
         <q-btn dense round size="sm" icon="fas fa-bell">
           <q-badge v-if="totalInformCount > 0" color="negative" style="padding: 2px 4px" title-color="white" floating>
@@ -64,7 +64,7 @@
         </q-btn>
         <span>{{ userInfo }}</span>
         <q-btn dense flat size="sm" icon="fas fa-sign-out-alt" @click="doLogout">
-          <q-tooltip>{{ $t('W.EXIT') }}</q-tooltip>
+          <q-tooltip>{{ $t('S.EXIT') }}</q-tooltip>
         </q-btn>
       </div>
     </q-toolbar>
@@ -117,7 +117,7 @@ const toggleLeftDrawer = () => {
 
 const showHelp = () => {
   Dialog.create({
-    title: t('W.INFO'),
+    title: t('S.INFO'),
     message: t('S.IN_DEVELOPING')
   })
 }

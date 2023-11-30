@@ -2,8 +2,7 @@
 * @Author                : Robert Huang<56649783@qq.com>
 * @CreatedDate           : 2022-05-24 09:38:00
 * @LastEditors           : Robert Huang<56649783@qq.com>
-* @LastEditDate          : 2023-09-06 11:56:23
-* @FilePath              : sage-assistant-web/src/pages/LoginPage.vue
+* @LastEditDate          : 2023-11-30 11:22:02
 * @CopyRight             : Dedienne Aerospace China ZhuHai
 -->
 
@@ -20,7 +19,7 @@
         <q-card-section align="center" class="col-4">
           <!-- horizontal=true make col inactive -->
           <div class="text-h3 text-primary">
-            {{ $t('W.APP_NAME') }}
+            {{ $t('S.APP_NAME') }}
           </div>
           <q-banner dense class="bg-white text-red text-subtitle1" style="min-height: 100px">
             {{ $t('{VAR_HOLD}', { VAR_HOLD: loginMessage }) }}
@@ -46,7 +45,7 @@
               class="login-input"
               standout="bg-teal text-white"
               bottom-slots
-              :label="$t('W.PASSWORD')"
+              :label="$t('S.PASSWORD')"
               :type="isPwd ? 'password' : 'text'"
               autocomplete="current-password"
               @keydown="checkEnterKey($event)"
@@ -73,7 +72,7 @@
               style="font-size: large"
               @click="doLogin"
             >
-              {{ $t('W.LOGIN') }}
+              {{ $t('S.LOGIN') }}
             </q-btn>
           </q-form>
         </q-card-section>
@@ -169,7 +168,7 @@ const doLogin = async () => {
         if (error.msg) {
           loginMessage.value = error.msg
         } else {
-          loginMessage.value = t('W.OOPS')
+          loginMessage.value = t('S.OOPS')
         }
       }
     )

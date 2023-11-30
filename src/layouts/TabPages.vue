@@ -2,7 +2,7 @@
 * @Author                : Robert Huang<56649783@qq.com>
 * @CreatedDate           : 2022-05-26 14:52:00
 * @LastEditors           : Robert Huang<56649783@qq.com>
-* @LastEditDate          : 2023-11-18 23:26:16
+* @LastEditDate          : 2023-11-30 11:05:16
 * @CopyRight             : Dedienne Aerospace China ZhuHai
 -->
 
@@ -20,8 +20,8 @@
     v-model="activeId"
     @update:model-value="onChangeTab"
   >
-    <!-- Set the page label, such as 'W.HOME PAGE', replace space with '_' -->
-    <q-tab v-for="tab in tabs" :name="tab.id" :label="$t('W.' + upperCase(tab.name).replace(/ /g, '_'))" :key="tab.id">
+    <!-- Set the page label, such as 'S.HOME PAGE', replace space with '_' -->
+    <q-tab v-for="tab in tabs" :name="tab.id" :label="$t('S.' + upperCase(tab.name).replace(/ /g, '_'))" :key="tab.id">
       <span class="btn-close" @click.stop="onCloseTab(tab.id)">&times;</span>
     </q-tab>
   </q-tabs>

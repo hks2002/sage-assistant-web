@@ -2,8 +2,7 @@
 * @Author                : Robert Huang<56649783@qq.com>
 * @CreatedDate           : 2022-04-08 09:36:00
 * @LastEditors           : Robert Huang<56649783@qq.com>
-* @LastEditDate          : 2023-08-23 23:15:04
-* @FilePath              : sage-assistant-web/src/pages/CustomersPage.vue
+* @LastEditDate          : 2023-11-30 11:00:36
 * @CopyRight             : Dedienne Aerospace China ZhuHai
 -->
 
@@ -30,7 +29,7 @@
       mask="date"
       type="date"
       class="col-3"
-      :label="$t('W.FROM')"
+      :label="$t('S.FROM')"
       v-model="dateFrom"
     />
     <q-input
@@ -40,7 +39,7 @@
       mask="date"
       type="date"
       class="col-3"
-      :label="$t('W.TO')"
+      :label="$t('S.TO')"
       v-model="dateTo"
     />
   </div>

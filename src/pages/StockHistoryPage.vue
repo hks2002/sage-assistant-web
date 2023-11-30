@@ -2,7 +2,7 @@
 * @Author                : Robert Huang<56649783@qq.com>
 * @CreatedDate           : 2023-06-23 02:58:00
 * @LastEditors           : Robert Huang<56649783@qq.com>
-* @LastEditDate          : 2023-11-19 13:39:43
+* @LastEditDate          : 2023-11-30 12:48:37
 * @CopyRight             : Dedienne Aerospace China ZhuHai
 -->
 
@@ -32,7 +32,7 @@
       mask="date"
       type="date"
       class="col-3"
-      :label="$t('W.FROM')"
+      :label="$t('S.FROM')"
       v-model="dateFrom"
       @update:model-value="doUpdate"
     />
@@ -44,7 +44,7 @@
       mask="date"
       type="date"
       class="col-3"
-      :label="$t('W.TO')"
+      :label="$t('S.TO')"
       v-model="dateTo"
       @update:model-value="doUpdate"
     />

@@ -2,7 +2,7 @@
 * @Author                : Robert Huang<56649783@qq.com>
 * @CreatedDate           : 2023-05-25 01:02:00
 * @LastEditors           : Robert Huang<56649783@qq.com>
-* @LastEditDate          : 2023-11-19 13:39:19
+* @LastEditDate          : 2023-11-30 12:47:59
 * @CopyRight             : Dedienne Aerospace China ZhuHai
 -->
 
@@ -12,7 +12,7 @@
       <q-item>
         <q-item-section avatar>
           <q-avatar color="primary" text-color="white"> A </q-avatar>
-          <q-tooltip>{{ $t('W.ACK') }}</q-tooltip>
+          <q-tooltip>{{ $t('S.ACK') }}</q-tooltip>
         </q-item-section>
         <q-item-section>
           <q-input
@@ -54,7 +54,7 @@
       <q-item>
         <q-item-section avatar>
           <q-avatar color="primary" text-color="white"> C </q-avatar>
-          <q-tooltip>{{ $t('W.COC') }}</q-tooltip>
+          <q-tooltip>{{ $t('S.COC') }}</q-tooltip>
         </q-item-section>
         <q-item-section>
           <q-input
@@ -84,7 +84,7 @@
       <q-item>
         <q-item-section avatar>
           <q-avatar color="primary" text-color="white"> D </q-avatar>
-          <q-tooltip>{{ $t('W.DELIVERY') }}</q-tooltip>
+          <q-tooltip>{{ $t('S.DELIVERY') }}</q-tooltip>
         </q-item-section>
         <q-item-section>
           <q-input
@@ -120,7 +120,7 @@
       <q-item>
         <q-item-section avatar>
           <q-avatar color="primary" text-color="white"> I </q-avatar>
-          <q-tooltip>{{ $t('W.INVOICE') }}</q-tooltip>
+          <q-tooltip>{{ $t('S.INVOICE') }}</q-tooltip>
         </q-item-section>
         <q-item-section>
           <q-input
@@ -156,7 +156,7 @@
       <q-item>
         <q-item-section avatar>
           <q-avatar color="primary" text-color="white"> P </q-avatar>
-          <q-tooltip>{{ $t('W.PURCHASE_ORDER') }}</q-tooltip>
+          <q-tooltip>{{ $t('S.PURCHASE_ORDER') }}</q-tooltip>
         </q-item-section>
         <q-item-section>
           <q-input
@@ -193,7 +193,7 @@
       <q-item>
         <q-item-section avatar>
           <q-avatar color="primary" text-color="white"> R </q-avatar>
-          <q-tooltip>{{ $t('W.RECEIPT') }}</q-tooltip>
+          <q-tooltip>{{ $t('S.RECEIPT') }}</q-tooltip>
         </q-item-section>
         <q-item-section>
           <q-input
@@ -253,11 +253,11 @@
       <q-item>
         <q-item-section avatar>
           <q-avatar color="primary" text-color="white"> W </q-avatar>
-          <q-tooltip>{{ $t('W.WORKER_ORDER') }}</q-tooltip>
+          <q-tooltip>{{ $t('S.WORKER_ORDER') }}</q-tooltip>
         </q-item-section>
         <q-item-section>
           <q-input
-            :label="$t('W.PROJECT_OR_WORK_ORDER_NO')"
+            :label="$t('S.PROJECT_OR_WORK_ORDER_NO')"
             v-model="ProjectOrWorkOrderNO"
             outlined
             clearable
@@ -283,11 +283,11 @@
       <q-item>
         <q-item-section avatar>
           <q-avatar color="primary" text-color="white"> S </q-avatar>
-          <q-tooltip>{{ $t('W.SOA') }}</q-tooltip>
+          <q-tooltip>{{ $t('S.SOA') }}</q-tooltip>
         </q-item-section>
         <q-item-section>
           <q-input
-            :label="$t('W.SITE_AND_BP_CODE')"
+            :label="$t('S.SITE_AND_BP_CODE')"
             v-model="SiteAndBPCode"
             outlined
             clearable

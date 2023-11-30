@@ -122,7 +122,7 @@ const doUpdate = () => {
     .catch(() => {
       Notify.create({
         type: 'error',
-        message: t('W.LOADING') + t('{VAR_HOLD_WITH_SPACE}', t('S.CUSTOMER_INFO')) + t('W.FAILED')
+        message: t('S.LOADING') + t('{VAR_HOLD_WITH_SPACE}', t('S.CUSTOMER_INFO')) + t('S.FAILED')
       })
     })
     .finally(() => {
