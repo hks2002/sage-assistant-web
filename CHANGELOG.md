@@ -1,5 +1,37 @@
 # Changelog
 
+## [1.1.0](https://github.com/hks2002/sage-assistant-web/compare/v1.0.4...v1.1.0) (2023-12-13)
+
+
+### Features
+
+* ✨add linkItems page ([4b25271](https://github.com/hks2002/sage-assistant-web/commit/4b25271d9daa3b1e8e9db5b1ec9558dd47c64d68))
+* ✨add missing i18n ([1bc26e7](https://github.com/hks2002/sage-assistant-web/commit/1bc26e7c742d603c6b8e9b1372edd1a378fd453e))
+* ✨add mock functions ([40f2298](https://github.com/hks2002/sage-assistant-web/commit/40f2298899767591e352fd5c9dc335088b33df4d))
+* ✨add version badge for file button ([6e2bad0](https://github.com/hks2002/sage-assistant-web/commit/6e2bad0d93b2f21073dc332ac456411dd8dfeed9))
+* ✨better file buttons ([5acbd4a](https://github.com/hks2002/sage-assistant-web/commit/5acbd4a62bed84b3bdca9d6de5d568308662b55c))
+* ✨duplicate PO RA ([a8ffec6](https://github.com/hks2002/sage-assistant-web/commit/a8ffec6549ab85d94da451e11524aae541aafa84))
+* ✨new export excel ([0bec0ef](https://github.com/hks2002/sage-assistant-web/commit/0bec0ef648e1ebf58e995f25be4c3f26268c5497))
+* ✨new export to excel ([c8ccfa0](https://github.com/hks2002/sage-assistant-web/commit/c8ccfa0dad0e28b13dc329cefb2a5d31077f98f6))
+
+
+### Bug Fixes
+
+* 🐛add uid for invoice pay table ([aa8342f](https://github.com/hks2002/sage-assistant-web/commit/aa8342f66280dda91e0ed33684cc42f8b5e0bfbe))
+* 🐛files in sage display ([7b5a40e](https://github.com/hks2002/sage-assistant-web/commit/7b5a40eab73afde6763ef829cfed62dd55a35af1))
+* 🐛fix echart fields error ([d1c3334](https://github.com/hks2002/sage-assistant-web/commit/d1c33348af545b6498a97edf65c88d5a7e1d608e))
+* 🐛fix field error ([f3cadc7](https://github.com/hks2002/sage-assistant-web/commit/f3cadc7d013858d2c277d393906e1ada0477a6d3))
+* 🐛fix field name error ([699d889](https://github.com/hks2002/sage-assistant-web/commit/699d889cecfd01ce82733525ceb3863c3d441449))
+* 🐛fix invoice pay ([ceec2dd](https://github.com/hks2002/sage-assistant-web/commit/ceec2dd4074b7caba1ef071db6359a4dfafeb0d8))
+* 🐛fix invoice pay pro ([517a848](https://github.com/hks2002/sage-assistant-web/commit/517a848d297d89e843b229019a0e7f754e146a56))
+* 🐛fix page height ([918162f](https://github.com/hks2002/sage-assistant-web/commit/918162f2050da6c8093c94260e126f8ff9390cea))
+* 🐛i18n text error ([ba39803](https://github.com/hks2002/sage-assistant-web/commit/ba3980399bc46a367ad2867f3f52f884a0123d3f))
+* 🐛I18n updated ([42ad319](https://github.com/hks2002/sage-assistant-web/commit/42ad31942f42c8b3882b2beada7fe0bc6910a4ab))
+* 🐛lottie z-index ([a471e7b](https://github.com/hks2002/sage-assistant-web/commit/a471e7bcff92da46f01c282e8abdb22a075fbbbd))
+* 🐛rename dirty data ([9aa3a2a](https://github.com/hks2002/sage-assistant-web/commit/9aa3a2ad805d9bba5484bc169d2f0db13dd4bb52))
+* 🐛rename dirty data to suspect duplicate ([badad88](https://github.com/hks2002/sage-assistant-web/commit/badad88efaf022f1007a0de89cb26af8369bc413))
+* 🐛update pay invoice row id ([100f561](https://github.com/hks2002/sage-assistant-web/commit/100f561447459ac20008a33a11b46a31c7016a03))
+
 ## [1.0.4](https://github.com/hks2002/sage-assistant-web/compare/v1.0.3...v1.0.4) (2023-11-09)
 
 
