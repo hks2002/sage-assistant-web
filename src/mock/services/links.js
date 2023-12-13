@@ -2,7 +2,7 @@
  * @Author                : Robert Huang<56649783@qq.com>                     *
  * @CreatedDate           : 2022-03-25 11:01:00                               *
  * @LastEditors           : Robert Huang<56649783@qq.com>                     *
- * @LastEditDate          : 2023-11-16 09:10:24                               *
+ * @LastEditDate          : 2023-11-16 17:35:42                               *
  * @CopyRight             : Dedienne Aerospace China ZhuHai                   *
  *****************************************************************************/
 
@@ -13,26 +13,26 @@ Mock.mock(RegExp('^(/Data/LinksSalesOrder)' + '.*'), () => {
   const list = Mock.mock({
     'data|1-100': [
       {
-        SalesOrderNO: /(Z|H|S|T|M)CC\d{6}/,
-        ProjectNO: /(Z|H|S|T|M)CC\d{6}-\d{1,2}/,
+        salesOrderNO: /(Z|H|S|T|M)CC\d{6}/,
+        projectNO: /(Z|H|S|T|M)CC\d{6}-\d{1,2}/,
         PN: /([A-Z]){6}/,
-        Description: () => {
+        description: () => {
           return Mock.mock('@sentence(3, 5)')
         },
-        'Qty|1-100': 1,
-        Unit: 'UN',
-        OrderDate: () => {
+        'qty|1-100': 1,
+        unit: 'UN',
+        orderDate: () => {
           return Mock.mock('@date("yyyy-MM-dd")')
         },
-        OrderType: /(NOR|REP|PRS|RCL)/,
-        DemandDate: () => {
+        orderType: /(NOR|REP|PRS|RCL)/,
+        demandDate: () => {
           return Mock.mock('@date("yyyy-MM-dd")')
         },
-        CustomerCode: /\d{5}/,
-        CustomerName: () => {
+        customerCode: /\d{5}/,
+        customerName: () => {
           return Mock.mock('@sentence(3, 5)')
         },
-        OrderCategory: /(Methods|InteralProd|ExternalProd|Design|Stock|Trading|Services|SalesAdmin)/
+        orderCategory: /(Methods|InternalProd|ExternalProd|Design|Stock|Trading|Services|SalesAdmin)/
       }
     ]
   })
@@ -76,7 +76,7 @@ Mock.mock(/^(\/Data\/LinksDelivery)/, () => {
   return list.data
 })
 
-Mock.mock(RegExp('^(/Data/TobePurchaseBom)' + '.*'), () => {
+Mock.mock(RegExp('^(/Data/LinksPurchaseBom)' + '.*'), () => {
   // list = {data:[{},{}]}
   const list = Mock.mock({
     'data|1-100': [

@@ -82,7 +82,7 @@ $sampleColor: #ff7875;
   );
 }
 
-.my-sticky-header-table {
+.sticky-first-header-row-table {
   /* height or max-height is important */
   height: 500px;
 
@@ -96,5 +96,75 @@ $sampleColor: #ff7875;
     z-index: 1;
   }
   
+}
 
+.sticky-first-header-two-column-table {
+  /* height or max-height is important */
+  height: 500px;
+
+/** frozen header first left column */
+  thead tr th:first-child {
+    position: sticky;
+    min-width: 45px;
+    left: 0px;
+    top: 0px;
+    z-index: 3;
+  }
+
+  /** frozen header second left column */
+  thead tr th:nth-child(2) {
+    position: sticky;
+    left: 45px;
+    top: 0px;
+    z-index: 3;
+  }
+
+/** frozen header exclude columns from nth */
+  thead tr th:nth-child(n + 3) {
+    position: sticky;
+    top: 0px;
+    z-index: 1;
+  }
+
+  /** frozen body first left column */
+  tbody tr td:first-child {
+    position: sticky;
+    left: 0px;
+    z-index: 2;
+  }
+
+  /** frozen body second left column */
+  /** added 'name frozen' to avoid rowspan issue */
+  tbody tr td:nth-child(2).frozen {
+    position: sticky;
+    left: 45px;
+    z-index: 2;
+  }
+
+// first td left padding
+.q-table td:first-child,
+.q-table th:first-child {
+  padding-left: 2px;
+}
+
+/* let td smaller */
+th,
+td {
+  padding: 0px 2px 0px 2px !important;
+}
+
+:v-deep(.q-table .q-field__control),
+:v-deep(.q-table .q-field__native),
+:v-deep(.q-table .q-field__append) {
+  min-height: 20px;
+  height: 20px;
+}
+
+:v-deep(.q-table .q-field__native) {
+  padding: 0px 0px;
+}
+
+:v-deep(.q-table input) {
+  font-size: 13px;
+}
 }

@@ -2,7 +2,7 @@
  * @Author                : Robert Huang<56649783@qq.com>                     *
  * @CreatedDate           : 2022-05-26 17:31:00                               *
  * @LastEditors           : Robert Huang<56649783@qq.com>                     *
- * @LastEditDate          : 2023-11-17 13:14:44                               *
+ * @LastEditDate          : 2023-11-30 12:54:24                               *
  * @CopyRight             : Dedienne Aerospace China ZhuHai                   *
  *****************************************************************************/
 
@@ -33,7 +33,7 @@ export default [
   {
     path: '/Todo',
     name: 'Todo',
-    title: t('W.TODO'),
+    title: t('S.TODO'),
     caption: '',
     icon: 'fas fa-tasks',
     split: false,
@@ -43,7 +43,7 @@ export default [
   {
     path: '/Products',
     name: 'Products',
-    title: t('W.PRODUCTS'),
+    title: t('S.PRODUCTS'),
     caption: '',
     icon: 'fas fa-cubes',
     split: false,
@@ -52,7 +52,7 @@ export default [
   },
   {
     name: 'Stock',
-    title: t('W.STOCK'),
+    title: t('S.STOCK'),
     caption: '',
     icon: 'fas fa-th',
     split: false,
@@ -62,7 +62,7 @@ export default [
       {
         path: '/Stock',
         name: 'Stock Summary',
-        title: t('W.SUMMARY'),
+        title: t('S.SUMMARY'),
         caption: '',
         icon: 'fas fa-th',
         split: false,
@@ -71,7 +71,7 @@ export default [
       {
         path: '/Stock',
         name: 'Stock History',
-        title: t('W.HISTORY'),
+        title: t('S.HISTORY'),
         caption: '',
         icon: 'fas fa-th',
         split: false,
@@ -82,7 +82,7 @@ export default [
   {
     path: '/Customers',
     name: 'Customers',
-    title: t('W.CUSTOMERS'),
+    title: t('S.CUSTOMERS'),
     caption: '',
     icon: 'fas fa-users',
     split: false,
@@ -92,7 +92,7 @@ export default [
   {
     path: '/Sales',
     name: 'Sales',
-    title: t('W.SALES'),
+    title: t('S.SALES'),
     caption: '',
     icon: 'fas fa-trophy',
     split: false,
@@ -102,7 +102,7 @@ export default [
   {
     path: '/Suppliers',
     name: 'Suppliers',
-    title: t('W.SUPPLIERS'),
+    title: t('S.SUPPLIERS'),
     caption: '',
     icon: 'fas fa-puzzle-piece',
     split: false,
@@ -112,7 +112,7 @@ export default [
   {
     path: '/Purchases',
     name: 'Purchases',
-    title: t('W.PURCHASES'),
+    title: t('S.PURCHASES'),
     caption: '',
     icon: 'fas fa-shopping-cart',
     split: false,
@@ -122,7 +122,7 @@ export default [
   {
     path: '/Logistics',
     name: 'Logistics',
-    title: t('W.LOGISTICS'),
+    title: t('S.LOGISTICS'),
     caption: '',
     icon: 'fas fa-truck',
     split: false,
@@ -131,7 +131,7 @@ export default [
   },
   {
     name: 'Financial',
-    title: t('W.FINANCIAL'),
+    title: t('S.FINANCIAL'),
     caption: '',
     icon: 'fas fa-dollar-sign',
     split: false,
@@ -141,7 +141,7 @@ export default [
       {
         path: '/Fapiao',
         name: 'Fapiao',
-        title: t('W.FAPIAO'),
+        title: t('S.FAPIAO'),
         caption: '',
         icon: 'fas fa-dollar-sign',
         split: false,
@@ -150,7 +150,7 @@ export default [
       {
         path: '/InvoicePay',
         name: 'Invoice Pay',
-        title: t('W.INVOICE_PAY'),
+        title: t('S.INVOICE_PAY'),
         caption: '',
         icon: 'fas fa-dollar-sign',
         split: false,
@@ -159,7 +159,7 @@ export default [
       {
         path: '/Balance',
         name: 'Balance',
-        title: t('W.BALANCE'),
+        title: t('S.BALANCE'),
         caption: '',
         icon: 'fas fa-dollar-sign',
         split: false,
@@ -170,7 +170,7 @@ export default [
   {
     path: '/SuspectDuplicateRecords',
     name: 'Suspect Duplicate Records',
-    title: t('W.SUSPECT_DUPLICATE_RECORDS'),
+    title: t('S.SUSPECT_DUPLICATE_RECORDS'),
     caption: '',
     icon: 'fas fa-user-nurse',
     split: true,
@@ -178,37 +178,18 @@ export default [
     expansion: false
   },
   {
-    name: 'Links',
-    title: t('W.LINKS'),
+    path: '/LinkSalesPurchaseReceiptDeliveryInvoice',
+    name: 'Link Sales Purchase Receipt Delivery Invoice',
+    title: t('S.LINK_SALES_PURCHASE_RECEIPT_DELIVERY_INVOICE'),
     caption: '',
     icon: 'fas fa-link',
     split: true,
     enable: true,
-    expansion: true,
-    children: [
-      {
-        path: '/LinkSalesOrderPurchaseOrderReceipt',
-        name: 'Link Sales Order Purchase Order Receipt',
-        title: t('W.SO_PO_RECEIPT'),
-        caption: '',
-        icon: 'fas fa-link',
-        split: false,
-        enable: true
-      },
-      {
-        path: '/LinkSalesOrderDeliveryInvoice',
-        name: 'Link Sales Order Delivery Invoice',
-        title: t('W.SO_DELIVERY_INVOICE'),
-        caption: '',
-        icon: 'fas fa-link',
-        split: false,
-        enable: true
-      }
-    ]
+    expansion: false
   },
   //
   //   name: 'Analysis',
-  //   title: t('W.ANALYSIS'),
+  //   title: t('S.ANALYSIS'),
   //   caption: '',
   //   icon: 'fas fa-search-dollar',
   //   split: false,
@@ -218,7 +199,7 @@ export default [
   //     {
   //       path: '/QuoteSalesCost',
   //       name: 'Quote Sales Cost',
-  //       title: t('W.QUOTE_SALES_COST'),
+  //       title: t('S.QUOTE_SALES_COST'),
   //       caption: '',
   //       icon: 'fas fa-search-dollar',
   //       split: false,
@@ -229,7 +210,7 @@ export default [
   {
     path: '/Reports',
     name: 'Reports',
-    title: t('W.REPORTS'),
+    title: t('S.REPORTS'),
     caption: '',
     icon: 'fas fa-print',
     split: true,
@@ -239,7 +220,7 @@ export default [
   {
     path: '/About',
     name: 'About',
-    title: t('W.ABOUT'),
+    title: t('S.ABOUT'),
     caption: '',
     icon: 'fas fa-info-circle',
     split: true,
