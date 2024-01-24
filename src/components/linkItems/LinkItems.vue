@@ -2,7 +2,7 @@
 * @Author                : Robert Huang<56649783@qq.com>
 * @CreatedDate           : 2023-11-15 23:10:00
 * @LastEditors           : Robert Huang<56649783@qq.com>
-* @LastEditDate          : 2023-12-13 22:13:06
+* @LastEditDate          : 2024-01-24 16:58:18
 * @CopyRight             : Dedienne Aerospace China ZhuHai
 -->
 
@@ -45,7 +45,7 @@
           debounce="1000"
           mask="date"
           type="date"
-          class="col-2"
+          class="col-1"
           :label="$t('S.FROM')"
           v-model="dateFrom"
           @update:model-value="updatePage(1)"
@@ -56,7 +56,7 @@
           debounce="1000"
           mask="date"
           type="date"
-          class="col-2"
+          class="col-1"
           :label="$t('S.TO')"
           v-model="dateTo"
           @update:model-value="updatePage(1)"
@@ -94,6 +94,7 @@
           debounce="1000"
           @update:model-value="updatePage(1)"
         />
+        <q-item>{{ $t('S.PROJECT0001_LOOK_RANGE') }}</q-item>
       </div>
     </template>
     <template v-slot:body-cell-idx="props">
@@ -365,7 +366,7 @@ import { axiosGet } from '@/assets/axiosActions'
 import { tableToExcel } from '@/assets/dataUtils'
 import { toLower } from 'lodash'
 import { date } from 'quasar'
-import { computed, inject, onMounted, ref, shallowRef } from 'vue'
+import { computed, inject, onMounted, ref, shallowRef, watch } from 'vue'
 
 /* eslint-disable */
 const props = defineProps({
@@ -599,6 +600,13 @@ ebus.on('changeLanguage', () => {
 })
 // events
 onMounted(() => {
+  doUpdate({
+    pagination: pagination.value
+  })
+})
+
+watch(props, (value, oldValue) => {
+  console.debug('watch:', oldValue, '--->', value)
   doUpdate({
     pagination: pagination.value
   })
