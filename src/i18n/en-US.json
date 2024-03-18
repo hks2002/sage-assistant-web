@@ -204,6 +204,7 @@
     "PRODUCTS_IN_SITE_FROM_TO": "Products of group2 {categoryCode} and PN {pnRoot} in {site} from {dateFrom} to {dateTo}",
     "PRODUCTS_QTY": "Products Qty",
     "PRODUCT_GROUP2_CODE": "Product Group2 Code",
+    "PROJECT0001_LOOK_RANGE": "ProjectNO *0001 Looking Range From -1 Year and To +3 Years",
     "PROJECT_OR_WORK_ORDER_NO": "Project/Work Order NO",
     "PRO_SEARCH": "Pro Search",
     "PURCHASES": "Purchases",

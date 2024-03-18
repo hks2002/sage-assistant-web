@@ -98,6 +98,9 @@
     "SupplierCode": "供应商代码",
     "TaxRate": "税率",
     "TrackingNO": "跟踪号",
+    "TotalPurchaseQty": "购量",
+    "TotalReceiptQty": "收量",
+    "TotalSalesQty": "销量",
     "Unit": "Unit",
     "Vendor": "供应商",
     "WorkerOrderNO": "工包号"
@@ -216,6 +219,7 @@
     "SEARCH_PRODUCT": "搜索产品",
     "SEARCH_PRODUCT_HINT": "需要大量查询产品时, 请使用 EXCEL 公式 =webService(\"http://sageassistant/Data/AnalysesSales\") 或 =webService(\"http://sageassistant/Data/AnalysesQuote\") 或 =webService(\"http://sageassistant/Data/AnalysesPurchase\")",
     "SEARCH_SALES_ORDER_LINE": "查询销售订单行",
+    "SEARCH_PURCHASE_ORDER_LINE": "查询采购订单行",
     "SEARCH_SUPPLIER": "搜索供应商 （代码或名字）",
     "SERVER_ERROR": "服务器错误",
     "SHORT_BOM": "短缺的Bom",
