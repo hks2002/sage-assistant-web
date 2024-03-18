@@ -2,12 +2,12 @@
 * @Author                : Robert Huang<56649783@qq.com>
 * @CreatedDate           : 2023-05-25 01:02:00
 * @LastEditors           : Robert Huang<56649783@qq.com>
-* @LastEditDate          : 2023-11-30 12:47:59
+* @LastEditDate          : 2023-12-26 10:11:06
 * @CopyRight             : Dedienne Aerospace China ZhuHai
 -->
 
 <template>
-  <div class="row">
+  <div class="row" style="height: 100%">
     <div class="column col-md-4 col-lg-4 col-xl-3 q-pa-xs">
       <q-item>
         <q-item-section avatar>
