@@ -2,7 +2,7 @@
  * @Author                : Robert Huang<56649783@qq.com>                     *
  * @CreatedDate           : 2022-04-09 23:09:37                               *
  * @LastEditors           : Robert Huang<56649783@qq.com>                     *
- * @LastEditDate          : 2023-11-20 20:59:51                               *
+ * @LastEditDate          : 2024-03-19 01:33:33                               *
  * @CopyRight             : Dedienne Aerospace China ZhuHai                   *
  *****************************************************************************/
 
@@ -16,6 +16,7 @@ const { configure } = require('quasar/wrappers')
 
 const fs = require('fs')
 const path = require('path')
+const zlib = require('zlib')
 const { ContextReplacementPlugin } = require('webpack')
 
 module.exports = configure(function (ctx) {
@@ -65,7 +66,19 @@ module.exports = configure(function (ctx) {
       // rtl: false, // https://v2.quasar.dev/options/rtl-support
       preloadChunks: true,
       showProgress: true,
-      gzip: true,
+      gzip: {
+        filename: '[path][base].br',
+        algorithm: 'brotliCompress',
+        test: /\.(js|css|html|json|ttf|svg)$/,
+        compressionOptions: {
+          params: {
+            [zlib.constants.BROTLI_PARAM_QUALITY]: 11
+          }
+        },
+        threshold: 10240,
+        minRatio: 0.8,
+        deleteOriginalAssets: false
+      },
       analyze: true,
 
       // https://quasar.dev/quasar-cli-webpack/handling-webpack#webpack-v5-compatibility-issues
@@ -147,7 +160,7 @@ module.exports = configure(function (ctx) {
       // please using Nginx to provide proxy first, then let devServer proxy to Nginx
       proxy: {
         '/Data': {
-          target: 'http://127.0.0.1'
+          target: 'http://192.168.10.12'
         }
       }
     },
