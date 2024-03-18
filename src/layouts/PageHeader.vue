@@ -2,8 +2,7 @@
 * @Author                : Robert Huang<56649783@qq.com>
 * @CreatedDate           : 2022-03-25 11:01:00
 * @LastEditors           : Robert Huang<56649783@qq.com>
-* @LastEditDate          : 2023-09-06 11:59:39
-* @FilePath              : sage-assistant-web/src/layouts/PageHeader.vue
+* @LastEditDate          : 2023-12-15 14:22:48
 * @CopyRight             : Dedienne Aerospace China ZhuHai
 -->
 
@@ -48,12 +47,6 @@
             <span class="text-white">{{ opt.label }}</span>
           </template>
         </q-select>
-        <q-btn type="a" target="_blank" size="sm" dense round href="https://srvsyr01">
-          <q-avatar size="sm">
-            <img src="https://srvsyr01/favicon.ico" crossorigin="anonymous" />
-            <q-tooltip v-if="$q.screen.gt.sm"> Sage </q-tooltip>
-          </q-avatar>
-        </q-btn>
         <q-btn round dense size="sm" icon="fas fa-question-circle" @click="showHelp">
           <q-tooltip>{{ $t('S.HELP') }}</q-tooltip>
         </q-btn>
@@ -152,7 +145,10 @@ const changeLanguage = (val) => {
 
 // event handing
 onBeforeMount(() => {
-  site.value = LocalStorage.getItem('site') || 'ZHU'
+  if (!LocalStorage.has('site')) {
+    site.value = 'ZHU'
+    LocalStorage.set('site', site.value)
+  }
 
   axiosGet('/Data/Sites').then((data) => {
     siteList.value = data
