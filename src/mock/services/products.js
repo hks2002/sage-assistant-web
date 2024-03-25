@@ -2,12 +2,12 @@
  * @Author                : Robert Huang<56649783@qq.com>                     *
  * @CreatedDate           : 2022-03-25 11:01:00                               *
  * @LastEditors           : Robert Huang<56649783@qq.com>                     *
- * @LastEditDate          : 2023-11-16 13:42:57                               *
+ * @LastEditDate          : 2024-03-25 12:11:48                               *
  * @CopyRight             : Dedienne Aerospace China ZhuHai                   *
  *****************************************************************************/
 
 import { getQueryParameters } from '@/assets/mockExt'
-import { orderBy } from 'lodash'
+import orderBy from 'lodash'
 import Mock from 'mockjs'
 
 // Mock.setup({ timeout: '500-1000' })
@@ -183,7 +183,8 @@ Mock.mock(RegExp('^(/Data/InventoryStock)' + '.*'), (options) => {
         PN: () => {
           return PnRoot + '_' + Mock.mock('@character("ABCDEFG")')
         },
-        'qty|1-365': 1
+        'qty|1-365': 1,
+        Type: /(P|C)/
       }
     ]
   })

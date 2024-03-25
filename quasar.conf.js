@@ -2,7 +2,7 @@
  * @Author                : Robert Huang<56649783@qq.com>                     *
  * @CreatedDate           : 2022-04-09 23:09:37                               *
  * @LastEditors           : Robert Huang<56649783@qq.com>                     *
- * @LastEditDate          : 2024-03-19 01:33:33                               *
+ * @LastEditDate          : 2024-03-19 17:56:13                               *
  * @CopyRight             : Dedienne Aerospace China ZhuHai                   *
  *****************************************************************************/
 
@@ -155,14 +155,14 @@ module.exports = configure(function (ctx) {
     // Full list of options: https://v2.quasar.dev/quasar-cli/quasar-conf-js#Property%3A-devServer
     devServer: {
       port: 443, // the devServer <port> must be same, otherwise you will receive some <forbidden> result.
-      open: true, // opens browser window automatically
+      open: true // opens browser window automatically
 
       // please using Nginx to provide proxy first, then let devServer proxy to Nginx
-      proxy: {
-        '/Data': {
-          target: 'http://192.168.10.12'
-        }
-      }
+      // proxy: {
+      //   '/Data': {
+      //     target: 'http://192.168.10.12'
+      //   }
+      // }
     },
 
     // https://v2.quasar.dev/quasar-cli/quasar-conf-js#Property%3A-framework

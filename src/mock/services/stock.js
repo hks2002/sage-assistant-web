@@ -2,12 +2,12 @@
  * @Author                : Robert Huang<56649783@qq.com>                     *
  * @CreatedDate           : 2022-03-25 11:01:00                               *
  * @LastEditors           : Robert Huang<56649783@qq.com>                     *
- * @LastEditDate          : 2023-11-16 13:46:18                               *
+ * @LastEditDate          : 2024-03-25 12:12:45                               *
  * @CopyRight             : Dedienne Aerospace China ZhuHai                   *
  *****************************************************************************/
 
 import { getQueryParameters } from '@/assets/mockExt'
-import _forEach from 'lodash/forEach'
+import forEach from 'lodash/forEach'
 import Mock from 'mockjs'
 
 Mock.mock(RegExp('^(/Data/StockSummary)' + '.*'), () => {
@@ -30,7 +30,7 @@ Mock.mock(RegExp('^(/Data/StockSummary)' + '.*'), () => {
       }
     ]
   })
-  _forEach(list.data, (value) => {
+  forEach(list.data, (value) => {
     value.A = value.PN.slice(0, 1)
   })
 
@@ -48,7 +48,7 @@ Mock.mock(RegExp('^(/Data/StockHistory)' + '.*'), (options) => {
     const list = Mock.mock({
       'data|1-2000': [
         {
-          lengthocation: /[A-Z]MAG\d{2}/,
+          location: /[A-Z]MAG\d{2}/,
           seq: () => {
             return Mock.mock('@increment(1000)')
           },

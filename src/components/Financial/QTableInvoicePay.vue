@@ -2,7 +2,7 @@
 * @Author                : Robert Huang<56649783@qq.com>
 * @CreatedDate           : 2023-06-22 23:52:00
 * @LastEditors           : Robert Huang<56649783@qq.com>
-* @LastEditDate          : 2023-11-30 12:53:06
+* @LastEditDate          : 2024-03-25 12:10:03
 * @CopyRight             : Dedienne Aerospace China ZhuHai
 -->
 
@@ -34,7 +34,7 @@
 <script setup>
 import { axiosGet } from '@/assets/axiosActions'
 import { jsonToExcel } from 'assets/dataUtils'
-import { toLower } from 'lodash'
+import toLower from 'lodash/toLower'
 import { uid } from 'quasar'
 import { computed, inject, onMounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'

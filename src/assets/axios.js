@@ -1,19 +1,17 @@
-/*********************************************************************************************************************
- * @Author                : Robert Huang<56649783@qq.com>                                                            *
- * @CreatedDate           : 2022-03-25 11:01:00                                                                      *
- * @LastEditors           : Robert Huang<56649783@qq.com>                                                            *
- * @LastEditDate          : 2023-08-14 13:52:51                                                                      *
- * @FilePath              : sage-assistant-web/src/assets/axios.js                                                   *
- * @CopyRight             : Dedienne Aerospace China ZhuHai                                                          *
- ********************************************************************************************************************/
+/******************************************************************************
+ * @Author                : Robert Huang<56649783@qq.com>                     *
+ * @CreatedDate           : 2022-03-25 11:01:00                               *
+ * @LastEditors           : Robert Huang<56649783@qq.com>                     *
+ * @LastEditDate          : 2024-03-25 10:32:54                               *
+ * @CopyRight             : Dedienne Aerospace China ZhuHai                   *
+ *****************************************************************************/
 
 /**
  * Run Default setting, interceptor
  */
+import { t } from '@/boot/i18n'
 import axios from 'axios'
-import { i18n } from 'boot/i18n'
 import { Notify, SessionStorage } from 'quasar'
-const { t } = i18n.global
 
 // This is the default configuration called in axios.js
 axios.defaults.headers.patch['Content-Type'] = 'application/json;charset=utf-8'

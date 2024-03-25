@@ -2,12 +2,12 @@
  * @Author                : Robert Huang<56649783@qq.com>                     *
  * @CreatedDate           : 2022-03-25 11:01:00                               *
  * @LastEditors           : Robert Huang<56649783@qq.com>                     *
- * @LastEditDate          : 2023-11-16 14:04:37                               *
+ * @LastEditDate          : 2024-03-25 12:13:14                               *
  * @CopyRight             : Dedienne Aerospace China ZhuHai                   *
  *****************************************************************************/
 
 import { getQueryParameters } from '@/assets/mockExt'
-import { orderBy } from 'lodash'
+import orderBy from 'lodash'
 import Mock from 'mockjs'
 
 Mock.mock(RegExp('^(/Data/SupplierHelper)' + '.*'), (options) => {

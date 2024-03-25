@@ -1,14 +1,13 @@
-/*********************************************************************************************************************
- * @Author                : Robert Huang<56649783@qq.com>                                                            *
- * @CreatedDate           : 2022-03-25 11:01:00                                                                      *
- * @LastEditors           : Robert Huang<56649783@qq.com>                                                            *
- * @LastEditDate          : 2023-09-06 03:14:21                                                                      *
- * @FilePath              : sage-assistant-web/src/assets/auth.js                                                    *
- * @CopyRight             : Dedienne Aerospace China ZhuHai                                                          *
- ********************************************************************************************************************/
+/******************************************************************************
+ * @Author                : Robert Huang<56649783@qq.com>                     *
+ * @CreatedDate           : 2022-03-25 11:01:00                               *
+ * @LastEditors           : Robert Huang<56649783@qq.com>                     *
+ * @LastEditDate          : 2024-03-25 10:00:28                               *
+ * @CopyRight             : Dedienne Aerospace China ZhuHai                   *
+ *****************************************************************************/
 
+import { axiosPost } from '@/assets/axiosActions'
 import { SessionStorage } from 'quasar'
-import { axiosPost } from './axiosActions'
 
 /**
  * Check if the user has the authority to access the function

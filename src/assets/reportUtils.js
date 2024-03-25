@@ -1,16 +1,14 @@
-/*********************************************************************************************************************
- * @Author                : Robert Huang<56649783@qq.com>                                                            *
- * @CreatedDate           : 2022-03-25 11:01:00                                                                      *
- * @LastEditors           : Robert Huang<56649783@qq.com>                                                            *
- * @LastEditDate          : 2023-09-06 02:10:18                                                                      *
- * @FilePath              : sage-assistant-web/src/assets/reportUtils.js                                             *
- * @CopyRight             : Dedienne Aerospace China ZhuHai                                                          *
- ********************************************************************************************************************/
+/******************************************************************************
+ * @Author                : Robert Huang<56649783@qq.com>                     *
+ * @CreatedDate           : 2022-03-25 11:01:00                               *
+ * @LastEditors           : Robert Huang<56649783@qq.com>                     *
+ * @LastEditDate          : 2024-03-25 10:36:33                               *
+ * @CopyRight             : Dedienne Aerospace China ZhuHai                   *
+ *****************************************************************************/
 
 import { axios } from '@/assets/axios'
-import { i18n } from 'boot/i18n'
+import { t } from '@/boot/i18n'
 import { Notify } from 'quasar'
-const { t } = i18n.global
 
 const validateInput = (rpt, value) => {
   let rtn = false

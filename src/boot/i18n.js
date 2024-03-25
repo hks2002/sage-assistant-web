@@ -1,22 +1,19 @@
-/*********************************************************************************************************************
- * @Author                : Robert Huang<56649783@qq.com>                                                            *
- * @CreatedDate           : 2022-03-25 11:01:00                                                                      *
- * @LastEditors           : Robert Huang<56649783@qq.com>                                                            *
- * @LastEditDate          : 2023-08-14 13:59:27                                                                      *
- * @FilePath              : sage-assistant-web/src/boot/i18n.js                                                      *
- * @CopyRight             : Dedienne Aerospace China ZhuHai                                                          *
- ********************************************************************************************************************/
+/******************************************************************************
+ * @Author                : Robert Huang<56649783@qq.com>                     *
+ * @CreatedDate           : 2022-03-25 11:01:00                               *
+ * @LastEditors           : Robert Huang<56649783@qq.com>                     *
+ * @LastEditDate          : 2024-03-25 10:06:22                               *
+ * @CopyRight             : Dedienne Aerospace China ZhuHai                   *
+ *****************************************************************************/
 
 /**
  * Use i18n outside of a Vue file:
  *
- * import { i18n } from '/src/assets/i18n'
- * const { t } = i18n.global
+ * import { t } from '/src/assets/i18n'
  * t ('Sample Text')
  *
  *
  * Use i18n inside of a Vue file in template:
- *
  * {{ $t ('Sample Text') }}
  *
  *
@@ -42,6 +39,8 @@ const i18n = createI18n({
     }
   }
 })
+
+const { t } = i18n.global
 
 const loadLanguage = (langIso) => {
   // Set Quasar lang pack
@@ -86,4 +85,4 @@ export default boot(({ app } /* { app, router, ... } */) => {
 })
 
 // export i18n, so js file could use i18n t() outside of a Vue file
-export { i18n }
+export { i18n, t }
