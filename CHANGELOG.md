@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.1.1](https://github.com/hks2002/sage-assistant-web/compare/v1.1.0...v1.1.1) (2024-05-08)
+
+
+### Bug Fixes
+
+* 🐛fix miss watch ([14edee7](https://github.com/hks2002/sage-assistant-web/commit/14edee7c585535b34abd7d6320712fcd614ff50b))
+
+
+### Performance Improvements
+
+* 🚀using brotli instead of gzip ([26c1c38](https://github.com/hks2002/sage-assistant-web/commit/26c1c38029972032c6fcaf37194d8eb1d0578ecf))
+
 ## [1.1.0](https://github.com/hks2002/sage-assistant-web/compare/v1.0.4...v1.1.0) (2023-12-13)
 
 
