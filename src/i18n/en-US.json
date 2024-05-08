@@ -221,7 +221,7 @@
     "SALES_HISTORY": "Sales History",
     "SEARCH_CUSTOMER": "Search Your Customers (Code or Name)",
     "SEARCH_PRODUCT": "Search Your Product",
-    "SEARCH_PRODUCT_HINT": "In case of large amount PNs, please use EXCEL formula =webService(\"http://sageassistant/Data/AnalysesSales\") or =webService(\"http://sageassistant/Data/AnalysesQuote\") or =webService(\"http://sageassistant/Data/AnalysesPurchase\")",
+    "SEARCH_PRODUCT_HINT": "In case of large amount PNs, See \"http://sageassistant/Data/AnalysesSales\" or \"http://sageassistant/Data/AnalysesQuote\" or \"http://sageassistant/Data/AnalysesPurchase\"",
     "SEARCH_PURCHASE_ORDER_LINE": "Search Purchase Order Line",
     "SEARCH_SALES_ORDER_LINE": "Search Sales Order Lines",
     "SEARCH_SUPPLIER": "Search Your Suppliers (Code or Name)",
