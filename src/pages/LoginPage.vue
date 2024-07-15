@@ -2,7 +2,7 @@
 * @Author                : Robert Huang<56649783@qq.com>
 * @CreatedDate           : 2022-05-24 09:38:00
 * @LastEditors           : Robert Huang<56649783@qq.com>
-* @LastEditDate          : 2023-11-30 11:22:02
+* @LastEditDate          : 2024-07-15 13:55:26
 * @CopyRight             : Dedienne Aerospace China ZhuHai
 -->
 
@@ -82,7 +82,6 @@
 </template>
 
 <script setup>
-import { fetchAuthorityData, fetchUserProfiles } from '@/assets/auth'
 import { axiosPost } from '@/assets/axiosActions'
 import LottiePlayer from '@/components/lottie/LottiePlayer.vue'
 import { SessionStorage, useQuasar } from 'quasar'
@@ -105,7 +104,7 @@ const loginMessage = ref('')
 
 onMounted(() => {
   SessionStorage.remove('authorization')
-  SessionStorage.remove('authorizations')
+  SessionStorage.remove('functions')
   SessionStorage.remove('userProfiles')
 })
 
@@ -155,9 +154,7 @@ const doLogin = async () => {
         if (response.success) {
           loginMessage.value = t('S.LOAD_PROFILE')
 
-          Promise.all([fetchUserProfiles(), fetchAuthorityData()]).then(() => {
-            $router.push({ name: 'Home' })
-          })
+          $router.push({ name: 'Home' })
         } else {
           SessionStorage.remove('authorization')
           loginMessage.value = response.msg

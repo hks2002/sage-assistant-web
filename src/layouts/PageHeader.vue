@@ -2,7 +2,7 @@
 * @Author                : Robert Huang<56649783@qq.com>
 * @CreatedDate           : 2022-03-25 11:01:00
 * @LastEditors           : Robert Huang<56649783@qq.com>
-* @LastEditDate          : 2023-12-15 14:22:48
+* @LastEditDate          : 2024-07-15 13:53:18
 * @CopyRight             : Dedienne Aerospace China ZhuHai
 -->
 
@@ -65,7 +65,7 @@
 </template>
 
 <script setup>
-import { axiosGet } from '@/assets/axiosActions'
+import { axiosGet, axiosPost } from '@/assets/axiosActions'
 import { usePagesStore } from '@/stores/pageManager'
 import { Cookies, Dialog, LocalStorage, SessionStorage, useQuasar } from 'quasar'
 import languages from 'quasar/lang/index.json'
@@ -122,7 +122,7 @@ const goHome = () => {
 
 const doLogout = () => {
   SessionStorage.remove('authorization')
-  SessionStorage.remove('authorizations')
+  SessionStorage.remove('functions')
   SessionStorage.remove('userProfiles')
   $router.push({ path: '/Login' })
 }
@@ -148,14 +148,27 @@ onBeforeMount(() => {
   if (!LocalStorage.has('site')) {
     site.value = 'ZHU'
     LocalStorage.set('site', site.value)
+  } else {
+    site.value = LocalStorage.getItem('site')
   }
 
   axiosGet('/Data/Sites').then((data) => {
     siteList.value = data
     LocalStorage.set('siteList', siteList.value)
   })
-  const userProfiles = SessionStorage.getItem('userProfiles')
-  userInfo.value = userProfiles.userName + '<' + userProfiles.email + '>'
+
+  axiosPost('/Data/Profile', {}).then((response) => {
+    if (response.success) {
+      SessionStorage.set('userProfiles', response.profile)
+      userInfo.value = response.profile.userName + '<' + response.profile.email + '>'
+    }
+  })
+
+  axiosPost('/Data/Function', {}).then((response) => {
+    if (response.success) {
+      SessionStorage.set('functions', response.functions)
+    }
+  })
 })
 </script>
 
