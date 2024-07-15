@@ -2,57 +2,62 @@
 * @Author                : Robert Huang<56649783@qq.com>
 * @CreatedDate           : 2023-06-23 00:16:00
 * @LastEditors           : Robert Huang<56649783@qq.com>
-* @LastEditDate          : 2023-11-30 12:55:19
+* @LastEditDate          : 2024-07-16 00:32:10
 * @CopyRight             : Dedienne Aerospace China ZhuHai
 -->
 
 <template>
-  <span class="q-pa-xs q-gutter-sm">
+  <span class="q-pa-sm q-gutter-sm">
     <q-btn
-      v-for="file in filesInZHUSrv"
-      :key="file.Path"
+      v-for="file in filesInZHU"
+      :key="file.file_name"
       type="a"
-      :icon="getDocIcon(file.DocType)"
-      :label="getFileCat(file.Cat)"
-      @click="clickBtn(file.Path)"
-      text-color="orange-10"
+      :icon="getDocIcon(file.file_name)"
+      @click="clickBtn('/docs/' + file.location + '/' + file.file_name)"
+      color="primary"
       dense
     >
-      <q-badge color="orange" floating>{{ props.version }}</q-badge>
-      <q-tooltip>{{ getFileToolTip(file.Cat, file.File) }}</q-tooltip>
-      <q-menu touch-position context-menu>
-        <q-btn
-          icon="fas fa-trash-alt"
-          color="teal"
-          size="sm"
-          v-if="isFromChina"
-          @click="doDeleteFile(file.Path)"
-          dense
-        />
-      </q-menu>
+      <q-tooltip>{{ file.file_name }}</q-tooltip>
     </q-btn>
     <q-btn
-      v-for="file in filesInTLSSrv"
+      v-for="file in filesInDMS"
+      :key="file.file_name"
+      type="a"
+      :icon="getDocIcon(file.file_name)"
+      @click="
+        clickBtn(
+          'http://192.168.10.64:4040/cocoon/viewDocument/' +
+            file.file_name +
+            '?FileID=' +
+            file.location +
+            '&UserName=TEMP&dsn=dmsDS&Client_Type=25'
+        )
+      "
+      color="green"
+      dense
+    >
+      <q-tooltip>{{ file.file_name }}</q-tooltip>
+    </q-btn>
+    <q-btn
+      v-for="file in filesInTLS"
       :key="file.path"
       type="a"
       :icon="getDocIcon(file.docType)"
-      :label="getFileCat(file.cat)"
       @click="clickBtn(file.path)"
-      text-color="primary"
+      color="grey"
       dense
     >
-      <q-badge color="orange" floating>{{ props.version }}</q-badge>
-      <q-tooltip>{{ getFileToolTip(file.cat, file.file) }}</q-tooltip>
+      <q-tooltip>{{ file.file }}</q-tooltip>
     </q-btn>
+    <q-inner-loading :showing="showLoading">
+      <q-spinner-ios size="50px" color="primary" />
+    </q-inner-loading>
   </span>
-
-  <q-inner-loading :showing="showLoading">
-    <q-spinner-ios size="50px" color="primary" />
-  </q-inner-loading>
 </template>
 
 <script setup>
 import { axiosGet } from '@/assets/axiosActions'
+import { lastIndexOf } from 'lodash'
 import { Notify } from 'quasar'
 import { onMounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
@@ -63,47 +68,37 @@ const props = defineProps({
   version: String
 })
 
-const isFromChina = ref(false)
-const filesInZHUSrv = ref([])
-const filesInTLSSrv = ref([])
+const filesInZHU = ref([])
+const filesInDMS = ref([])
+const filesInTLS = ref([])
 const showLoading = ref(false)
 
 const getDocIcon = (docType) => {
-  if (docType === 'PDF') {
-    return 'fas fa-file-pdf'
-  } else if (docType === 'BMP' || docType === 'TIF' || docType === 'JPG' || docType === 'JPEG') {
-    return 'fas fa-file-image'
-  } else if (docType === 'ZIP' || docType === 'RAR' || docType === '7Z') {
-    return 'fas fa-file-archive'
-  } else if (docType === 'DOC' || docType === 'DOCX') {
-    return 'fas fa-file-word'
-  } else if (docType === 'XLS' || docType === 'XLSX') {
-    return 'fas fa-file-excel'
-  } else {
-    return 'fas fa-file'
+  var index = lastIndexOf(docType, '.')
+  if (index > 0) {
+    docType = docType.substring(index + 1).toUpperCase()
   }
-}
-const getFileCat = (fileCat) => {
-  if (fileCat === 'Drawing') {
-    return 'D'
-  } else if (fileCat === 'Manual') {
-    return 'M'
-  } else if (fileCat === 'Certificate') {
-    return 'C'
-  } else {
-    return '?'
-  }
-}
 
-const getFileToolTip = (fileCat, fileName) => {
-  if (fileCat === 'Drawing') {
-    return t('S.DRAWING') + ':' + fileName
-  } else if (fileCat === 'Manual') {
-    return t('S.MANUAL') + ':' + fileName
-  } else if (fileCat === 'Certificate') {
-    return t('S.CERTIFICATE') + ':' + fileName
-  } else {
-    return t('S.UNKNOWN_CATEGORY') + ':' + fileName
+  switch (docType) {
+    case 'PDF':
+      return 'fas fa-file-pdf'
+    case 'BMP':
+    case 'TIF':
+    case 'JPG':
+    case 'JPEG':
+      return 'fas fa-file-image'
+    case 'ZIP':
+    case 'RAR':
+    case '7Z':
+      return 'fas fa-file-archive'
+    case 'DOC':
+    case 'DOCX':
+      return 'fas fa-file-word'
+    case 'XLS':
+    case 'XLSX':
+      return 'fas fa-file-excel'
+    default:
+      return 'fas fa-file'
   }
 }
 
@@ -112,36 +107,28 @@ const clickBtn = (path) => {
   window.open(path, '_blank')
 }
 
-const doDeleteFile = (path) => {
-  if (!isFromChina.value) {
-    return
-  }
-
-  console.debug('deleteFile:' + path)
-  axiosGet('/Data/FileDelete', { Path: path })
-    .then((data) => {
-      Notify.create({ type: 'success', message: data })
-    })
-    .catch(() => {
-      Notify.create({
-        type: 'error',
-        message: t('S.DELETE') + t('{VAR_HOLD_WITH_SPACE}', path) + t('S.FAILED')
-      })
-    })
-}
-
 const doUpdate = () => {
   showLoading.value = true
 
-  Promise.all([
-    axiosGet('/Data/AttachmentPath', { Pn: props.pn }),
-    axiosGet('/Data/AttachmentPathForChina', { Pn: props.pn })
-  ])
+  if (!props.pn) {
+    filesInZHU.value = []
+    filesInDMS.value = []
+    filesInTLS.value = []
+
+    showLoading.value = false
+    return
+  }
+
+  let filesInSrv = []
+  filesInSrv.push(axiosGet('/Data/GetDocsInfoFromZHU', { Pn: props.pn }))
+  filesInSrv.push(axiosGet('/Data/GetDocsInfoFromDms', { Pn: props.pn }))
+  filesInSrv.push(axiosGet('/Data/GetDocsInfoFromTLS', { Pn: props.pn }))
+
+  Promise.all(filesInSrv)
     .then((data) => {
-      filesInTLSSrv.value = data[0]
-      if (isFromChina.value) {
-        filesInZHUSrv.value = data[1]
-      }
+      filesInZHU.value = data[0]
+      filesInDMS.value = data[1]
+      filesInTLS.value = data[2]
     })
     .catch(() => {
       Notify.create({
@@ -155,14 +142,6 @@ const doUpdate = () => {
 }
 
 onMounted(() => {
-  axiosGet('/Data/ClientIP').then((ip) => {
-    if (ip.startsWith('192.168.0') || ip.startsWith('192.168.8') || ip.startsWith('192.168.253')) {
-      isFromChina.value = true
-    } else {
-      isFromChina.value = false
-    }
-  })
-
   if (props.pn) {
     doUpdate()
   }
@@ -170,7 +149,6 @@ onMounted(() => {
 
 watch(props, (value, oldValue) => {
   console.debug('watch:', oldValue, '--->', value)
-
   doUpdate()
 })
 </script>

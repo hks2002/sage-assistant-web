@@ -2,27 +2,30 @@
 * @Author                : Robert Huang<56649783@qq.com>
 * @CreatedDate           : 2022-03-25 11:01:00
 * @LastEditors           : Robert Huang<56649783@qq.com>
-* @LastEditDate          : 2023-08-23 22:58:30
-* @FilePath              : sage-assistant-web/src/pages/ProductsPage.vue
+* @LastEditDate          : 2024-07-16 00:07:26
 * @CopyRight             : Dedienne Aerospace China ZhuHai
 -->
 
 <template>
   <WaitInputLottieVue v-if="!pnRoot && isAuthorized('GESITM')" />
   <ExceptionLottie :ErrorCode="403" v-if="!isAuthorized('GESITM')" />
-  <QSelectAxios
-    option-label="PN"
-    option-value="PNROOT"
-    data-url="/Data/PNHelper"
-    :label="$t('S.SEARCH_PRODUCT')"
-    :hint="$t('S.SEARCH_PRODUCT_HINT')"
-    input-style="font-weight:bolder;font-size:25px;text-transform:uppercase"
-    popup-content-style="font-weight:bold;font-size:25px"
-    popup-content-class="text-secondary"
-    class="q-pa-sm"
-    v-if="isAuthorized('GESITM')"
-    @update:model-value="update"
-  />
+  <div class="row q-px-sm q-gutter-sm">
+    <QSelectAxios
+      option-label="PN"
+      option-value="PNROOT"
+      data-url="/Data/PNHelper"
+      :label="$t('S.SEARCH_PRODUCT')"
+      :hint="$t('S.SEARCH_PRODUCT_HINT')"
+      input-style="font-weight:bolder;font-size:25px;text-transform:uppercase"
+      popup-content-style="font-weight:bold;font-size:25px"
+      popup-content-class="text-secondary"
+      class="q-pa-sm"
+      v-if="isAuthorized('GESITM')"
+      @update:model-value="update"
+    />
+    <SpanFileList :pn="pnRoot" />
+  </div>
+
   <div class="row q-gutter-sm q-px-sm" style="height: 150px" v-if="pnRoot">
     <q-card class="col-4">
       <q-scroll-area style="height: 150px">
@@ -61,6 +64,7 @@ import EchartSalesHistory from '@/components/echarts/EchartSalesHistory.vue'
 import ExceptionLottie from '@/components/lottie/ExceptionLottie.vue'
 import WaitInputLottieVue from '@/components/lottie/WaitInputLottie.vue'
 import QListPnList from '@/components/products/QListPnList.vue'
+import SpanFileList from '@/components/products/SpanFileList.vue'
 import QSelectAxios from '@/controls/QSelectAxios.vue'
 import { useQuasar } from 'quasar'
 import { computed, ref } from 'vue'

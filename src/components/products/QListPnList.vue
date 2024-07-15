@@ -2,8 +2,7 @@
 * @Author                : Robert Huang<56649783@qq.com>
 * @CreatedDate           : 2023-06-23 00:06:00
 * @LastEditors           : Robert Huang<56649783@qq.com>
-* @LastEditDate          : 2023-09-08 22:16:18
-* @FilePath              : sage-assistant-web/src/components/products/QListPnList.vue
+* @LastEditDate          : 2024-07-15 14:12:23
 * @CopyRight             : Dedienne Aerospace China ZhuHai
 -->
 
@@ -12,11 +11,6 @@
     <q-item dense class="q-px-sm q-pt-none" v-if="pnRoot">
       <q-item-label class="text-teal" style="font-weight: bolder; font-size: 20px"
         >{{ $t('S.PART_NUM_INFO') }}
-        <template v-for="(pn, index) in pnsInFamily" :key="pn.ROWID">
-          <span v-if="index < 2" class="q-gutter-xl">
-            <SpanFileList :pn="pn.PN" :version="pn.version" />
-          </span>
-        </template>
       </q-item-label>
     </q-item>
     <template v-for="pn in pnsInFamily" :key="pn.ROWID">
@@ -26,7 +20,6 @@
           <q-item-label v-if="pn.desc1">{{ pn.desc1 }}</q-item-label>
           <q-item-label v-if="pn.desc2">{{ pn.desc2 }}</q-item-label>
           <q-item-label v-if="pn.desc3">{{ pn.desc3 }}</q-item-label>
-          <QItemLabelFileUpload :pn="pn.PN" />
         </q-item-section>
         <q-item-section :class="labClass(pn.status)" side top>
           <q-item-label style="font-size: 18px">{{ date.formatDate(pn.createDate, 'YYYY-MM-DD') }}</q-item-label>
@@ -44,8 +37,6 @@
 
 <script setup>
 import { axiosGet } from '@/assets/axiosActions'
-import QItemLabelFileUpload from '@/components/products/QItemLabelFileUpload'
-import SpanFileList from '@/components/products/SpanFileList'
 import { date, Notify } from 'quasar'
 import { onMounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
