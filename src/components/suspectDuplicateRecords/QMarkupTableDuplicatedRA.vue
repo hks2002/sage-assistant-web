@@ -2,7 +2,7 @@
 * @Author                : Robert Huang<56649783@qq.com>
 * @CreatedDate           : 2023-11-14 15:52:00
 * @LastEditors           : Robert Huang<56649783@qq.com>
-* @LastEditDate          : 2023-11-16 13:07:19
+* @LastEditDate          : 2024-07-16 09:33:20
 * @CopyRight             : Dedienne Aerospace China ZhuHai
 -->
 
@@ -11,7 +11,7 @@
   <q-markup-table dense>
     <thead style="position: sticky; top: 0px; z-index: 1">
       <tr>
-        <td :colspan="15" class="bg-teal text-h6 text-white shadow-2">
+        <td :colspan="17" class="bg-teal text-h6 text-white shadow-2">
           {{ title }}
           <q-btn dense flat icon="fas fa-download" @click="download()" />
         </td>
@@ -20,18 +20,20 @@
         <th class="text-center text-caption">#</th>
         <th class="text-left">{{ $t('F.ProjectNO') }}</th>
         <th class="text-left">{{ $t('F.PN') }}</th>
+        <th class="text-center">{{ $t('F.Seq') }}</th>
         <th class="text-left">{{ $t('F.PurchaseNO') }}</th>
         <th class="text-left">{{ $t('F.PurchaseLine') }}</th>
+        <th class="text-left">{{ $t('F.PurchaseDate') }}</th>
         <th class="text-left">{{ $t('F.Purchaser') }}</th>
         <th class="text-left">{{ $t('F.ReceiptNO') }}</th>
         <th class="text-left">{{ $t('F.ReceiptLine') }}</th>
+        <th class="text-left">{{ $t('F.ReceiptDate') }}</th>
         <th class="text-left">{{ $t('F.Receiptor') }}</th>
         <th class="text-center">{{ $t('F.Qty') }}</th>
         <th class="text-right">{{ $t('F.Amount') }}</th>
         <th class="text-center">{{ $t('F.Currency') }}</th>
         <th class="text-center">{{ $t('F.TotalReceiptQty') }}</th>
         <th class="text-right">{{ $t('F.TotalSalesQty') }}</th>
-        <th class="text-center">{{ $t('F.Seq') }}</th>
       </tr>
     </thead>
     <tbody>
@@ -39,18 +41,20 @@
         <td class="text-center">{{ index }}</td>
         <td>{{ item['projectNO'] }}</td>
         <td class="text-left">{{ item['PN'] }}</td>
+        <td class="text-center">{{ item['seq'] }}</td>
         <td class="text-left">{{ item['purchaseNO'] }}</td>
         <td class="text-left">{{ item['purchaseLine'] }}</td>
+        <td class="text-left">{{ item['purchaseDate'] }}</td>
         <td class="text-left">{{ item['purchaser'] }}</td>
         <td class="text-left">{{ item['receiptNO'] }}</td>
         <td class="text-left">{{ item['receiptLine'] }}</td>
+        <td class="text-left">{{ item['receiptDate'] }}</td>
         <td class="text-left">{{ item['receiptor'] }}</td>
         <td class="text-center">{{ item['receiptQty'] }}</td>
         <td class="text-right">{{ item['receiptAmount'] }}</td>
         <td class="text-center">{{ item['currency'] }}</td>
         <td class="text-center">{{ item['totalReceiptQty'] }}</td>
         <td class="text-right">{{ item['totalSalesQty'] }}</td>
-        <td class="text-center">{{ item['seq'] }}</td>
       </tr>
     </tbody>
     <q-inner-loading :showing="showLoading">

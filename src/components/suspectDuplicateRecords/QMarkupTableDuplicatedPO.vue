@@ -2,7 +2,7 @@
 * @Author                : Robert Huang<56649783@qq.com>
 * @CreatedDate           : 2023-11-14 15:52:00
 * @LastEditors           : Robert Huang<56649783@qq.com>
-* @LastEditDate          : 2023-11-19 13:55:20
+* @LastEditDate          : 2024-07-16 09:55:26
 * @CopyRight             : Dedienne Aerospace China ZhuHai
 -->
 
@@ -11,7 +11,7 @@
   <q-markup-table dense>
     <thead style="position: sticky; top: 0px; z-index: 1">
       <tr>
-        <td :colspan="10" class="bg-teal text-h6 text-white shadow-2">
+        <td :colspan="11" class="bg-teal text-h6 text-white shadow-2">
           {{ title }}
           <q-btn dense flat icon="fas fa-download" @click="download()" />
         </td>
@@ -20,13 +20,14 @@
         <th class="text-center text-caption">#</th>
         <th class="text-left">{{ $t('F.ProjectNO') }}</th>
         <th class="text-left">{{ $t('F.PN') }}</th>
+        <th class="text-center">{{ $t('F.Seq') }}</th>
         <th class="text-left">{{ $t('F.PurchaseNO') }}</th>
         <th class="text-left">{{ $t('F.PurchaseLine') }}</th>
+        <th class="text-left">{{ $t('F.PurchaseDate') }}</th>
         <th class="text-left">{{ $t('F.Purchaser') }}</th>
         <th class="text-center">{{ $t('F.Qty') }}</th>
         <th class="text-center">{{ $t('F.TotalPurchaseQty') }}</th>
         <th class="text-center">{{ $t('F.TotalSalesQty') }}</th>
-        <th class="text-center">{{ $t('F.Seq') }}</th>
       </tr>
     </thead>
     <tbody>
@@ -34,13 +35,14 @@
         <td class="text-center">{{ index }}</td>
         <td>{{ item['projectNO'] }}</td>
         <td class="text-left">{{ item['PN'] }}</td>
+        <td class="text-center">{{ item['seq'] }}</td>
         <td class="text-left">{{ item['purchaseNO'] }}</td>
         <td class="text-left">{{ item['purchaseLine'] }}</td>
+        <td class="text-left">{{ item['purchaseDate'] }}</td>
         <td class="text-center">{{ item['purchaser'] }}</td>
         <td class="text-center">{{ item['purchaseQty'] }}</td>
         <td class="text-center">{{ item['totalPurchaseQty'] }}</td>
         <td class="text-center">{{ item['totalSalesQty'] }}</td>
-        <td class="text-center">{{ item['seq'] }}</td>
       </tr>
     </tbody></q-markup-table
   >
