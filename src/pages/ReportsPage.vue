@@ -2,7 +2,7 @@
 * @Author                : Robert Huang<56649783@qq.com>
 * @CreatedDate           : 2023-05-25 01:02:00
 * @LastEditors           : Robert Huang<56649783@qq.com>
-* @LastEditDate          : 2023-12-26 10:11:06
+* @LastEditDate          : 2024-07-17 14:54:52
 * @CopyRight             : Dedienne Aerospace China ZhuHai
 -->
 
@@ -319,7 +319,6 @@
 </template>
 
 <script setup>
-import { isAuthorized } from '@/assets/auth'
 import { axios } from '@/assets/axios'
 import { validateInput } from '@/assets/reportUtils'
 import { QSpinnerGears, useQuasar } from 'quasar'
@@ -340,13 +339,6 @@ const ReceiptNO = ref('')
 const PurchaseSiteVendorCodeDuration = ref('')
 const ProjectOrWorkOrderNO = ref('')
 const SiteAndBPCode = ref('')
-
-const rptFncMap = {
-  SalesOrder: 'GESSOH',
-  Delivery: 'GESSDH',
-  Invoice: 'GESSIH',
-  PurchaseOrder: 'GESPOH'
-}
 
 onMounted(() => {
   // must change it once, otherwise it doesn't show in iframe
@@ -510,12 +502,6 @@ const getSageAssistantUrl = (rpt, vals, type) => {
 }
 
 const getSageUrl = async (rpt, val, val2) => {
-  const fnc = rptFncMap[rpt]
-
-  if (!isAuthorized(fnc)) {
-    return '/#/Exception/403'
-  }
-
   $q.loading.show({
     message: 'Printing report ...',
     messageColor: 'light-green',
@@ -524,7 +510,7 @@ const getSageUrl = async (rpt, val, val2) => {
     spinnerSize: 40
   })
 
-  return await axios.post(`/Data/PrintUUID?Report=${rpt}&ReportNO=${val}&Opt=${val2}`, {}).then(
+  return await axios.post(`/Data/PrintUUID?ReportType=${rpt}&ReportNO=${val}&Opt=${val2}`, {}).then(
     async (response) => {
       if (response.status === 200 && response.data.success) {
         $q.loading.show({
