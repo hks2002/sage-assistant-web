@@ -2,7 +2,7 @@
 * @Author                : Robert Huang<56649783@qq.com>
 * @CreatedDate           : 2023-11-14 15:52:00
 * @LastEditors           : Robert Huang<56649783@qq.com>
-* @LastEditDate          : 2024-07-16 09:33:20
+* @LastEditDate          : 2024-07-19 01:25:13
 * @CopyRight             : Dedienne Aerospace China ZhuHai
 -->
 
@@ -38,7 +38,7 @@
     </thead>
     <tbody>
       <tr v-for="(item, index) in duplicatedRA" :key="index">
-        <td class="text-center">{{ index }}</td>
+        <td class="text-center">{{ index + 1 }}</td>
         <td>{{ item['projectNO'] }}</td>
         <td class="text-left">{{ item['PN'] }}</td>
         <td class="text-center">{{ item['seq'] }}</td>
@@ -79,11 +79,6 @@ const props = defineProps({
     type: String,
     require: false,
     default: null
-  },
-  onlyForSales: {
-    type: Boolean,
-    require: false,
-    default: false
   }
 })
 
@@ -103,8 +98,7 @@ const doUpdate = () => {
 
   axiosGet('/Data/DuplicatedRA', {
     Site: props.site,
-    DateFrom: props.dateFrom,
-    OnlyForSales: props.onlyForSales ? 'Y' : 'N'
+    DateFrom: props.dateFrom
   })
     .then((data) => {
       duplicatedRA.value = data

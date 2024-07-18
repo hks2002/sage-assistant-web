@@ -2,7 +2,7 @@
 * @Author                : Robert Huang<56649783@qq.com>
 * @CreatedDate           : 2023-11-14 15:52:00
 * @LastEditors           : Robert Huang<56649783@qq.com>
-* @LastEditDate          : 2024-07-16 09:55:26
+* @LastEditDate          : 2024-07-19 01:28:27
 * @CopyRight             : Dedienne Aerospace China ZhuHai
 -->
 
@@ -26,13 +26,15 @@
         <th class="text-left">{{ $t('F.PurchaseDate') }}</th>
         <th class="text-left">{{ $t('F.Purchaser') }}</th>
         <th class="text-center">{{ $t('F.Qty') }}</th>
+        <th class="text-right">{{ $t('F.Cost') }}</th>
+        <th class="text-center">{{ $t('F.Currency') }}</th>
         <th class="text-center">{{ $t('F.TotalPurchaseQty') }}</th>
         <th class="text-center">{{ $t('F.TotalSalesQty') }}</th>
       </tr>
     </thead>
     <tbody>
       <tr v-for="(item, index) in duplicatedPO" :key="index">
-        <td class="text-center">{{ index }}</td>
+        <td class="text-center">{{ index + 1 }}</td>
         <td>{{ item['projectNO'] }}</td>
         <td class="text-left">{{ item['PN'] }}</td>
         <td class="text-center">{{ item['seq'] }}</td>
@@ -41,6 +43,8 @@
         <td class="text-left">{{ item['purchaseDate'] }}</td>
         <td class="text-center">{{ item['purchaser'] }}</td>
         <td class="text-center">{{ item['purchaseQty'] }}</td>
+        <td class="text-right">{{ item['cost'] }}</td>
+        <td class="text-center">{{ item['currency'] }}</td>
         <td class="text-center">{{ item['totalPurchaseQty'] }}</td>
         <td class="text-center">{{ item['totalSalesQty'] }}</td>
       </tr>
@@ -64,11 +68,6 @@ const props = defineProps({
     type: String,
     require: false,
     default: null
-  },
-  onlyForSales: {
-    type: Boolean,
-    require: false,
-    default: false
   }
 })
 
@@ -88,8 +87,7 @@ const doUpdate = () => {
 
   axiosGet('/Data/DuplicatedPO', {
     Site: props.site,
-    DateFrom: props.dateFrom,
-    OnlyForSales: props.onlyForSales ? 'Y' : 'N'
+    DateFrom: props.dateFrom
   })
     .then((data) => {
       duplicatedPO.value = data

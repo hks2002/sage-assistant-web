@@ -2,7 +2,7 @@
 * @Author                : Robert Huang<56649783@qq.com>
 * @CreatedDate           : 2023-06-17 23:07:00
 * @LastEditors           : Robert Huang<56649783@qq.com>
-* @LastEditDate          : 2023-11-19 13:58:16
+* @LastEditDate          : 2024-07-19 01:21:42
 * @CopyRight             : Dedienne Aerospace China ZhuHai
 -->
 
@@ -18,11 +18,10 @@
       :label="$t('S.FROM')"
       class="col-3"
     />
-    <q-toggle dense v-model="onlyForSales" :label="$t('S.ONLY_FOR_SALES')" />
   </div>
   <q-list class="row q-gutter-sm q-pt-sm q-pa-sm">
-    <q-markup-table-duplicated-p-o-vue class="col-5" :dateFrom="dateFrom" :site="site" :onlyForSales="onlyForSales" />
-    <q-markup-table-duplicated-r-a-vue class="col" :dateFrom="dateFrom" :site="site" :onlyForSales="onlyForSales" />
+    <q-markup-table-duplicated-p-o-vue class="col-5" :dateFrom="dateFrom" :site="site" />
+    <q-markup-table-duplicated-r-a-vue class="col" :dateFrom="dateFrom" :site="site" />
   </q-list>
 </template>
 
@@ -45,8 +44,6 @@ const { formatDate, addToDate } = date
 const nowTimeStamp = Date.now()
 const fromTimeStamp = addToDate(nowTimeStamp, { years: -3 })
 const dateFrom = ref(formatDate(fromTimeStamp, 'YYYY-MM-DD'))
-
-const onlyForSales = ref(false)
 
 // events
 ebus.on('changeSite', (newSite) => {
