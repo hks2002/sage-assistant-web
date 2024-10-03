@@ -2,7 +2,7 @@
 * @Author                : Robert Huang<56649783@qq.com>
 * @CreatedDate           : 2023-06-17 23:13:00
 * @LastEditors           : Robert Huang<56649783@qq.com>
-* @LastEditDate          : 2023-09-03 00:14:21
+* @LastEditDate          : 2025-01-21 15:09:03
 * @FilePath              : sage-assistant-web/src/components/stock/QMarkupTableStockSummary.vue
 * @CopyRight             : Dedienne Aerospace China ZhuHai
 -->
@@ -11,12 +11,14 @@
   <q-markup-table dense bordered class="col-grow">
     <thead style="position: sticky; top: 0px; z-index: 1">
       <tr>
-        <td colspan="2" class="bg-teal text-white shadow-2 col-grow">
-          {{ $t('S.STOCK_COUNT_RESULT {SITE}', { SITE: site }) }}, {{ $t('S.TOTAL_QTY') }}:{{ S2N(sumQty, 0) }}
+        <td colspan="2" class="bg-primary text-white shadow-2 col-grow">
+          {{ $t('S.STOCK_COUNT_RESULT {SITE}', { SITE: props.site }) }}, {{ $t('S.TOTAL_QTY') }}:{{ S2N(sumQty, 0) }}
           {{ $t('S.TOTAL_COST') }}:{{ S2N(sumCost) }}, {{ $t('S.PRODUCTS_QTY') }}:{{ S2N(sumProductQty, 0) }}
-          {{ $t('S.PRODUCTS_COST') }}:{{ S2N(sumProductCost) }}, {{ $t('S.OTHERS_QTY') }}:{{ S2N(sumOtherQty, 0) }}
-          {{ $t('S.OTHERS_COST') }}:{{ S2N(sumOtherCost) }}
-          <q-btn dense flat text-color="indigo-7" icon="fas fa-download" @click="download()" />
+          {{ $t('S.FINAL_PRODUCTS_COST') }}:{{ S2N(sumProductCost) }}, {{ $t('S.COMPONENTS_QTY') }}:{{
+            S2N(sumOtherQty, 0)
+          }}
+          {{ $t('S.COMPONENTS_COST') }}:{{ S2N(sumOtherCost) }}
+          <q-btn dense flat text-color="text-white" icon="fas fa-download" @click="download()" />
         </td>
       </tr>
     </thead>
@@ -57,14 +59,18 @@
 <script setup>
 import { axiosGet } from '@/assets/axiosActions'
 import { jsonToExcel, jsonToTable } from 'assets/dataUtils'
-import _forEach from 'lodash/forEach'
-import _groupBy from 'lodash/groupBy'
-import _sumBy from 'lodash/sumBy'
-import { Dialog, LocalStorage, date } from 'quasar'
-import { inject, onBeforeUnmount, onMounted, ref, watch } from 'vue'
+import { forEach, groupBy, sumBy } from 'lodash-es'
+import { Dialog, date } from 'quasar'
+import { onMounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
+
 const props = defineProps({
   PNfilter: {
+    type: String,
+    require: false,
+    default: ''
+  },
+  site: {
     type: String,
     require: false,
     default: ''
@@ -73,9 +79,7 @@ const props = defineProps({
 
 // common vars
 const { t } = useI18n()
-const ebus = inject('ebus')
 const showLoading = ref(false)
-const site = ref(LocalStorage.getItem('site'))
 
 // component vars
 let data = []
@@ -94,28 +98,28 @@ const { formatDate } = date
 const doUpdate = () => {
   showLoading.value = true
 
-  axiosGet('/Data/StockSummary', { site: site.value })
+  axiosGet('/Data/StockSummary', { site: props.site })
     .then((response) => {
       data = response
-      dataByFirstChar.value = _groupBy(data, 'A')
-      sumQty.value = _sumBy(data, 'qty')
-      sumCost.value = _sumBy(data, 'cost')
-      sumProductQty.value = _sumBy(data, function (o) {
+      dataByFirstChar.value = groupBy(data, 'A')
+      sumQty.value = sumBy(data, 'qty')
+      sumCost.value = sumBy(data, 'cost')
+      sumProductQty.value = sumBy(data, function (o) {
         if (o['G'] === 'P') {
           return o['qty']
         }
       })
-      sumProductCost.value = _sumBy(data, function (o) {
+      sumProductCost.value = sumBy(data, function (o) {
         if (o['G'] === 'P') {
           return o['cost']
         }
       })
-      sumOtherQty.value = _sumBy(data, function (o) {
+      sumOtherQty.value = sumBy(data, function (o) {
         if (o['G'] !== 'P') {
           return o['qty']
         }
       })
-      sumOtherCost.value = _sumBy(data, function (o) {
+      sumOtherCost.value = sumBy(data, function (o) {
         if (o['G'] !== 'P') {
           return o['cost']
         }
@@ -127,7 +131,7 @@ const doUpdate = () => {
 }
 
 const showHistory = (pn) => {
-  axiosGet('/Data/StockHistory?Site=' + site.value + '&PnOrName=' + pn + '&DateFrom=2000-01-01&DateTo=2099-12-31').then(
+  axiosGet('/Data/StockHistory?Site=' + props.site + '&PnOrName=' + pn + '&DateFrom=2000-01-01&DateTo=2099-12-31').then(
     (response) => {
       const history = response
       const header = [
@@ -143,7 +147,7 @@ const showHistory = (pn) => {
         'CreateUser',
         'CreateDate'
       ]
-      const message = jsonToTable(header, history, t('{pn} Stock History at {site}', { pn: pn, site: site.value }))
+      const message = jsonToTable(t('S.{pn} STOCK HISTORY AT {site}', { pn: pn, site: props.site }), history)
 
       Dialog.create({
         message: message,
@@ -169,10 +173,10 @@ const download = () => {
   const header = ['G', 'Location', 'PN', 'Description', 'OptionPN', 'Qty', 'Cost']
   const strPNData = data
   // PN with #
-  _forEach(strPNData, (value) => {
+  forEach(strPNData, (value) => {
     value.PN = '#' + value.PN
   })
-  jsonToExcel(header, strPNData, t('S.{site} STOCK COUNT {nowTime}', { site: site.value, nowTime: nowTime }))
+  jsonToExcel(t('S.{site} STOCK COUNT {nowTime}', { site: props.site, nowTime: nowTime }), strPNData, header)
 }
 
 const S2N = (S, n) => {
@@ -193,16 +197,6 @@ const S2N = (S, n) => {
 
 onMounted(() => {
   doUpdate()
-})
-
-// event handing
-ebus.on('changeSite', (newSite) => {
-  site.value = newSite
-  doUpdate()
-})
-
-onBeforeUnmount(() => {
-  ebus.off('changeSite')
 })
 
 watch(props, (value, oldValue) => {

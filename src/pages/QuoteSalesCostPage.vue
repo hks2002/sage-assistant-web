@@ -2,7 +2,8 @@
 * @Author                : Robert Huang<56649783@qq.com>
 * @CreatedDate           : 2023-06-17 23:08:00
 * @LastEditors           : Robert Huang<56649783@qq.com>
-* @LastEditDate          : 2024-03-25 12:13:57
+* @LastEditDate          : 2024-11-29 19:33:05
+* @FilePath              : sage-assistant-web/src/pages/QuoteSalesCostPage.vue
 * @CopyRight             : Dedienne Aerospace China ZhuHai
 -->
 
@@ -203,8 +204,8 @@ import ExceptionLottieVue from '@/components/lottie/ExceptionLottie.vue'
 import WaitInputLottieVue from '@/components/lottie/WaitInputLottie.vue'
 import { isAuthorized } from 'assets/auth'
 import { jsonToExcel } from 'assets/dataUtils'
-import _groupBy from 'lodash/groupBy'
-import _map from 'lodash/map'
+import groupBy from 'lodash/groupBy'
+import map from 'lodash/map'
 import _values from 'lodash/values'
 import { LocalStorage, date } from 'quasar'
 import { computed, inject, onBeforeUnmount, ref } from 'vue'
@@ -370,7 +371,7 @@ const doUpdateAll = () => {
   )
     .then((response) => {
       analysisQuoteSalesCostAll = response
-      analysisQuoteSalesCostAllKeyed.value = _values(_groupBy(analysisQuoteSalesCostAll, 'PN'))
+      analysisQuoteSalesCostAllKeyed.value = _values(groupBy(analysisQuoteSalesCostAll, 'PN'))
       analysisQuoteSalesCostAllKeyed.value.forEach((row, index) => {
         row.index = index + 1
       })
@@ -484,7 +485,7 @@ const addColumns = () => {
 }
 
 const download = () => {
-  const header = _map(columns, 'name')
+  const header = map(columns, 'name')
   jsonToExcel(
     header,
     analysisQuoteSalesCost.value,

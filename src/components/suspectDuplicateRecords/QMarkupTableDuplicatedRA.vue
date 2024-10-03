@@ -2,7 +2,8 @@
 * @Author                : Robert Huang<56649783@qq.com>
 * @CreatedDate           : 2023-11-14 15:52:00
 * @LastEditors           : Robert Huang<56649783@qq.com>
-* @LastEditDate          : 2024-07-19 01:25:13
+* @LastEditDate          : 2024-11-29 19:31:32
+* @FilePath              : sage-assistant-web/src/components/suspectDuplicateRecords/QMarkupTableDuplicatedRA.vue
 * @CopyRight             : Dedienne Aerospace China ZhuHai
 -->
 
@@ -125,7 +126,7 @@ const download = () => {
     'totalSalesQty',
     'seq'
   ]
-  jsonToExcel(header, duplicatedRA.value, title.value)
+  jsonToExcel(title.value, duplicatedRA.value)
 }
 
 const title = computed(() =>

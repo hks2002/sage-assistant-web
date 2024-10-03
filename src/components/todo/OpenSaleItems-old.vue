@@ -2,449 +2,623 @@
 * @Author                : Robert Huang<56649783@qq.com>
 * @CreatedDate           : 2023-02-08 09:42:00
 * @LastEditors           : Robert Huang<56649783@qq.com>
-* @LastEditDate          : 2023-11-20 22:57:07
+* @LastEditDate          : 2024-10-12 12:01:55
 * @CopyRight             : Dedienne Aerospace China ZhuHai
 -->
 
 /* eslint-disable no-tabs */
 <template>
   <q-table
-    id="OpenSalesItems"
     dense
     flat
     bordered
-    virtual-scroll
-    :virtual-scroll-item-size="100"
-    :virtual-scroll-slice-size="100"
-    :virtual-scroll-slice-ratio-before="1"
-    :virtual-scroll-slice-ratio-after="1"
+    id="OpenSalesItems"
+    row-key="itemNO"
+    class="open-sale-items-table"
     :rows="rows"
-    :columns="columns"
-    :visible-columns="visibleColumns"
-    :rows-per-page-options="[50, 100, 200, 500, 1000, 0]"
-    class="mini"
+    :columns="SOcolumns"
+    :visible-columns="visibleSOColumns"
+    :rows-per-page-options="[5, 10, 50, 100, 200, 500, 1000, 0]"
+    :loading="showLoading"
     v-model:pagination="pagination"
     @request="doUpdate"
   >
     <!-- table top ---------------------------------------------------------------------------------->
     <template v-slot:top>
-      <div class="q-gutter-sm row">
-        <q-btn-toggle
-          v-model="orderType"
-          dense
+      <template class="q-gutter-sm row">
+        <q-toggle dense v-model="expandAllPORows" :label="$t('S.EXPAND_ALL_PO_ROWS')" />
+        <q-option-group
           no-caps
-          rounded
-          unelevated
-          toggle-color="primary"
-          color="white"
-          text-color="primary"
+          inline
+          color="primary"
           :options="[
+            { label: $t('S.ALL_ORDER'), value: '' },
             { label: $t('S.NORMAL_ORDER'), value: 'NOR' },
-            { label: $t('S.OTHER_ORDER'), value: 'OTHER' }
+            { label: $t('S.SERVICE_ORDER'), value: 'OTHER' }
           ]"
+          v-model="orderType"
           @update:model-value="doUpdate()"
-          ><q-tooltip>REPAIR:{{ $t('S.DESC_OF OTHER_ORDER') }}</q-tooltip>
-        </q-btn-toggle>
+        />
+
         <q-separator vertical />
         <q-toggle dense v-model="showSODetail" :label="$t('S.SHOW_SALES_DETAILS')" />
-        <q-toggle dense v-model="showSOComment" :label="$t('S.SHOW_SALES_COMMENT')" />
-        <q-toggle dense v-model="showBomDetail" :label="$t('S.SHOW_BOM_DETAILS')" />
         <q-toggle dense v-model="showPODetail" :label="$t('S.SHOW_PURCHASE_DETAILS')" />
+
         <q-separator vertical />
-
         <q-input
           dense
-          v-model="filterCustomer"
+          clearable
           outlined
+          class="col-1"
+          debounce="1000"
           :label="$t('F.Customer')"
-          class="col-1"
-          debounce="1000"
+          v-model="filterCustomer"
           @update:model-value="updatePage(1)"
         />
-
         <q-input
           dense
-          v-model="filterSupplier"
+          clearable
           outlined
+          class="col-1"
+          debounce="1000"
+          style="height: 20px"
           :label="$t('F.Vendor')"
-          class="col-1"
-          style="height: 20px"
-          debounce="1000"
+          v-model="filterSupplier"
           @update:model-value="updatePage(1)"
         />
         <q-input
           dense
-          v-model="filterProjectNO"
+          clearable
           outlined
-          :label="$t('F.ProjectNO')"
           class="col-1"
-          style="height: 20px"
           debounce="1000"
+          input-class="text-uppercase"
+          style="height: 20px; width: 250px"
+          :label="$t('F.ProjectNO')"
+          v-model="filterProjectNO"
           @update:model-value="updatePage(1)"
         />
-        <q-btn dense flat icon="fas fa-download" color="primary" @click="download()" />
-      </div>
+      </template>
+
+      <q-separator vertical />
+      <q-btn dense flat icon="fas fa-download" color="primary" @click="download()" />
     </template>
-    <!-- table header ---------------------------------------------------------------------------------->
-    <template v-slot:header="props">
-      <q-tr :props="props">
-        <q-th v-for="col in props.cols" :key="col.name" :props="props"> {{ col.label }}</q-th>
-      </q-tr>
-    </template>
+    <!-- table body ---------------------------------------------------------------------------------->
     <template v-slot:body="props">
-      <q-tr :props="props" :class="props.row.itemNO % 2 == 0 ? 'strip' : ''">
-        <q-td class="text-center bg-white frozen"> {{ props.row.itemNO }}:{{ props.rowIndex + 1 }} </q-td>
-        <!-- order ------------------------------------------>
-        <q-td :class="`${orderStyle(props.row.orderDeliveryFlag)} frozen`">
-          {{ props.row.trackingNO }}
+      <q-tr :props="props">
+        <q-td class="text-center" style="width: 26px">
+          {{ props.row['itemNO'] }}
         </q-td>
-        <q-td :class="`${orderStyle(props.row.orderDeliveryFlag)}`">
-          {{ props.row.projectNO == props.row.trackingNO ? '' : props.row.projectNO }}
+        <q-td class="text-center" style="width: 42px">
+          <q-toggle
+            size="xs"
+            color="accent"
+            checked-icon="add"
+            unchecked-icon="remove"
+            :disable="props.row['SOBOM'].length === 0"
+            v-model="props.expand"
+          />
         </q-td>
-        <q-td :class="`${orderStyle(props.row.orderDeliveryFlag)}`">
-          {{ props.row.orderType }}
+        <q-td style="width: 100px">
+          {{ props.row['trackingNO'] }}
         </q-td>
-        <q-td :class="`${orderStyle(props.row.orderDeliveryFlag)}`">
-          {{ props.row.orderPN }}
+        <q-td>
+          {{ props.row['projectNO'] === props.row['trackingNO'] ? '' : props.row['projectNO'] }}
+        </q-td>
+        <q-td>
+          {{ props.row['orderType'] }}
+        </q-td>
+        <q-td>
+          {{ props.row['orderPN'] + '_' + props.row['orderPNVersion'] }}
           <q-tooltip>
-            {{ props.row.orderPNDesc }}
+            {{ props.row['orderPNDesc'] }}
           </q-tooltip>
         </q-td>
         <template v-if="showSODetail">
-          <q-td :class="`${orderStyle(props.row.orderDeliveryFlag)}`">
-            {{ props.row.orderPNDesc }}
+          <q-td>
+            {{ props.row['orderPNDesc'] }}
           </q-td>
         </template>
-        <q-td :class="`${orderStyle(props.row.orderDeliveryFlag)} text-center`">
-          {{ props.row.orderQTY }}
+        <q-td class="text-center">
+          {{ props.row['orderQty'] }}
+        </q-td>
+        <q-td class="text-right">
+          {{ props.row['orderPrice'] }}
+        </q-td>
+        <q-td class="text-center">
+          {{ props.row['orderCurrency'] }}
+        </q-td>
+        <q-td class="text-center">
+          {{ props.row['customerCode'] }}
+          <q-tooltip>
+            {{ props.row['customerName'] }}
+          </q-tooltip>
         </q-td>
         <template v-if="showSODetail">
-          <q-td :class="`${orderStyle(props.row.orderDeliveryFlag)} text-right`">
-            {{ props.row.orderPrice }}
-          </q-td>
-          <q-td :class="`${orderStyle(props.row.orderDeliveryFlag)} text-center`">
-            {{ props.row.orderCurrency }}
-          </q-td>
-          <q-td :class="`${orderStyle(props.row.orderDeliveryFlag)} text-center`">
-            {{ props.row.customerCode }}
-            <q-tooltip>
-              {{ props.row.customerName }}
-            </q-tooltip>
-          </q-td>
-          <q-td :class="`${orderStyle(props.row.orderDeliveryFlag)}`">
-            {{ props.row.orderDate }}
+          <q-td>
+            {{ props.row['customerName'] }}
           </q-td>
         </template>
-        <q-td :class="`${orderStyle(props.row.orderDeliveryFlag)}`">
-          {{ props.row.orderRequestDate }}
+        <q-td>
+          {{ props.row['orderDate'] }}
         </q-td>
-        <q-td :class="`${orderStyle(props.row.orderDeliveryFlag, props.row.daysLeft)} text-center`">
-          {{ props.row.daysLeft }}
+        <q-td>
+          {{ props.row['orderRequestDate'] }}
         </q-td>
-        <q-td
-          :class="
-            props.row.orderPlanedDate > props.row.orderRequestDate
-              ? 'bg-red' /*  over due already */
-              : orderStyle(props.row.orderDeliveryFlag)
-          "
-        >
-          <q-input
-            v-model="props.row.orderPlanedDate"
-            debounce="1000"
-            dense
-            type="date"
-            @update:model-value="updatePlanDate(props.row.orderNO, props.row.orderLine, props.row.orderPlanedDate)"
-          />
+        <q-td class="text-center">
+          {{ props.row['priority'] }}
         </q-td>
-        <q-td :class="`${orderStyle(props.row.orderDeliveryFlag)} text-center`">
-          <q-checkbox
-            v-model="props.row.orderDeliveryFlag"
-            true-value="2"
-            false-value="1"
-            dense
-            class="text-center"
-            @update:model-value="
-              updateDeliveryReady(props.row.orderNO, props.row.orderLine, props.row.orderDeliveryFlag)
-            "
-          />
+        <q-td :class="`${colorStyle(props.row['daysLeft'])} text-center`">
+          {{ props.row['daysLeft'] }}
         </q-td>
-        <q-td :class="`${orderStyle(props.row.orderDeliveryFlag)}`">
-          <q-select
-            v-model="props.row.projectStatus"
-            :options="optionsProjectStatus"
-            map-options
-            debounce="1000"
-            dense
-            options-dense
-            @update:model-value="updateProjectStatus(props.row.orderNO, props.row.orderLine, props.row.projectStatus)"
-          />
+        <q-td>
+          {{ props.row['orderPlanedDate'] }}
+          <q-popup-edit auto-save v-slot="scope" v-model.date="props.row['orderPlanedDate']">
+            <q-input
+              dense
+              type="date"
+              v-model.date="scope.value"
+              @update:model-value="
+                (newDate) => {
+                  updatePlanDate(props.row['orderNO'], props.row['orderLine'], newDate)
+                }
+              "
+            />
+          </q-popup-edit>
         </q-td>
-        <template v-if="showSOComment">
-          <q-td :class="`${orderStyle(props.row.orderDeliveryFlag)}`">
+        <q-td>
+          {{ props.row['projectStatus'] }}
+          <q-popup-edit auto-save v-slot="scope" v-model="props.row['projectStatusCode']">
             <q-select
-              v-model="props.row.projectBlockReason"
-              :options="optionsProjectBlockReason"
+              debounce="1000"
+              dense
               map-options
-              debounce="1000"
-              dense
               options-dense
+              :options="optionsProjectStatus"
+              v-model="scope.value"
               @update:model-value="
-                updateProjectBlockReason(props.row.orderNO, props.row.orderLine, props.row.projectBlockReason)
+                updateProjectStatus(props.row['orderNO'], props.row['orderLine'], props.row['projectStatus'])
               "
             />
-          </q-td>
-          <q-td :class="`${orderStyle(props.row.orderDeliveryFlag)}`">
-            <q-input
-              v-model="props.row.projectComment"
-              debounce="1000"
-              dense
-              @update:model-value="
-                updateProjectComment(props.row.orderNO, props.row.orderLine, props.row.projectComment)
-              "
-            />
-            <q-tooltip v-if="props.row.projectComment">
-              {{ props.row.projectComment }}
-            </q-tooltip>
-          </q-td>
-          <q-td :class="`${orderStyle(props.row.orderDeliveryFlag)}`">
-            <q-input
-              v-model="props.row.projectAction"
-              debounce="1000"
-              dense
-              @update:model-value="updateProjectAction(props.row.orderNO, props.row.orderLine, props.row.projectAction)"
-            />
-            <q-tooltip v-if="props.row.projectAction">
-              {{ props.row.projectAction }}
-            </q-tooltip>
+          </q-popup-edit>
+        </q-td>
+        <template v-if="showSODetail">
+          <q-td>
+            {{ props.row['projectBlockReason'] }}
+            <q-popup-edit auto-save v-slot="scope" v-model="props.row['projectBlockReasonCode']">
+              <q-select
+                dense
+                map-options
+                options-dense
+                debounce="1000"
+                :options="optionsProjectBlockReason"
+                v-model="scope.value"
+                @update:model-value="
+                  updateProjectBlockReason(
+                    props.row['orderNO'],
+                    props.row['orderLine'],
+                    props.row['projectBlockReason']
+                  )
+                "
+              />
+            </q-popup-edit>
           </q-td>
         </template>
-        <!-- bom ------------------------------------------>
-        <q-td :class="`${bomStyle(props.row.orderDeliveryFlag)}`">
-          {{ props.row.bomPN }}
-          <q-tooltip>
-            {{ $t('F.ProjectNO') }}:{{ props.row.bomProjectNO }}<br />
-            {{ $t('F.WorkerOrderNO') }}:{{ props.row.workOrderNO }}<br />
-            {{ $t('F.BomSeq') }}:{{ props.row.bomSeq }}<br />
-            {{ $t('F.BomDesc') }}:{{ props.row.bomDesc }}<br />
-            {{ $t('F.Unit') }}:{{ props.row.bomUnit }}
-          </q-tooltip>
+        <q-td>
+          {{ props.row['mark'] }}
+          <q-popup-edit auto-save v-slot="scope" v-model="props.row['mark']">
+            <q-input dense autofocus v-model="scope.value" @keyup.enter="scope.set" />
+          </q-popup-edit>
         </q-td>
-        <template v-if="showBomDetail">
-          <q-td :class="`${bomStyle(props.row.orderDeliveryFlag)}`">
-            {{ props.row.bomQTY }}
-          </q-td>
-          <q-td :class="`${bomStyle(props.row.orderDeliveryFlag)}`">
-            {{ props.row.shortQty }}
-          </q-td>
-          <q-td :class="`${bomStyle(props.row.orderDeliveryFlag)}`">
-            {{ props.row.allQty }}
-          </q-td>
-          <q-td :class="`${bomStyle(props.row.orderDeliveryFlag)}`">
-            {{ props.row.avaQty }}
-          </q-td>
-        </template>
-        <!-- purchase ------------------------------------------>
-        <q-td :class="`${purchaseStyle(props.row.orderSADFlag)}`">
-          {{ props.row.purchaseNO }}
-          <q-tooltip>
-            {{ $t('F.Purchaser') }}:{{ props.row.purchaseUser }}
-            <br />
-            {{ $t('S.Purchase PN must match BomPN or SalesPN') }}
-          </q-tooltip>
+        <q-td>
+          {{ props.row['paint'] }}
+          <q-popup-edit auto-save v-slot="scope" v-model="props.row['paint']">
+            <q-input dense autofocus v-model="scope.value" @keyup.enter="scope.set" />
+          </q-popup-edit>
         </q-td>
-        <q-td :class="`${purchaseStyle(props.row.orderSADFlag)}`">
-          {{ props.row.purchaseLine }}
-        </q-td>
-        <template v-if="showPODetail">
-          <q-td :class="`${purchaseStyle(props.row.orderSADFlag)}`">
-            {{ props.row.purchasePN }}
-            <q-tooltip>
-              {{ props.row.purchasePNDesc }}
-            </q-tooltip>
-          </q-td>
-          <q-td :class="`${purchaseStyle(props.row.orderSADFlag)} text-center`">
-            {{ props.row.purchaseQTY }}
-          </q-td>
-          <q-td :class="`${purchaseStyle(props.row.orderSADFlag)} text-center`">
-            {{ props.row.vendorCode }}
-            <q-tooltip>
-              {{ props.row.vendorName }}
-            </q-tooltip>
-          </q-td>
-        </template>
-        <q-td :class="`${purchaseStyle(props.row.orderSADFlag)} text-center`">
-          {{ props.row.purchaseDate }}
-        </q-td>
-        <q-td
-          :class="
-            props.row.purchaseExpectDate === undefined ||
-            props.row.purchaseExpectDate === '1900-01-01' ||
-            props.row.purchaseExpectDate > props.row.orderRequestDate
-              ? 'bg-red' /* over due already */
-              : `${purchaseStyle(props.row.orderSADFlag)} text-center`
-          "
-        >
-          {{ props.row.purchaseExpectDate }}
-        </q-td>
-        <q-td
-          :class="
-            props.row.purchaseAckDate === undefined
-              ? purchaseStyle(props.row.orderSADFlag)
-              : props.row.purchaseAckDate === undefined ||
-                  props.row.purchaseAckDate === '1900-01-01' ||
-                  props.row.purchaseAckDate > props.row.orderRequestDate ||
-                  props.row.purchaseAckDate > props.row.purchaseExpectDate
-                ? 'bg-red' /* over due already */
-                : purchaseStyle(props.row.orderSADFlag)
-          "
-        >
-          <q-input
-            v-model="props.row.purchaseAckDate"
-            debounce="1000"
-            dense
-            type="date"
-            v-if="props.row.purchaseNO"
-            @update:model-value="
-              updatePurchaseAckDate(props.row.purchaseAckDate, props.row.purchaseNO, props.row.purchaseLine)
-            "
-          />
-        </q-td>
-        <q-td :class="`${purchaseStyle(props.row.orderSADFlag)} text-center`">
-          <q-checkbox
-            v-model="props.row.orderSADFlag"
-            true-value="2"
-            false-value="1"
-            dense
-            class="text-center"
-            @update:model-value="updateSADReady(props.row.orderNO, props.row.orderLine, props.row.orderSADFlag)"
+        <q-td>{{ props.row['requireManual'] }} </q-td>
+        <q-td>{{ props.row['requireTest'] }} </q-td>
+        <q-td>{{ props.row['requireCalibration'] }}</q-td>
+        <q-td>
+          <q-circular-progress
+            show-value
+            size="md"
+            font-size="13px"
+            class="q-ma-none"
+            track-color="grey"
+            :value="props.row['SOBOMAllocVsTotal']"
+            :color="colorStyle2(props.row['SOBOMAllocVsTotal'], props.row['SOBOMTotal'])"
           >
-            <q-tooltip>
-              {{ props.row.orderSADDate }}
-            </q-tooltip>
-          </q-checkbox>
+            {{ props.row['SOBOMAlloc'] }}/{{ props.row['SOBOMTotal'] }}
+            <q-tooltip>Bom PN Line<br />BOM-Alloc:BOM-Total</q-tooltip>
+          </q-circular-progress>
+          <q-circular-progress
+            show-value
+            size="md"
+            font-size="13px"
+            class="q-ma-none"
+            track-color="grey"
+            :value="props.row['POTotalVsSOBOMShort']"
+            :color="colorStyle2(props.row['POTotalVsSOBOMShort'], props.row['SOBOMShort'])"
+          >
+            {{ props.row['POTotal'] }}/{{ props.row['SOBOMShort'] }}
+            <q-tooltip>Bom PN Line<br />PO-Total:BOM-Short</q-tooltip>
+          </q-circular-progress>
         </q-td>
-        <template v-if="showPODetail">
-          <q-td :class="`${purchaseStyle(props.row.orderSADFlag)}`">
-            <q-input
-              v-model="props.row.purchaseComment"
-              dense
-              :disable="!props.row.purchaseNO"
-              @update:model-value="
-                updatePurchaseComment(props.row.purchaseNO + '_' + props.row.purchaseLine, props.row.purchaseComment)
-              "
-            />
-            <q-tooltip v-if="props.row.purchaseComment">
-              {{ props.row.purchaseComment }}
-            </q-tooltip>
-          </q-td>
-        </template>
-        <!-- receive ------------------------------------------>
-        <q-td :class="`${receiveStyle(props.row.orderProductFlag)}`">
-          {{ props.row.receiptNO }}
-          <q-tooltip v-if="props.row.receiptor">{{ $t('F.Receiptor') }}:{{ props.row.receiptor }}<br /> </q-tooltip>
+        <q-td>
+          <q-circular-progress
+            show-value
+            size="md"
+            font-size="13px"
+            class="q-ma-none"
+            track-color="grey"
+            :value="props.row['RABomPNLineVsPOBomPNLine']"
+            :color="colorStyle2(props.row['RABomPNLineVsPOBomPNLine'], props.row['POBomPNLine'])"
+          >
+            {{ props.row['RABomPNLine'] }}/{{ props.row['POBomPNLine'] }}
+            <q-tooltip>Bom PN Line<br />RA:PO</q-tooltip>
+          </q-circular-progress>
+          <q-circular-progress
+            show-value
+            size="md"
+            font-size="13px"
+            class="q-ma-none"
+            track-color="grey"
+            :value="props.row['RAPnogPNQtyVsPOPnogPNQty']"
+            :color="colorStyle2(props.row['RAPnogPNQtyVsPOPnogPNQty'], props.row['POPnogPNQty'])"
+          >
+            {{ props.row['RAPnogPNQty'] }}/{{ props.row['POPnogPNQty'] }}
+            <q-tooltip>PNOG PN Qty<br />RA:PO</q-tooltip>
+          </q-circular-progress>
+          <q-circular-progress
+            show-value
+            size="md"
+            font-size="13px"
+            class="q-ma-none"
+            track-color="grey"
+            :value="props.row['RAFinalPNQtyVsPOFinalPNQty']"
+            :color="colorStyle2(props.row['RAFinalPNQtyVsPOFinalPNQty'], props.row['POFinalPNQty'])"
+          >
+            {{ props.row['RAFinalPNQty'] }}/{{ props.row['POFinalPNQty'] }}
+            <q-tooltip>Final PN Qty<br />RA:PO</q-tooltip>
+          </q-circular-progress>
         </q-td>
-        <q-td :class="`${receiveStyle(props.row.orderProductFlag)} text-center`">
-          {{ props.row.receiptQty }}
+        <q-td>
+          <q-circular-progress
+            show-value
+            size="md"
+            font-size="13px"
+            class="q-ma-none"
+            track-color="grey"
+            :value="props.row['IQCPassQtyVsSOQty']"
+            :color="colorStyle2(props.row['IQCCntPass'], props.row['orderQty'])"
+          >
+            {{ props.row['IQCCntPass'] }}/{{ props.row['orderQty'] }}
+            <q-tooltip>IQC Pass:Order Qty</q-tooltip>
+          </q-circular-progress>
+          <q-circular-progress
+            show-value
+            size="md"
+            font-size="13px"
+            class="q-ma-none"
+            track-color="grey"
+            :value="props.row['TQCPassQtyVsSOQty']"
+            :color="colorStyle2(props.row['TQCCntPass'], props.row['orderQty'])"
+          >
+            {{ props.row['TQCCntPass'] }}/{{ props.row['orderQty'] }}
+            <q-tooltip>TQC Pass:Order Qty</q-tooltip>
+          </q-circular-progress>
+          <q-circular-progress
+            show-value
+            size="md"
+            font-size="13px"
+            class="q-ma-none"
+            track-color="grey"
+            :value="props.row['FQCPassQtyVsSOQty']"
+            :color="colorStyle2(props.row['FQCCntPass'], props.row['orderQty'])"
+          >
+            {{ props.row['FQCCntPass'] }}/{{ props.row['orderQty'] }}
+            <q-tooltip>FQC Pass:Order Qty</q-tooltip>
+          </q-circular-progress>
         </q-td>
-        <q-td
-          :class="
-            props.row.purchaseNO === undefined
-              ? /* No PO */ receiveStyle(props.row.orderProductFlag)
-              : /* With PO */ props.row.receiptDate === undefined
-                ? /* With PO, NO RA */
-                  getDateDiff(Date(props.row.purchaseExpectDate), Date.now(), 'days') < 0
-                  ? 'bg-red'
-                  : receiveStyle(props.row.orderProductFlag)
-                : /* With PO, with RA */
-                  props.row.receiptDate > props.row.purchaseExpectDate
-                  ? 'bg-red' // if over due
-                  : receiveStyle(props.row.orderProductFlag)
-          "
-        >
-          {{ props.row.receiptDate }}
+        <q-td>
+          <q-circular-progress
+            show-value
+            size="md"
+            font-size="13px"
+            class="q-ma-none"
+            track-color="grey"
+            :value="props.row['PCKPassQtyVsSOQty']"
+            :color="colorStyle2(props.row['PCKCntPass'], props.row['orderQty'])"
+          >
+            {{ props.row['PCKCntPass'] }}/{{ props.row['orderQty'] }}
+            <q-tooltip>Pack Pass:Order Qty</q-tooltip>
+          </q-circular-progress>
         </q-td>
-        <!-- QC ------------------------------------------>
-        <q-td :class="`${qcStyle(props.row.orderProductFlag)} text-center`">
-          <q-checkbox
-            v-model="props.row.orderProductFlag"
-            true-value="2"
-            false-value="1"
-            dense
-            class="text-center"
-            @update:model-value="updateProductReady(props.row.orderNO, props.row.orderLine, props.row.orderProductFlag)"
-          />
+        <!-- NC status ------------------------------------------>
+        <q-td>
+          <template v-for="nc in props.row.NC" :key="nc.claimNO">
+            <div>
+              {{ nc.claimNO }}
+              <q-tooltip v-if="nc.claimNote.trim().length > 0">
+                {{ nc.claimNote }}
+              </q-tooltip>
+            </div>
+          </template>
         </q-td>
-        <q-td
-          :class="
-            props.row.orderProductDate > props.row.orderRequestDate
-              ? 'bg-red text-center'
-              : `${qcStyle(props.row.orderProductFlag)} text-center`
-          "
-        >
-          {{ props.row.orderProductDate }}
+        <q-td>
+          <template v-for="nc in props.row.NC" :key="nc.claimNO">
+            {{ nc.claimDate }}
+            <br />
+          </template>
         </q-td>
-        <!-- QA ------------------------------------------>
-        <q-td :class="`${qaStyle(props.row.orderProductFlag)} text-center`">
-          <div v-for="qa in props.row.QA" :key="qa.claimNO">
-            {{ qa.claimNO }}
-            <q-tooltip v-if="qa.claimProjectNO">
-              {{ $t('F.ProjectNO') }}:{{ qa.claimProjectNO }}<br />
-              {{ $t('F.Comments') }}:{{ qa.claimNote }}<br />
-            </q-tooltip>
-          </div>
-        </q-td>
-        <q-td :class="`${qaStyle(props.row.orderProductFlag)} q-gutter-xs`">
-          <template v-for="qa in props.row.QA" :key="qa.claimNO">
+        <q-td class="q-gutter-xs">
+          <template v-for="nc in props.row.NC" :key="nc.claimNO">
             <template v-for="idx in 12" :key="idx">
               <span
-                v-if="qa['claimNC' + (idx - 1) + 'Type'].trim().length > 0"
+                v-if="nc['claimNC' + (idx - 1) + 'Type'].trim().length > 0"
                 :class="
-                  qa['claimNC' + (idx - 1) + 'Cri'] == 2
+                  nc['claimNC' + (idx - 1) + 'Cri'] === 2
                     ? 'text-red'
-                    : qa['claimNC' + (idx - 1) + 'Cri'] == 1
+                    : nc['claimNC' + (idx - 1) + 'Cri'] === 1
                       ? 'text-blue'
                       : ''
                 "
               >
-                {{ qa['claimNC' + (idx - 1) + 'Type'] }}
+                {{ nc['claimNC' + (idx - 1) + 'Type'] }}
                 <q-tooltip>
-                  {{ qa['claimNC' + (idx - 1) + 'Date'] }}
+                  {{ nc['claimNC' + (idx - 1) + 'Date'] }}
                   <br />
-                  {{ qa.claimNO }}
+                  {{ nc.claimNO }}
                   <br />
-                  {{ qa['claimNC' + (idx - 1) + 'Desc'] }}
+                  {{ nc['claimNC' + (idx - 1) + 'Desc'] }}
                 </q-tooltip>
               </span>
             </template>
+            <br />
           </template>
+        </q-td>
+        <q-td style="min-width: 150px">
+          {{ props.row['lineNote'].note }}
+          <q-popup-edit
+            auto-save
+            v-slot="scope"
+            v-model="props.row['lineNote'].note"
+            @update:model-value="
+              (newVal) => {
+                updateSOLineNote(props.row, newVal)
+              }
+            "
+          >
+            <q-input dense autofocus debounce="1000" v-model="scope.value" />
+          </q-popup-edit>
+        </q-td>
+      </q-tr>
+      <!-- PO details ------------------------------------------>
+      <q-tr v-if="expandAllPORows || (props.expand && props.row['SOBOM'].length > 0)" :props="props">
+        <q-td> </q-td>
+        <q-td> </q-td>
+        <q-td colspan="100%">
+          <q-list>
+            <q-item class="q-pl-none p-pr-none">
+              <q-table
+                dense
+                flat
+                bordered
+                hide-no-data
+                hide-pagination
+                :pagination="{ rowsPerPage: 0 }"
+                :rows="props.row['SOBOM']"
+                :columns="POcolumns"
+                :visible-columns="visiblePOColumns"
+                :hide-header="props.row['SOBOM'].length === 0"
+              >
+                <!-- table body -->
+                <template v-slot:body="props">
+                  <q-tr :props="props">
+                    <q-td style="width: 100px">
+                      {{ props.row.bomProjectNO }}
+                    </q-td>
+                    <q-td>
+                      {{ props.row.workOrderNO }}
+                    </q-td>
+                    <q-td class="text-right">
+                      {{ props.row.bomLine }}
+                    </q-td>
+                    <q-td>
+                      {{ props.row.bomPN }}
+                    </q-td>
+                    <q-td v-if="showPODetail">
+                      {{ props.row.bomDesc }}
+                    </q-td>
+                    <q-td>
+                      {{ props.row.creator }}
+                    </q-td>
+                    <q-td>
+                      {{ props.row.bomRequestDate }}
+                    </q-td>
+                    <q-td class="text-center">
+                      {{ props.row.bomQty }}
+                    </q-td>
+                    <q-td class="text-center">
+                      {{ props.row.avaQty }}
+                    </q-td>
+                    <q-td class="text-center">
+                      {{ props.row.allQty }}
+                    </q-td>
+                    <q-td class="text-center">
+                      {{ props.row.shortQty }}
+                    </q-td>
+                    <q-td>
+                      <template v-for="po in props.row.PO" :key="po.purchaseNO + po.purchaseLine">
+                        {{ po.purchaseNO }}
+                        <br />
+                      </template>
+                    </q-td>
+                    <q-td>
+                      <template v-for="po in props.row.PO" :key="po.purchaseNO + po.purchaseLine">
+                        {{ po.purchaseLine }}
+                        <br />
+                      </template>
+                    </q-td>
+                    <q-td>
+                      <template v-for="po in props.row.PO" :key="po.purchaseNO + po.purchaseLine">
+                        {{ po.purchasePN }}
+                        <br />
+                      </template>
+                    </q-td>
+                    <q-td v-if="showPODetail">
+                      <template v-for="po in props.row.PO" :key="po.purchaseNO + po.purchaseLine">
+                        {{ po.purchasePNDesc }}
+                        <br />
+                      </template>
+                    </q-td>
+                    <q-td class="text-center">
+                      <template v-for="po in props.row.PO" :key="po.purchaseNO + po.purchaseLine">
+                        {{ po.purchaseQty }}
+                        <br />
+                      </template>
+                    </q-td>
+                    <q-td class="text-right">
+                      <template v-for="po in props.row.PO" :key="po.purchaseNO + po.purchaseLine">
+                        {{ po.purchasePrice }}
+                        <br />
+                      </template>
+                    </q-td>
+                    <q-td class="text-center">
+                      <template v-for="po in props.row.PO" :key="po.purchaseNO + po.purchaseLine">
+                        {{ po.localCurrency }}
+                        <br />
+                      </template>
+                    </q-td>
+                    <q-td>
+                      <template v-for="po in props.row.PO" :key="po.purchaseNO + po.purchaseLine">
+                        {{ po.vendorCode }}
+                        <br />
+                      </template>
+                    </q-td>
+                    <q-td v-if="showPODetail">
+                      <template v-for="po in props.row.PO" :key="po.purchaseNO + po.purchaseLine">
+                        {{ po.vendorName }}
+                        <br />
+                      </template>
+                    </q-td>
+                    <q-td>
+                      <template v-for="po in props.row.PO" :key="po.purchaseNO + po.purchaseLine">
+                        {{ po.purchaseUser }}
+                        <br />
+                      </template>
+                    </q-td>
+                    <q-td>
+                      <template v-for="po in props.row.PO" :key="po.purchaseNO + po.purchaseLine">
+                        {{ po.purchaseDate }}
+                        <br />
+                      </template>
+                    </q-td>
+                    <q-td>
+                      <template v-for="po in props.row.PO" :key="po.purchaseNO + po.purchaseLine">
+                        {{ po.purchaseAckDate }}
+                        <br />
+                      </template>
+                    </q-td>
+                    <q-td class="text-center">
+                      <template v-for="po in props.row.PO" :key="po.purchaseNO + po.purchaseLine">
+                        <span :class="po.RA ? '' : colorStyle(po.daysLeft)">{{ po.daysLeft }}</span>
+                        <br />
+                      </template>
+                    </q-td>
+                    <q-td>
+                      <template v-for="po in props.row.PO" :key="po.purchaseNO + po.purchaseLine">
+                        {{ po.purchaseExpectDate }}
+                        <br />
+                      </template>
+                    </q-td>
+                    <q-td>
+                      <template v-for="po in props.row.PO" :key="po.purchaseNO + po.purchaseLine">
+                        <template v-for="ra in po.RA" :key="ra.receiptNO + ra.receiptLine">
+                          {{ ra.receiptNO }}
+                          <br />
+                        </template>
+                      </template>
+                    </q-td>
+                    <q-td class="text-center">
+                      <template v-for="po in props.row.PO" :key="po.purchaseNO + po.purchaseLine">
+                        <template v-for="ra in po.RA" :key="ra.receiptNO + ra.receiptLine">
+                          {{ ra.receiptQty }}
+                          <br />
+                        </template>
+                      </template>
+                    </q-td>
+                    <q-td>
+                      <template v-for="po in props.row.PO" :key="po.purchaseNO + po.purchaseLine">
+                        <template v-for="ra in po.RA" :key="ra.receiptNO + ra.receiptLine">
+                          {{ ra.receiptDate }}
+                          <br />
+                        </template>
+                      </template>
+                    </q-td>
+                    <q-td>
+                      <template v-for="po in props.row.PO" :key="po.purchaseNO + po.purchaseLine">
+                        <template v-for="ra in po.RA" :key="ra.receiptNO + ra.receiptLine">
+                          {{ ra.receiptor }}
+                          <br />
+                        </template>
+                      </template>
+                    </q-td>
+                    <q-td>
+                      <template v-for="po in props.row.PO" :key="po.purchaseNO + po.purchaseLine">
+                        <div>
+                          {{ po['lineNote'].note }}
+                          <q-popup-edit
+                            auto-save
+                            v-slot="scope"
+                            v-model="po['lineNote'].note"
+                            @update:model-value="
+                              (newVal) => {
+                                updatePOLineNote(po, newVal)
+                              }
+                            "
+                          >
+                            <q-input dense autofocus debounce="1000" v-model="scope.value" />
+                          </q-popup-edit>
+                        </div>
+                      </template>
+                    </q-td>
+                  </q-tr>
+                </template>
+              </q-table>
+            </q-item>
+          </q-list>
         </q-td>
       </q-tr>
     </template>
-    <template v-slot:pagination="props">
-      {{ $t('S.TRACKING_LINES') }}: {{ rows.length }}
+    <template v-slot:pagination="scope">
       <q-pagination
         size="sm"
         boundary-numbers
         boundary-links
         direction-links
-        :max="props.pagesNumber"
+        :max="scope.pagesNumber"
         :max-pages="10"
-        v-model="props.pagination.page"
+        v-model="scope.pagination.page"
         @update:model-value="updatePage"
-      />{{ $q.lang.table.allRows }} {{ props.pagination.rowsNumber }}
+      />{{ $q.lang.table.allRows }} {{ scope.pagination.rowsNumber }}
+    </template>
+    <template v-slot:loading>
+      <q-inner-loading showing>
+        <q-spinner-ios size="50px" color="primary" />
+      </q-inner-loading>
     </template>
   </q-table>
 </template>
 
 <script setup>
 import { axios } from '@/assets/axios'
-import { axiosGet } from '@/assets/axiosActions'
-import { tableToExcel } from '@/assets/dataUtils'
-import { date } from 'quasar'
-import { computed, inject, onMounted, ref, shallowRef, watch } from 'vue'
-import { optionsProjectBlockReason, optionsProjectStatus } from './OpenSalesItemsSelectOptions'
+import { axiosModify, getData } from '@/assets/axiosActions'
+import { expandTableToExcel } from '@/assets/dataUtils'
 
-const { getDateDiff } = date
+import { computed, onMounted, ref, shallowRef, toRaw, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
 
 const props = defineProps({
   site: String
@@ -452,88 +626,98 @@ const props = defineProps({
 
 // common vars
 const showLoading = ref(false)
-const ebus = inject('ebus')
 
 // page vars
 let data = []
-const rows = shallowRef([])
-const columns = require('@/components/todo/OpenSalesItemsColumns').default
-const orderType = ref('NOR')
+const orderType = ref('')
+const expandAllPORows = ref(false)
 const showSODetail = ref(true)
-const showSOComment = ref(false)
-const showBomDetail = ref(true)
 const showPODetail = ref(true)
 const filterCustomer = ref('')
 const filterSupplier = ref('')
 const filterProjectNO = ref('')
+const SOcolumns = shallowRef([])
+const POcolumns = shallowRef([])
+const rows = shallowRef([])
 
 const pagination = ref({
-  sortBy: 'daysLeft',
+  sortBy: 'orderplaneddate',
   descending: false,
   page: 1,
   rowsPerPage: 100,
   rowsNumber: 0
 })
 
-// computed vars
-const visibleColumns = computed(() => {
-  // field definition required = true, will always shown
-  let cols = []
-  showSODetail.value ? cols.push('orderpndesc', 'orderprice', 'ordercurrency', 'customercode', 'orderdate') : ''
-  showSOComment.value ? cols.push('projectblockreason', 'projectcomment', 'projectaction') : ''
-  showBomDetail.value ? cols.push('bomqty', 'shortqty', 'allqty', 'avaqty') : ''
-  showPODetail.value ? cols.push('purchasepn', 'purchaseqty', 'vendorcode', 'purchasecomment') : ''
+const SODetailsHeader = ['orderPNDesc', 'customerName', 'projectBlockReason']
+const PODetailsHeader = ['bomDesc', 'purchasePNDesc', 'vendorName']
+const specialPNs = ['FACHDIV0001', 'FACHTRADRTD', 'FVENTRAAUT', 'FACHTRAAUT']
 
+const loadColumns = () => {
+  delete require.cache[require.resolve('@/components/todo/OpenSalesItemsSOColumns')]
+  delete require.cache[require.resolve('@/components/todo/OpenSalesItemsPOColumns')]
+
+  Promise.resolve(require('@/components/todo/OpenSalesItemsSOColumns').default).then((cols) => {
+    // add low case name
+    cols.forEach((item, idx, array) => {
+      array[idx].name = item.field.toLowerCase()
+    })
+    SOcolumns.value = cols
+  })
+
+  Promise.resolve(require('@/components/todo/OpenSalesItemsPOColumns').default).then((cols) => {
+    // add low case name
+    cols.forEach((item, idx, array) => {
+      array[idx].name = item.field.toLowerCase()
+    })
+    POcolumns.value = cols
+  })
+}
+
+loadColumns()
+const { locale } = useI18n()
+watch(locale, () => {
+  loadColumns()
+})
+
+const visibleSOColumns = computed(() => {
+  let cols = []
+  for (const item of SOcolumns.value) {
+    if (showSODetail.value) {
+      cols.push(item.name)
+      continue
+    } else if (!SODetailsHeader.includes(item.field)) {
+      cols.push(item.name)
+      continue
+    }
+  }
+  return cols
+})
+const visiblePOColumns = computed(() => {
+  let cols = []
+  for (const item of POcolumns.value) {
+    if (showSODetail.value) {
+      cols.push(item.name)
+      continue
+    } else if (!SODetailsHeader.includes(item.field)) {
+      cols.push(item.name)
+      continue
+    }
+  }
   return cols
 })
 
 // styles
-const orderStyle = (flag, daysLeft) => {
-  if (daysLeft == undefined) {
-    return flag === '2' ? 'bg-green' : 'bg-indigo-1'
-  } else {
-    return daysLeft <= 0
-      ? 'bg-red' /* <0 over due already */
-      : daysLeft > 0 && daysLeft <= 7
-        ? 'bg-yellow' /* 1 week left */
-        : daysLeft > 7 && daysLeft < 30
-          ? 'bg-yellow-5' /* 1 month left */
-          : flag === '2'
-            ? 'bg-green' /* more than 1 week and delivery ready */
-            : 'bg-indigo-1' /* more than 1 week and delivery not ready */
-  }
+const colorStyle = (daysLeft) => {
+  return daysLeft <= 0
+    ? 'bg-red' /* <0 over due already */
+    : daysLeft > 0 && daysLeft <= 7
+      ? 'bg-yellow' /* 1 week left */
+      : daysLeft > 7 && daysLeft < 30
+        ? 'bg-yellow-5' /* 1 month left */
+        : ''
 }
-const bomStyle = (flag) => {
-  return flag === '2' ? 'bg-green text-center' : 'bg-blue-grey-1 text-center'
-}
-const purchaseStyle = (flag) => {
-  return flag === '2' ? 'bg-green' : 'bg-blue-1'
-}
-const receiveStyle = (flag) => {
-  return flag === '2' ? 'bg-green' : 'bg-green-1'
-}
-const qcStyle = (flag) => {
-  return flag === '2' ? 'bg-green' : 'bg-green-3'
-}
-const qaStyle = (flag) => {
-  return flag === '2' ? 'bg-green' : 'bg-red-1'
-}
-
-// actions
-const getData = (url) => {
-  return axiosGet(url)
-    .then(
-      (response) => {
-        return response
-      },
-      () => {
-        return []
-      }
-    )
-    .catch((err) => {
-      console.error(err)
-      return []
-    })
+const colorStyle2 = (num, total) => {
+  return total === 0 ? 'white' : num < 100 ? 'orange' : 'green'
 }
 
 const doUpdate = (requestProp) => {
@@ -552,7 +736,7 @@ const doUpdate = (requestProp) => {
   const orderTypeClause = orderType.value ? `&OrderType=${orderType.value}` : ''
   const customerClause = filterCustomer.value ? `&CustomerCode=${filterCustomer.value}` : ''
   const vendorClause = filterSupplier.value ? `&VendorCode=${filterSupplier.value}` : ''
-  const projectNOClause = filterProjectNO.value ? `&ProjectNO=${filterProjectNO.value}` : ''
+  const projectNOClause = filterProjectNO.value ? `&ProjectNO=${filterProjectNO.value.toUpperCase()}` : ''
   const offsetClause = `&Offset=${Offset}`
   const limitClause = `&Limit=${Limit}`
   const sortByClause = `&SortBy=${sortBy}&Descending=${descending ? 'DESC' : 'ASC'}`
@@ -560,21 +744,21 @@ const doUpdate = (requestProp) => {
   const queryClause = `${siteClause}${orderTypeClause}${customerClause}${vendorClause}${projectNOClause}${offsetClause}${limitClause}${sortByClause}`
 
   Promise.all([
-    getData(`/Data/TobeTrackingSalesOrderLineCnt?${queryClause}`),
     getData(`/Data/TobeTrackingSalesOrderLine?${queryClause}`),
     getData(`/Data/TobeTrackingBOMLine?${queryClause}`),
     getData(`/Data/TobeTrackingPurchaseOrderLine?${queryClause}`),
     getData(`/Data/TobeTrackingReceiptLine?${queryClause}`),
-    getData(`/Data/TobeTrackingQALine?${queryClause}`)
+    getData(`/Data/TobeTrackingNCLine?${queryClause}`),
+    getData(`/Data/TobeTrackingSalesOrderLineCnt?${queryClause}`)
   ])
     .then((dataArray) => {
-      data = mergeData(dataArray[1], dataArray[2], dataArray[3], dataArray[4], dataArray[5])
-
+      data = mergeData(dataArray[0], dataArray[1], dataArray[2], dataArray[3], dataArray[4])
+      //console.log(data)
       rows.value = data
       // don't forget to update local pagination object
       pagination.value.page = page
       pagination.value.rowsPerPage = rowsPerPage
-      pagination.value.rowsNumber = parseInt(dataArray[0])
+      pagination.value.rowsNumber = parseInt(dataArray[5])
       pagination.value.sortBy = sortBy
       pagination.value.descending = descending
     })
@@ -583,78 +767,134 @@ const doUpdate = (requestProp) => {
     })
 }
 
-const mergeData = (SO, BOM, PO, RA, QA) => {
-  let SOBOM = []
+const mergeData = (SO, BOM, PO, RA, NC) => {
   for (let i = 0; i < SO.length; i++) {
-    let matched = false
+    let SOBOMAlloc = 0
+    let SOBOMShort = 0
+    let InvalidBomLine = 0
+    let POTotal = 0
+    let POBomPNLine = 0
+    let POPnogPNQty = 0
+    let POFinalPNQty = 0
+    let RABomPNLine = 0
+    let RAPnogPNQty = 0
+    let RAFinalPNQty = 0
+
+    let SOBOM = []
     for (let j = 0; j < BOM.length; j++) {
       if (SO[i]['projectNO'] === BOM[j]['bomProjectNO'] || SO[i]['oriProjectNO'] === BOM[j]['bomProjectNO']) {
-        SOBOM.push({ ...SO[i], ...BOM[j] })
-        matched = true
+        SOBOM.push(BOM[j])
+        if (BOM[j]['allQty'] === BOM[j]['bomQty']) {
+          SOBOMAlloc++
+        }
+        if (BOM[j]['shortQty'] > 0 || BOM[j]['allQty'] < BOM[j]['bomQty']) {
+          SOBOMShort++
+        }
       }
     }
-    if (!matched) {
-      SOBOM.push({ ...SO[i] })
-    }
-  }
-  //console.debug('SOBOM', SOBOM)
 
-  let SOBOMPO = []
-  for (let i = 0; i < SOBOM.length; i++) {
-    let matched = false
     for (let j = 0; j < PO.length; j++) {
-      // If the Purchase PN doesn't match BomPN or SalesPN, it won't shown,
-      // This maybe happens, please let purchaser pay attention to this.
-      if (
-        (SOBOM[i]['projectNO'] === PO[j]['purchaseProjectNO'] && SOBOM[i]['bomPN'] === PO[j]['purchasePN']) ||
-        (SOBOM[i]['oriProjectNO'] === PO[j]['purchaseProjectNO'] && SOBOM[i]['bomPN'] === PO[j]['purchasePN']) ||
-        (SOBOM[i]['projectNO'] === PO[j]['purchaseProjectNO'] && SOBOM[i]['orderPN'] === PO[j]['purchasePN']) ||
-        (SOBOM[i]['projectNO'] === PO[j]['purchaseProjectNO'] && SOBOM[i]['orderPN'] === PO[j]['purchasePN'])
-      ) {
-        SOBOMPO.push({ ...SOBOM[i], ...PO[j] })
-        matched = true
+      if (PO[j]['purchaseProjectNO'] !== SO[i]['projectNO'] && PO[j]['purchaseProjectNO'] !== SO[i]['oriProjectNO'])
+        continue
+
+      // PO match RA
+      for (let k = 0; k < RA.length; k++) {
+        if (
+          PO[j]['purchaseNO'] === RA[k]['receiptPurchaseNO'] &&
+          PO[j]['purchaseLine'] === RA[k]['receiptPurchaseLine']
+        ) {
+          if (PO[j]['purchasePN'].startsWith('PNOG')) {
+            RAPnogPNQty += RA[k]['receiptQty']
+          } else if (PO[j]['purchasePN'] === SO[i]['orderPN']) {
+            RAFinalPNQty += RA[k]['receiptQty']
+          } else {
+            RABomPNLine++
+          }
+
+          if (PO[j]['RA'] === undefined) {
+            PO[j]['RA'] = []
+          }
+
+          PO[j]['RA'].push(RA[k])
+        }
+      }
+
+      // PO match BOM
+      let BomMatch = false
+      for (let k = 0; k < SOBOM.length; k++) {
+        if (SOBOM[k]['bomPN'] === PO[j]['purchasePN']) {
+          BomMatch = true
+
+          if (PO[j]['purchasePN'].startsWith('PNOG')) {
+            POPnogPNQty += PO[j]['purchaseQty']
+          } else if (PO[j]['purchasePN'] === SO[i]['orderPN']) {
+            POFinalPNQty += PO[j]['purchaseQty']
+          } else {
+            POBomPNLine++
+          }
+
+          if (SOBOM[k]['PO'] === undefined) {
+            SOBOM[k]['PO'] = []
+          }
+          SOBOM[k]['PO'].push(PO[j])
+        }
+      }
+      if (BomMatch) {
+        continue
+      }
+
+      // here create new bom for PO not matched with SOBOM
+      InvalidBomLine++
+      let newBom = { PO: [] }
+      newBom['PO'].push(PO[j])
+      SOBOM.push(newBom)
+
+      if (specialPNs.includes(PO[j]['purchasePN'])) {
+      } else if (PO[j]['purchasePN'].startsWith('PNOG')) {
+        POPnogPNQty += PO[j]['purchaseQty']
+      } else if (SO[i]['orderPN'] === PO[j]['purchasePN']) {
+        POFinalPNQty += PO[j]['purchaseQty']
+      } else {
+        POBomPNLine++
       }
     }
-    if (!matched) {
-      SOBOMPO.push({ ...SOBOM[i] })
-    }
-  }
-  //console.debug('SOBOMPO', SOBOMPO)
 
-  let SOBOMPORA = []
-  for (let i = 0; i < SOBOMPO.length; i++) {
-    let matched = false
-    for (let j = 0; j < RA.length; j++) {
-      if (
-        SOBOMPO[i]['purchaseNO'] === RA[j]['receiptPurchaseNO'] &&
-        SOBOMPO[i]['purchaseLine'] === RA[j]['receiptPurchaseLine']
-      ) {
-        SOBOMPORA.push({ ...SOBOMPO[i], ...RA[j] })
-        matched = true
+    SO[i]['SOBOM'] = SOBOM
+
+    // NC--------------------------------------------------------
+    let SONC = []
+    for (let j = 0; j < NC.length; j++) {
+      if (SO[i]['projectNO'] === NC[j]['claimProjectNO'] || SO[i]['oriProjectNO'] === NC[j]['claimProjectNO']) {
+        SONC.push(NC[j])
       }
     }
-    if (!matched) {
-      SOBOMPORA.push({ ...SOBOMPO[i] })
-    }
-  }
-  //console.debug('SOBOMPORA', SOBOMPORA)
+    SO[i]['NC'] = SONC
 
-  let SOBOMPORAQA = []
-  for (let i = 0; i < SOBOMPORA.length; i++) {
-    let temp = [] // collect all QA for one PJT
-    for (let j = 0; j < QA.length; j++) {
-      if (
-        SOBOMPORA[i]['projectNO'] === QA[j]['claimProjectNO'] ||
-        SOBOMPORA[i]['oriProjectNO'] === QA[j]['claimProjectNO']
-      ) {
-        temp.push(QA[j])
-      }
-    }
+    // summary status
+    let TrueBomLine = SOBOM.length - InvalidBomLine
+    SO[i]['SOBOMTotal'] = TrueBomLine
+    SO[i]['SOBOMAlloc'] = SOBOMAlloc
+    SO[i]['SOBOMShort'] = SOBOMShort
+    SO[i]['POTotal'] = POTotal
+    SO[i]['POBomPNLine'] = POBomPNLine
+    SO[i]['POPnogPNQty'] = POPnogPNQty
+    SO[i]['POFinalPNQty'] = POFinalPNQty
+    SO[i]['RABomPNLine'] = RABomPNLine
+    SO[i]['RAPnogPNQty'] = RAPnogPNQty
+    SO[i]['RAFinalPNQty'] = RAFinalPNQty
+    SO[i]['SOBOMAllocVsTotal'] = TrueBomLine === 0 ? 100 : (SOBOMAlloc / TrueBomLine) * 100
+    SO[i]['POTotalVsSOBOMShort'] = SOBOMShort === 0 ? 100 : (POTotal / SOBOMShort) * 100
+    SO[i]['RABomPNLineVsPOBomPNLine'] = POBomPNLine === 0 ? 100 : (RABomPNLine / POBomPNLine) * 100
+    SO[i]['RAPnogPNQtyVsPOPnogPNQty'] = POPnogPNQty === 0 ? 100 : (RAPnogPNQty / POPnogPNQty) * 100
+    SO[i]['RAFinalPNQtyVsPOFinalPNQty'] = POFinalPNQty === 0 ? 100 : (RAFinalPNQty / POFinalPNQty) * 100
 
-    SOBOMPORAQA.push({ ...SOBOMPORA[i], QA: temp })
+    SO[i]['TQCPassQtyVsSOQty'] = (SO[i]['TQCCntPass'] / SO[i]['orderQty']) * 100
+    SO[i]['IQCPassQtyVsSOQty'] = (SO[i]['IQCCntPass'] / SO[i]['orderQty']) * 100
+    SO[i]['FQCPassQtyVsSOQty'] = (SO[i]['FQCCntPass'] / SO[i]['orderQty']) * 100
+    SO[i]['PCKPassQtyVsSOQty'] = (SO[i]['PCKCntPass'] / SO[i]['orderQty']) * 100
   }
-  //console.debug('SOBOMPORAQA', SOBOMPORAQA)
-  return SOBOMPORAQA
+
+  return SO
 }
 
 const updatePage = (page) => {
@@ -662,265 +902,85 @@ const updatePage = (page) => {
   doUpdate()
 }
 
+const updateSOLineNote = async (row, newVal) => {
+  let so = toRaw(row)
+  let lineNote = so['lineNote']
+  lineNote.project = so['projectNO']
+  lineNote.line = so['orderNO'] + '-' + so['orderLine']
+  lineNote.note = newVal
+  axiosModify('/Data/LineNote', lineNote)
+}
+
+const updatePOLineNote = async (row, newVal) => {
+  let po = toRaw(row)
+  let lineNote = po['lineNote']
+  lineNote.project = po['purchaseProjectNO']
+  lineNote.line = po['purchaseNO'] + '-' + po['purchaseLine']
+  lineNote.note = newVal
+  axiosModify('/Data/LineNote', lineNote)
+}
+
 const download = () => {
-  tableToExcel('OpenSalesItems', 'OpenSalesItems')
-}
-
-/**
- * reset data value for specific filed
- */
-const resetData = (searchField1, field1Value, searchField2, field2Value, resetField) => {
-  // find origin json
-  const origin = data.find((element) => {
-    if (element[searchField1] === field1Value && element[searchField2] === field2Value) {
-      return true
-    } else {
-      return false
-    }
-  })
-
-  // reset all
-  rows.value.forEach((element) => {
-    if (element[searchField1] === field1Value && element[searchField2] === field2Value) {
-      element[resetField] = origin[resetField]
-    }
-  })
-}
-
-const reloadColumns = async () => {
-  delete require.cache[require.resolve('@/components/todo/OpenSalesItemsColumns')]
-  columns.value = require('@/components/todo/OpenSalesItemsColumns').default
-}
-/**
- * update span row data value for specific filed
- */
-const updateSpanRowData = (searchField1, field1Value, searchField2, field2Value, setField) => {
-  // find origin json
-  const first = rows.value.find((element) => {
-    if (element[searchField1] === field1Value && element[searchField2] === field2Value) {
-      return true
-    } else {
-      return false
-    }
-  })
-
-  // reset all
-  rows.value.forEach((element) => {
-    if (element[searchField1] === field1Value && element[searchField2] === field2Value) {
-      element[setField] = first[setField]
-    }
-  })
-}
-
-const updateSADReady = async (orderno, line, ready) => {
-  axios.put(`/Data/SageSADReady?OrderNO=${orderno}&Line=${line}&Ready=${ready}`, {}).then(
-    (response) => {
-      response.data.success === true
-        ? updateSpanRowData('OrderNO', orderno, 'OrderLine', line, 'OrderSADFlag')
-        : resetData('OrderNO', orderno, 'OrderLine', line, 'OrderSADFlag')
-    },
-    () => {
-      resetData('OrderNO', orderno, 'OrderLine', line, 'OrderSADFlag')
-    }
-  )
-}
-
-const updateDeliveryReady = async (orderno, line, ready) => {
-  axios.put(`/Data/SageDeliveryReady?OrderNO=${orderno}&Line=${line}&Ready=${ready}`, {}).then(
-    (response) => {
-      response.data.success === true
-        ? updateSpanRowData('OrderNO', orderno, 'OrderLine', line, 'OrderDeliveryFlag')
-        : resetData('OrderNO', orderno, 'OrderLine', line, 'OrderDeliveryFlag')
-    },
-    () => {
-      resetData('OrderNO', orderno, 'OrderLine', line, 'OrderDeliveryFlag')
-    }
-  )
-}
-
-const updateProductReady = async (orderno, line, ready) => {
-  axios.put(`/Data/SageProductReady?OrderNO=${orderno}&Line=${line}&Flag=${ready}`, {}).then(
-    (response) => {
-      response.data.success === true
-        ? updateSpanRowData('OrderNO', orderno, 'OrderLine', line, 'OrderProductFlag')
-        : resetData('OrderNO', orderno, 'OrderLine', line, 'OrderProductFlag')
-    },
-    () => {
-      resetData('OrderNO', orderno, 'OrderLine', line, 'OrderProductFlag')
-    }
-  )
-}
-const updateProjectStatus = async (orderno, line, status) => {
-  axios.put(`/Data/SageProjectStatus?OrderNO=${orderno}&Line=${line}&Status=${status}`, {}).then(
-    (response) => {
-      response.data.success === true
-        ? updateSpanRowData('OrderNO', orderno, 'OrderLine', line, 'ProjectStatus')
-        : resetData('OrderNO', orderno, 'OrderLine', line, 'ProjectStatus')
-    },
-    () => {
-      resetData('OrderNO', orderno, 'OrderLine', line, 'ProjectStatus')
-    }
-  )
-}
-const updateProjectBlockReason = async (orderno, line, reason) => {
-  axios.put(`/Data/SageProjectBlockReason?OrderNO=${orderno}&Line=${line}&Reason=${reason}`, {}).then(
-    (response) => {
-      response.data.success === true
-        ? updateSpanRowData('OrderNO', orderno, 'OrderLine', line, 'ProjectBlockReason')
-        : resetData('OrderNO', orderno, 'OrderLine', line, 'ProjectBlockReason')
-    },
-    () => {
-      resetData('OrderNO', orderno, 'OrderLine', line, 'ProjectBlockReason')
-    }
-  )
-}
-const updateProjectComment = async (orderno, line, comment) => {
-  axios.put(`/Data/SageProjectComment?OrderNO=${orderno}&Line=${line}&Comment=${comment}`, {}).then(
-    (response) => {
-      response.data.success === true
-        ? updateSpanRowData('OrderNO', orderno, 'OrderLine', line, 'ProjectComment')
-        : resetData('OrderNO', orderno, 'OrderLine', line, 'ProjectComment')
-    },
-    () => {
-      resetData('OrderNO', orderno, 'OrderLine', line, 'ProjectComment')
-    }
-  )
-}
-const updateProjectAction = async (orderno, line, action) => {
-  axios.put(`/Data/SageProjectAction?OrderNO=${orderno}&Line=${line}&Action=${action}`, {}).then(
-    (response) => {
-      response.data.success === true
-        ? updateSpanRowData('OrderNO', orderno, 'OrderLine', line, 'ProjectAction')
-        : resetData('OrderNO', orderno, 'OrderLine', line, 'ProjectAction')
-    },
-    () => {
-      resetData('OrderNO', orderno, 'OrderLine', line, 'ProjectAction')
-    }
-  )
-}
-const updatePurchaseComment = async (orderno, line, comment) => {
-  axios.put(`/Data/SagePurchaseComment?OrderNO=${orderno}&Line=${line}&Comment=${comment}`, {}).then(
-    (response) => {
-      response.data.success === true
-        ? updateSpanRowData('OrderNO', orderno, 'OrderLine', line, 'PurchaseComment')
-        : resetData('OrderNO', orderno, 'OrderLine', line, 'PurchaseComment')
-    },
-    () => {
-      resetData('OrderNO', orderno, 'OrderLine', line, 'PurchaseComment')
-    }
-  )
-}
-const updatePlanDate = async (orderno, line, planDate) => {
-  axios.put(`/Data/SageDeliveryPlanDate?OrderNO=${orderno}&Line=${line}&PlanDate=${planDate}`, {}).then(
-    (response) => {
-      response.data.success === true
-        ? updateSpanRowData('OrderNO', orderno, 'OrderLine', line, 'OrderPlanedDate')
-        : resetData('OrderNO', orderno, 'OrderLine', line, 'OrderPlanedDate')
-    },
-    () => {
-      resetData('OrderNO', orderno, 'OrderLine', line, 'OrderPlanedDate')
-    }
-  )
-}
-
-const updatePurchaseAckDate = async (orderno, line, ackDate) => {
-  axios.put(`/Data/SagePurchaseAckDate?OrderNO=${orderno}&Line=${line}&AckDate=${ackDate}`, {}).then(
-    (response) => {
-      response.data.success === true
-        ? updateSpanRowData('PurchaseNO', orderno, 'PurchaseLine', line, 'PurchaseAckDate')
-        : resetData('PurchaseNO', orderno, 'PurchaseLine', line, 'PurchaseAckDate')
-    },
-    () => {
-      resetData('PurchaseNO', orderno, 'PurchaseLine', line, 'PurchaseAckDate')
-    }
-  )
+  expandTableToExcel('OpenSalesItems', props.site, 'OpenSalesItems' + '_' + props.site)
 }
 
 // events
 onMounted(() => {
-  doUpdate({
-    pagination: pagination.value
-  })
+  doUpdate({ pagination: pagination.value })
 })
 
 watch(props, (value, oldValue) => {
   console.debug('watch:', oldValue, '--->', value)
-
   doUpdate()
-})
-
-ebus.on('changeLanguage', () => {
-  reloadColumns()
 })
 </script>
 
-<style lang="scss" scoped>
-/* background-color is very important */
-/* set it to each th, td already */
+<style lang="scss">
+@import '@/css/app.scss';
 
-/** frozen header exclude columns from nth */
-thead tr th:nth-child(n + 3) {
-  position: sticky;
-  top: 0px;
-  z-index: 1;
-}
-/** frozen header first left column */
-.q-table--dense .q-table th:first-child {
-  position: sticky;
-  min-width: 40px;
-  left: 0px;
-  top: 0px;
-  z-index: 3;
-}
-/** frozen header second left column */
-thead tr th:nth-child(2) {
-  position: sticky;
-  left: 40px;
-  top: 0px;
-  z-index: 3;
-}
-/** frozen body first left column */
-tbody tr td:first-child {
-  position: sticky;
-  left: 0px;
-  z-index: 2;
-}
-/** frozen body second left column */
-/** added 'name frozen' to avoid rowspan issue */
-tbody tr td:nth-child(2).frozen {
-  position: sticky;
-  left: 40px;
-  z-index: 2;
-}
+.open-sale-items-table {
+  @extend .sticky-header-column--dense;
 
-// first td left padding
-.q-table td:first-child,
-.q-table th:first-child {
-  padding-left: 2px;
-}
+  thead tr th:nth-child(2) {
+    position: sticky;
+    left: 26px;
+    z-index: 3;
+    background-color: $primary;
+  }
 
-/* let td smaller */
-th,
-td {
-  padding: 0px 2px 0px 2px !important;
-}
+  tbody tr td:nth-child(2) {
+    position: sticky;
+    left: 26px;
+    z-index: 1;
+    background-color: white;
+  }
 
-.strip td {
-  background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.15) 15%, rgba(255, 255, 255, 0.15)) !important;
-}
+  thead tr th:nth-child(3) {
+    position: sticky;
+    left: 72px;
+    z-index: 3;
+    background-color: $primary;
+  }
 
-:v-deep(.q-table .q-field__control),
-:v-deep(.q-table .q-field__native),
-:v-deep(.q-table .q-field__append) {
-  min-height: 20px;
-  height: 20px;
-}
+  tbody tr td:nth-child(3) {
+    position: sticky;
+    left: 72px;
+    z-index: 1;
+    background-color: white;
+  }
 
-:v-deep(.q-table .q-field__native) {
-  padding: 0px 0px;
-}
+  thead tr th:nth-child(4) {
+    position: sticky;
+    left: 168px;
+    z-index: 3;
+    background-color: $primary;
+  }
 
-:v-deep(.q-table input) {
-  font-size: 13px;
+  tbody tr td:nth-child(4) {
+    position: sticky;
+    left: 168px;
+    z-index: 1;
+    background-color: white;
+  }
 }
 </style>

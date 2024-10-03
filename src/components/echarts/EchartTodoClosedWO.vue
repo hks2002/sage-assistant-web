@@ -2,37 +2,31 @@
 * @Author                : Robert Huang<56649783@qq.com>
 * @CreatedDate           : 2022-03-25 11:01:00
 * @LastEditors           : Robert Huang<56649783@qq.com>
-* @LastEditDate          : 2023-08-28 00:25:11
+* @LastEditDate          : 2025-01-19 23:42:53
 * @FilePath              : sage-assistant-web/src/components/echarts/EchartTodoClosedWO.vue
 * @CopyRight             : Dedienne Aerospace China ZhuHai
 -->
 
 <template>
-  <q-item>
-    <base-echart :e-chart-option="eChartOption" />
-    <q-inner-loading :showing="showLoading">
-      <q-spinner-ios size="50px" color="primary" />
-    </q-inner-loading>
-  </q-item>
+  <base-echart :e-chart-option="eChartOption" :show-loading="showLoading" />
 </template>
 
 <script setup>
-import { axiosGet } from '@/assets/axiosActions'
+import BaseEchart from './BaseEchart.vue'
+
 import {
   defaultDataZoom,
   defaultLegend,
-  defaultScatterSerial,
   defaultToolbox,
   defaultTooltip,
-  defaultXAxisTime
+  defaultXAxisTime,
+  multiLineFormatter
 } from '@/assets/echartsCfg.js'
-import _groupBy from 'lodash/groupBy'
-import _map from 'lodash/map'
-import _sortBy from 'lodash/sortBy'
-import _uniq from 'lodash/uniq'
+
+import { axiosGet } from '@/assets/axiosActions'
+import { groupBy, map, uniq } from 'lodash-es'
 import { onMounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
-import BaseEchart from './BaseEchart.vue'
 
 const props = defineProps({
   site: String
@@ -49,19 +43,6 @@ let legend = []
 let dataByLegend = []
 let dataset = []
 let series = []
-const dimensions = [
-  'projectNO',
-  'orderNO',
-  'workOrderNO',
-  'wOStatus',
-  'productionStatus',
-  'orderType',
-  'customerCode',
-  'customerName',
-  'PN',
-  'qty',
-  'orderDate'
-]
 
 // computed vars
 
@@ -82,28 +63,45 @@ function doUpdate() {
     })
 }
 function prepareData() {
-  data = _sortBy(data, ['workOrderNO'])
-  legend = _uniq(_map(data, 'productionStatus'))
-  dataByLegend = _groupBy(data, 'productionStatus')
+  legend = uniq(map(data, 'productionStatus'))
+  dataByLegend = groupBy(data, 'productionStatus')
   dataset = []
   series = []
 
-  legend.forEach((value, index) => {
-    dataset[index] = { source: dataByLegend[value] }
-    series[index] = defaultScatterSerial(index, value, '{@workOrderNO}', dimensions, 'orderDate', 'workOrderNO')
+  legend.forEach((name, index) => {
+    dataset[index] = { source: dataByLegend[name] }
+    series[index] = {
+      name: name,
+      type: 'scatter',
+      datasetIndex: index,
+      label: {
+        show: true,
+        position: 'bottom',
+        formatter: '{@workOrderNO}'
+      },
+      tooltip: {
+        trigger: 'item',
+        formatter: multiLineFormatter
+      },
+      encode: {
+        x: 'orderDate',
+        y: 'workOrderNO'
+      }
+    }
   })
 }
 
 function setEchart() {
+  const title = t('S.TODO_TO_BE_CLOSED_WO') + ` [${props.site}]`
   // data is ready,set echart option
   eChartOption = {
     title: {
-      text: t('S.TODO_TO_BE_CLOSED_WO') + ` [${props.site}]`,
+      text: title,
       left: 'center'
     },
     legend: defaultLegend,
-    toolbox: defaultToolbox(dimensions, data, t('S.TODO_TO_BE_CLOSED_WO') + ` [${props.site}]`),
     tooltip: defaultTooltip,
+    toolbox: defaultToolbox(title, data),
     xAxis: defaultXAxisTime,
     grid: [{ left: 40, right: 40 }],
     yAxis: [

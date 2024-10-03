@@ -2,91 +2,68 @@
 * @Author                : Robert Huang<56649783@qq.com>
 * @CreatedDate           : 2022-03-25 11:01:00
 * @LastEditors           : Robert Huang<56649783@qq.com>
-* @LastEditDate          : 2024-07-16 00:07:26
+* @LastEditDate          : 2025-01-21 13:35:21
+* @FilePath              : sage-assistant-web/src/pages/ProductsPage.vue
 * @CopyRight             : Dedienne Aerospace China ZhuHai
 -->
 
 <template>
-  <WaitInputLottieVue v-if="!pnRoot && isAuthorized('GESITM')" />
-  <ExceptionLottie :ErrorCode="403" v-if="!isAuthorized('GESITM')" />
-  <div class="row q-px-sm q-gutter-sm">
-    <QSelectAxios
-      option-label="PN"
-      option-value="PNROOT"
-      data-url="/Data/PNHelper"
-      :label="$t('S.SEARCH_PRODUCT')"
-      :hint="$t('S.SEARCH_PRODUCT_HINT')"
-      input-style="font-weight:bolder;font-size:25px;text-transform:uppercase"
-      popup-content-style="font-weight:bold;font-size:25px"
-      popup-content-class="text-secondary"
-      class="q-pa-sm"
-      v-if="isAuthorized('GESITM')"
-      @update:model-value="update"
-    />
-    <SpanFileList :pn="pnRoot" />
-  </div>
-
-  <div class="row q-gutter-sm q-px-sm" style="height: 150px" v-if="pnRoot">
-    <q-card class="col-4">
-      <q-scroll-area style="height: 150px">
-        <q-list-pn-list :pnRoot="pnRoot" />
-      </q-scroll-area>
-    </q-card>
-    <q-card class="col-grow">
-      <q-scroll-area style="height: 150px">
-        <EchartInventoryStock :pnRoot="pnRoot" style="padding: 0px; height: 150px" v-show="isAuthorized('CONSSDE')" />
-      </q-scroll-area>
-    </q-card>
-    <q-card class="col-4">
-      <q-scroll-area style="height: 150px">
-        <EchartDeliveryDuration :pnRoot="pnRoot" style="height: 150px" v-show="isAuthorized('GESSDH')" />
-      </q-scroll-area>
-    </q-card>
-  </div>
-  <div class="row q-px-sm" v-if="pnRoot">
-    <EchartSalesHistory :pnRoot="pnRoot" :style="echartHeight" class="col-grow" v-show="isAuthorized('GESSOH')" />
-  </div>
-  <div class="row q-px-sm" v-if="pnRoot">
-    <EchartQuoteHistory :pnRoot="pnRoot" :style="echartHeight" class="col-grow" v-show="isAuthorized('GESSQH')" />
-  </div>
-  <div class="row q-px-sm" v-if="pnRoot">
-    <EchartCostHistory :pnRoot="pnRoot" :style="echartHeight" class="col-grow" v-show="isAuthorized('GESPOH')" />
-  </div>
+  <q-page :style-fn="$pageStore.setPageHeightStyle">
+    <WaitInputLottieVue v-if="!pnRoot" />
+    <div class="row q-gutter-sm q-pa-sm">
+      <div class="col-12">
+        <QSelectAxios
+          option-label="PN"
+          option-value="PNROOT"
+          data-url="/Data/PNHelper"
+          :label="$t('S.SEARCH_PRODUCT')"
+          :hint="$t('S.SEARCH_PRODUCT_HINT')"
+          input-style="font-weight:bolder;font-size:25px;text-transform:uppercase"
+          popup-content-style="font-weight:bold;font-size:25px"
+          popup-content-class="text-secondary"
+          class="q-pa-sm"
+          @update:model-value="update"
+        />
+      </div>
+    </div>
+    <div class="row q-col-gutter-sm q-pa-sm" :style="$pageStore.setDomHeightStyle(56)" v-if="pnRoot">
+      <div class="col-3">
+        <q-card>
+          <q-scroll-area style="height: 150px"> <QListPnList :pnRoot="pnRoot" /></q-scroll-area>
+        </q-card>
+      </div>
+      <div class="col-3">
+        <q-card>
+          <q-scroll-area style="height: 150px"> <FileList :pn="pnRoot" /> </q-scroll-area>
+        </q-card>
+      </div>
+      <div class="col-3"><EchartPNInventoryStock :pnRoot="pnRoot" style="height: 150px" /></div>
+      <div class="col-3"><EchartPNDeliveryDuration :pnRoot="pnRoot" style="height: 150px" /></div>
+      <div class="col-12"><EchartPNSalesHistory :pnRoot="pnRoot" style="height: 300px" /></div>
+      <div class="col-12"><EchartPNQuoteHistory :pnRoot="pnRoot" style="height: 300px" /></div>
+      <div class="col-12"><EchartPNCostHistory :pnRoot="pnRoot" style="height: 300px" /></div>
+    </div>
+  </q-page>
 </template>
 
 <script setup>
-import { isAuthorized } from '@/assets/auth'
-import EchartCostHistory from '@/components/echarts/EchartCostHistory.vue'
-import EchartDeliveryDuration from '@/components/echarts/EchartDeliveryDuration.vue'
-import EchartInventoryStock from '@/components/echarts/EchartInventoryStock.vue'
-import EchartQuoteHistory from '@/components/echarts/EchartQuoteHistory.vue'
-import EchartSalesHistory from '@/components/echarts/EchartSalesHistory.vue'
-import ExceptionLottie from '@/components/lottie/ExceptionLottie.vue'
+import EchartPNCostHistory from '@/components/echarts/EchartPNCostHistory.vue'
+import EchartPNDeliveryDuration from '@/components/echarts/EchartPNDeliveryDuration.vue'
+import EchartPNInventoryStock from '@/components/echarts/EchartPNInventoryStock.vue'
+import EchartPNQuoteHistory from '@/components/echarts/EchartPNQuoteHistory.vue'
+import EchartPNSalesHistory from '@/components/echarts/EchartPNSalesHistory.vue'
 import WaitInputLottieVue from '@/components/lottie/WaitInputLottie.vue'
+import FileList from '@/components/products/FileList.vue'
 import QListPnList from '@/components/products/QListPnList.vue'
-import SpanFileList from '@/components/products/SpanFileList.vue'
 import QSelectAxios from '@/controls/QSelectAxios.vue'
-import { useQuasar } from 'quasar'
-import { computed, ref } from 'vue'
 
-/* eslint-disable */
-const props = defineProps({
-  pageHeight: { type: Number, default: 0 /* not passing  */ }
-})
+import { ref } from 'vue'
 
-// common vars
-const $q = useQuasar()
+import { usePageStore } from '@/stores/PageStore'
+const $pageStore = usePageStore()
 
 // page vars
 const pnRoot = ref('')
-
-// computed vars
-const echartHeight = computed(() => {
-  /** 56: QSelect height, 150: PnInfo height */
-  const echartItemHeight = (props.pageHeight - 56 - 150) / 3
-  return echartItemHeight > 320 ? { height: echartItemHeight + 'px' } : { height: 320 + 'px' }
-})
-
 // actions
 const update = (newPNROOT) => {
   pnRoot.value = newPNROOT

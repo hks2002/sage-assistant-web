@@ -7,7 +7,7 @@
  *****************************************************************************/
 
 import { getQueryParameters } from '@/assets/mockExt'
-import forEach from 'lodash/forEach'
+import { forEach } from 'lodash-es'
 import Mock from 'mockjs'
 
 Mock.mock(RegExp('^(/Data/StockSummary)' + '.*'), () => {

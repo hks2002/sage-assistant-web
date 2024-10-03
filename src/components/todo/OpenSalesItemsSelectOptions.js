@@ -1,11 +1,12 @@
-/***
- * @Author         : Robert Huang<56649783@qq.com>
- * @Date           : 2022-07-15 14:19:04
- * @LastEditors    : Robert Huang<56649783@qq.com>
- * @LastEditTime   : 2022-07-15 14:19:04
- * @FilePath       : \web2\src\components\todo\selectOptions.js
- * @CopyRight      : Dedienne Aerospace China ZhuHai
- */
+/******************************************************************************
+ * @Author                : Robert Huang<56649783@qq.com>                     *
+ * @CreatedDate           : 2022-07-15 14:19:00                               *
+ * @LastEditors           : Robert Huang<56649783@qq.com>                     *
+ * @LastEditDate          : 2024-11-29 19:28:10                               *
+ * @FilePath              : sage-assistant-web/src/components/todo/OpenSalesItemsSelectOptions.js*
+ * @CopyRight             : Dedienne Aerospace China ZhuHai                   *
+ *****************************************************************************/
+
 const optionsProjectStatus = [
   {
     /** */ value: '0',
@@ -68,4 +69,4 @@ const optionsProjectBlockReason = [
     label: 'WAITING TOOL'
   }
 ]
-export { optionsProjectStatus, optionsProjectBlockReason }
+export { optionsProjectBlockReason, optionsProjectStatus }

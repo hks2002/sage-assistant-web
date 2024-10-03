@@ -2,7 +2,8 @@
 * @Author                : Robert Huang<56649783@qq.com>
 * @CreatedDate           : 2022-05-24 09:38:00
 * @LastEditors           : Robert Huang<56649783@qq.com>
-* @LastEditDate          : 2024-07-15 13:55:26
+* @LastEditDate          : 2024-11-29 19:32:31
+* @FilePath              : sage-assistant-web/src/pages/LoginPage.vue
 * @CopyRight             : Dedienne Aerospace China ZhuHai
 -->
 
@@ -144,11 +145,22 @@ const checkEnterKey = (event) => {
 }
 
 const doLogin = async () => {
-  loading.value = true
-  const token = authToken('basic', username.value, password.value)
+  if (username.value.match(/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/)) {
+    $q.dialog({
+      title: t('S.TIPS'),
+      message: t('S.LOGIN_NAME_NOTE'),
+      html: true,
+      ok: {
+        label: t('S.OK'),
+        color: 'primary'
+      }
+    })
+    return
+  }
+  const token = authToken('basic', username.value.toLocaleLowerCase(), password.value)
   SessionStorage.set('authorization', token)
 
-  await axiosPost('/Data/Login', { username: username.value })
+  await axiosPost('/Data/Login', { username: username.value.toLocaleLowerCase() })
     .then(
       (response) => {
         if (response.success) {

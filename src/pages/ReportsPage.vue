@@ -2,12 +2,13 @@
 * @Author                : Robert Huang<56649783@qq.com>
 * @CreatedDate           : 2023-05-25 01:02:00
 * @LastEditors           : Robert Huang<56649783@qq.com>
-* @LastEditDate          : 2024-07-17 14:54:52
+* @LastEditDate          : 2024-11-29 19:33:37
+* @FilePath              : sage-assistant-web/src/pages/ReportsPage.vue
 * @CopyRight             : Dedienne Aerospace China ZhuHai
 -->
 
 <template>
-  <div class="row" style="height: 100%">
+  <q-page class="row" :style-fn="$pageStore.setTabPageHeightStyle">
     <div class="column col-md-4 col-lg-4 col-xl-3 q-pa-xs">
       <q-item>
         <q-item-section avatar>
@@ -315,7 +316,7 @@
       <iframe id="pdfWin" frameborder="0" class="fit" :src="UrlShow" @load="onSubFrameLoad" />
       <iframe frameborder="0" width="0" height="0" :src="UrlExport" />
     </div>
-  </div>
+  </q-page>
 </template>
 
 <script setup>
@@ -323,6 +324,9 @@ import { axios } from '@/assets/axios'
 import { validateInput } from '@/assets/reportUtils'
 import { QSpinnerGears, useQuasar } from 'quasar'
 import { onMounted, ref } from 'vue'
+
+import { usePageStore } from '@/stores/PageStore'
+const $pageStore = usePageStore()
 
 const $q = useQuasar()
 

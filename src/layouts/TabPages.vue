@@ -2,7 +2,8 @@
 * @Author                : Robert Huang<56649783@qq.com>
 * @CreatedDate           : 2022-05-26 14:52:00
 * @LastEditors           : Robert Huang<56649783@qq.com>
-* @LastEditDate          : 2023-11-30 11:05:16
+* @LastEditDate          : 2024-12-30 14:20:43
+* @FilePath              : sage-assistant-web/src/layouts/TabPages.vue
 * @CopyRight             : Dedienne Aerospace China ZhuHai
 -->
 
@@ -21,80 +22,45 @@
     @update:model-value="onChangeTab"
   >
     <!-- Set the page label, such as 'S.HOME PAGE', replace space with '_' -->
-    <q-tab v-for="tab in tabs" :name="tab.id" :label="$t('S.' + upperCase(tab.name).replace(/ /g, '_'))" :key="tab.id">
+    <q-tab v-for="tab in pages" :name="tab.id" :label="$t('S.' + constCase(tab.name))" :key="tab.id">
       <span class="btn-close" @click.stop="onCloseTab(tab.id)">&times;</span>
     </q-tab>
   </q-tabs>
 
-  <q-page :style-fn="pageStyle">
-    <router-view />
-  </q-page>
+  <router-view />
 </template>
 
 <script setup>
-import { usePagesStore } from '@/stores/pageManager'
-import { upperCase } from 'lodash'
-import { provide, ref } from 'vue'
+import { constCase, titleCase } from '@/assets/nameStyle'
+import { usePageStore } from '@/stores/PageStore'
+import { storeToRefs } from 'pinia'
+import { watch } from 'vue'
 import { useRouter } from 'vue-router'
-
-/* eslint-disable */
-const props = defineProps({
-  tabHeaderHeight: {
-    type: Number,
-    required: false,
-    default: 36 /* dense */
-  }
-})
 
 // common vars
 const $router = useRouter()
-const pagesStore = usePagesStore()
+const $pagesStore = usePageStore()
 
-const tabs = ref(pagesStore.pages)
-const activeId = ref(pagesStore.activeId || 'Home')
-const activeName = ref(pagesStore.activeName || 'Home')
-
-// provide vars
-const bodyHeight = ref(0)
-provide('bodyHeight', bodyHeight)
-
-const pageStyle = (offset, height) => {
-  // "offset" is a Number (pixels) that refers to the total height of header + footer that occupies on screen,
-  // "height" is screen height
-  const style = {
-    // minHeight: `calc(100vh - ${offset + props.tabHeaderHeight}px)`,
-    // body height, with offset and tab header height
-    height: `${height - offset - props.tabHeaderHeight}px`,
-    // scroll body
-    overflow: 'scroll'
-  }
-  bodyHeight.value = height - offset - props.tabHeaderHeight
-
-  return style
-}
+$pagesStore.tabHeaderHeight = 36 /* dense */
+const { activeId, activeName, pages } = storeToRefs($pagesStore)
 
 // events
 const onCloseTab = (tabId) => {
   // always left one page
-  if (pagesStore.pages.length > 1) {
-    pagesStore.removePage(tabId)
-    $router.push(pagesStore.getRouteById(pagesStore.activeId))
+  if ($pagesStore.pages.length > 1) {
+    $pagesStore.removePage(tabId)
+    $router.push($pagesStore.getRouteById($pagesStore.activeId))
   }
 }
 
 const onChangeTab = (tabId) => {
-  pagesStore.setActivePage(tabId)
-  $router.push(pagesStore.getRouteById(tabId))
+  $pagesStore.setActivePage(tabId)
+  $router.push($pagesStore.getRouteById(tabId))
 }
 
-pagesStore.$subscribe(() => {
-  // update ui if any changes occurs
-  // changes include: addTab, removeTab, resetTab, updateLabel, setActiveTab
-  // changes exclude: changeTab
-  tabs.value = pagesStore.pages
-  activeId.value = pagesStore.activeId
-  activeName.value = pagesStore.activeName
-  document.title = require('app/package.json').productName + ' - ' + activeName.value
+watch(activeId, (newValue) => {
+  console.debug('onChangeTab:', newValue)
+  document.title = require('app/package.json').productName + ' - ' + titleCase(activeName.value)
 })
 </script>
 

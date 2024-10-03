@@ -1,11 +1,11 @@
-/*********************************************************************************************************************
- * @Author                : Robert Huang<56649783@qq.com>                                                            *
- * @CreatedDate           : 2022-05-26 14:52:00                                                                      *
- * @LastEditors           : Robert Huang<56649783@qq.com>                                                            *
- * @LastEditDate          : 2023-08-19 15:48:05                                                                      *
- * @FilePath              : sage-assistant-web/src/stores/index.js                                                   *
- * @CopyRight             : Dedienne Aerospace China ZhuHai                                                          *
- ********************************************************************************************************************/
+/******************************************************************************
+ * @Author                : Robert Huang<56649783@qq.com>                     *
+ * @CreatedDate           : 2022-05-26 14:52:00                               *
+ * @LastEditors           : Robert Huang<56649783@qq.com>                     *
+ * @LastEditDate          : 2024-11-29 19:34:58                               *
+ * @FilePath              : sage-assistant-web/src/stores/index.js            *
+ * @CopyRight             : Dedienne Aerospace China ZhuHai                   *
+ *****************************************************************************/
 
 import { createPinia } from 'pinia'
 import piniaPersist from 'pinia-plugin-persist'

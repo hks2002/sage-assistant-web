@@ -5,9 +5,13 @@
  * @LastEditTime   : 2022-07-18 16:08:29
  * @FilePath       : \web2\src\css\app.scss
  * @CopyRight      : Dedienne Aerospace China ZhuHai
- */
+ */ 
+
+ 
 // app global css in SCSS form
 // below color is waiting for choose
+
+@import '@/css/quasar.variables.scss';
 $sampleColor: #40a9ff;
 $sampleColor: #f759ab;
 $sampleColor: #ffa940;
@@ -32,12 +36,15 @@ $sampleColor: #85a5ff;
 $sampleColor: #95de64;
 $sampleColor: #ffd666;
 $sampleColor: #ff7875;
+$sampleColor: #23754f;
 
+//// scrollbar start
 ::-webkit-scrollbar {
-  width: 4px;
+  width: 8px;
   height: 8px;
   contain: strict;
 }
+
 ::-webkit-scrollbar-thumb {
   border-radius: 2px;
   transition: opacity 0.3s;
@@ -54,6 +61,7 @@ $sampleColor: #ff7875;
     transparent
   );
 }
+
 ::-webkit-scrollbar-track {
   box-shadow: inset 0 0 2px rgba(0, 0, 0, 0.2);
   border-radius: 2px;
@@ -64,6 +72,7 @@ $sampleColor: #ff7875;
   width: 4px;
   height: 8px;
 }
+
 .q-scrollarea__thumb {
   width: 4px;
   height: 8px;
@@ -82,89 +91,66 @@ $sampleColor: #ff7875;
   );
 }
 
-.sticky-first-header-row-table {
-  /* height or max-height is important */
-  height: 500px;
+//// scrollbar end
 
-  .q-table__top,
-  thead tr:first-child th {
-    /* bg color is important for th; just specify one */
+//// table freeze header and column start
+$th-height: 48px;
+$th-height--dense: 28px;
+
+/* one column sticky, auto width  */
+.sticky-header-column {
+  /* height or max-height is important */
+  height: 50px;
+  max-height: 1444px;
+  overflow-x: auto;
+  background-color: white;
+
+  // Make thead sticky, here we set 2 rows
+  thead tr:nth-child(1) {
+    position: sticky;
+    z-index: 2;
+    top: 0;
     background-color: $primary;
-    color: #fff;
-    position: sticky;
-    top : 0;
-    z-index: 1;
   }
-  
-}
-
-.sticky-first-header-two-column-table {
-  /* height or max-height is important */
-  height: 500px;
-
-/** frozen header first left column */
-  thead tr th:first-child {
+  thead tr:nth-child(2) {
     position: sticky;
-    min-width: 45px;
-    left: 0px;
-    top: 0px;
-    z-index: 3;
-  }
-
-  /** frozen header second left column */
-  thead tr th:nth-child(2) {
-    position: sticky;
-    left: 45px;
-    top: 0px;
-    z-index: 3;
-  }
-
-/** frozen header exclude columns from nth */
-  thead tr th:nth-child(n + 3) {
-    position: sticky;
-    top: 0px;
-    z-index: 1;
-  }
-
-  /** frozen body first left column */
-  tbody tr td:first-child {
-    position: sticky;
-    left: 0px;
     z-index: 2;
+    top: $th-height;
+    background-color: $primary;
   }
 
-  /** frozen body second left column */
-  /** added 'name frozen' to avoid rowspan issue */
-  tbody tr td:nth-child(2).frozen {
+  // Make first tbody column sticky
+  tbody tr td:nth-child(1) {
     position: sticky;
-    left: 45px;
-    z-index: 2;
+    left: 0;
+    z-index: 1;
+    background-color: white;
   }
 
-// first td left padding
-.q-table td:first-child,
-.q-table th:first-child {
-  padding-left: 2px;
+  // Make first thead column sticky
+  thead tr th:nth-child(1) {
+    position: sticky;
+    left: 0;
+    z-index: 3;
+    background-color: $primary;
+  }
 }
 
-/* let td smaller */
-th,
-td {
-  padding: 0px 2px 0px 2px !important;
+.sticky-header-column--dense {
+  @extend .sticky-header-column;
+
+  /* let td smaller */
+  th,
+  td {
+    padding: 0px 2px 0px 2px !important;
+  }
+
+  thead tr:nth-child(2) {
+    position: sticky;
+    z-index: 2;
+    top: $th-height--dense;
+    background-color: $primary;
+  }
 }
 
-:v-deep(.q-table .q-field__control),
-:v-deep(.q-table .q-field__native),
-:v-deep(.q-table .q-field__append) {
-  min-height: 20px;
-  height: 20px;
-}
-
-:v-deep(.q-table .q-field__native) {
-  padding: 0px 0px;
-}
-
-:v-deep(.q-table input) {
-  font-size: 13px;
-}
-}
+//// table freeze header and column end

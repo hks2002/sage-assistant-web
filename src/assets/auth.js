@@ -2,7 +2,8 @@
  * @Author                : Robert Huang<56649783@qq.com>                     *
  * @CreatedDate           : 2022-03-25 11:01:00                               *
  * @LastEditors           : Robert Huang<56649783@qq.com>                     *
- * @LastEditDate          : 2024-07-14 00:18:13                               *
+ * @LastEditDate          : 2024-11-29 18:30:51                               *
+ * @FilePath              : sage-assistant-web/src/assets/auth.js             *
  * @CopyRight             : Dedienne Aerospace China ZhuHai                   *
  *****************************************************************************/
 

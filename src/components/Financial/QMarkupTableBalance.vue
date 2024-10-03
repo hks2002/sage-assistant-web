@@ -2,9 +2,9 @@
 * @Author                : Robert Huang<56649783@qq.com>
 * @CreatedDate           : 2023-06-22 22:48:00
 * @LastEditors           : Robert Huang<56649783@qq.com>
-* @LastEditDate          : 2023-09-03 01:09:34
+* @LastEditDate          : 2024-10-16 01:42:14
 * @FilePath              : sage-assistant-web/src/components/Financial/QMarkupTableBalance.vue
-* @CopyRight             : Dedienne Aerospace China ZhuHai
+* @CopyRight             : MerBleueAviation
 -->
 
 <template>
@@ -146,7 +146,7 @@ const download = () => {
     }
   }
 
-  jsonToExcel(header, balanceItems.value, 'AccountNO:' + props.accountNO + ' Balance of ' + props.year)
+  jsonToExcel('AccountNO:' + props.accountNO + ' Balance of ' + props.year, balanceItems.value, header)
 }
 
 // events

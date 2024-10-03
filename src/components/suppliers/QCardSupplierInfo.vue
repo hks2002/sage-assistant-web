@@ -2,90 +2,86 @@
 * @Author                : Robert Huang<56649783@qq.com>
 * @CreatedDate           : 2023-06-23 01:07:00
 * @LastEditors           : Robert Huang<56649783@qq.com>
-* @LastEditDate          : 2023-08-28 22:12:35
+* @LastEditDate          : 2024-10-17 23:04:11
 * @FilePath              : sage-assistant-web/src/components/suppliers/QCardSupplierInfo.vue
-* @CopyRight             : Dedienne Aerospace China ZhuHai
+* @CopyRight             : MerBleueAviation
 -->
 
 <template>
   <q-card>
-    <template v-for="(info, index) in supplierInfo" :key="info['supplierCode']">
-      <q-item class="text-h6 text-weight-bold q-pr-md q-pb-xs" no-wrap v-if="index === 0">
-        <q-icon name="fas fa-address-book" class="q-pr-md q-pt-xs" color="teal" />
-        {{ info['supplierCode'] }}
-        {{ info['supplierName0'] }}
-        {{ info['supplierName1'] }}
-      </q-item>
-    </template>
-    <template v-for="info in supplierInfo" :key="info['supplierCode']">
-      <q-item class="q-pt-xs q-pb-xs">
-        <q-icon
-          name="fas fa-phone"
-          class="q-pr-md q-pt-xs"
-          color="teal"
-          v-if="
-            info['tel0'] != ' ' ||
-            info['tel1'] != ' ' ||
-            info['tel2'] != ' ' ||
-            info['tel3'] != ' ' ||
-            info['tel4'] != ' ' ||
-            info['mobile0'] != ' '
-          "
-        />
-        {{ info['tel0'] }}
-        {{ info['tel1'] }}
-        {{ info['tel2'] }}
-        {{ info['tel3'] }}
-        {{ info['tel4'] }}
-        {{ info['mobile0'] }}
-        <q-icon name="fas fa-fax" class="q-pr-md q-pl-md q-pt-xs" color="teal" v-if="info['fax0'] != ' '" />
-        {{ info['fax0'] }}
+    <q-item class="text-h6 text-weight-bold q-pr-md q-pb-xs">
+      <q-icon name="fas fa-address-book" class="q-pr-md q-pt-xs" color="teal" />
+      {{ info['supplierCode'] }}
+      {{ info['supplierName0'] }}
+      {{ info['supplierName1'] }}
+    </q-item>
+    <q-item class="q-pt-xs q-pb-xs">
+      <q-icon
+        name="fas fa-phone"
+        class="q-pr-md q-pt-xs"
+        color="teal"
+        v-if="
+          info['tel0'] != ' ' ||
+          info['tel1'] != ' ' ||
+          info['tel2'] != ' ' ||
+          info['tel3'] != ' ' ||
+          info['tel4'] != ' ' ||
+          info['mobile0'] != ' '
+        "
+      />
+      {{ info['tel0'] }}
+      {{ info['tel1'] }}
+      {{ info['tel2'] }}
+      {{ info['tel3'] }}
+      {{ info['tel4'] }}
+      {{ info['mobile0'] }}
+      <q-icon name="fas fa-fax" class="q-pr-md q-pl-md q-pt-xs" color="teal" v-if="info['fax0'] != ' '" />
+      {{ info['fax0'] }}
 
-        <q-icon
-          name="fas fa-envelope"
-          class="q-pr-md q-pl-md q-pt-xs"
-          color="teal"
-          v-if="
-            info['email0'] != ' ' ||
-            info['email1'] != ' ' ||
-            info['email2'] != ' ' ||
-            info['email3'] != ' ' ||
-            info['email4'] != ' '
-          "
-        />
-        {{ info['email0'] }}
-        {{ info['email1'] }}
-        {{ info['email2'] }}
-        {{ info['email3'] }}
-        {{ info['email4'] }}
+      <q-icon
+        name="fas fa-envelope"
+        class="q-pr-md q-pl-md q-pt-xs"
+        color="teal"
+        v-if="
+          info['email0'] != ' ' ||
+          info['email1'] != ' ' ||
+          info['email2'] != ' ' ||
+          info['email3'] != ' ' ||
+          info['email4'] != ' '
+        "
+      />
+      {{ info['email0'] }}
+      {{ info['email1'] }}
+      {{ info['email2'] }}
+      {{ info['email3'] }}
+      {{ info['email4'] }}
 
-        <q-icon
-          name="fas fa-map-marker"
-          class="q-pr-md q-pl-md q-pt-xs"
-          color="teal"
-          v-if="
-            info['postCode'] != ' ' ||
-            info['country'] != ' ' ||
-            info['state'] != ' ' ||
-            info['city'] != ' ' ||
-            info['address0'] != ' ' ||
-            info['address1'] != ' '
-          "
-        />
-        {{ info['postCode'] }}{{ info['country'] }} {{ info['state'] }} {{ info['city'] }} {{ info['address0']
-        }}{{ info['address1'] }}
+      <q-icon
+        name="fas fa-map-marker"
+        class="q-pr-md q-pl-md q-pt-xs"
+        color="teal"
+        v-if="
+          info['postCode'] != ' ' ||
+          info['country'] != ' ' ||
+          info['state'] != ' ' ||
+          info['city'] != ' ' ||
+          info['address0'] != ' ' ||
+          info['address1'] != ' '
+        "
+      />
+      {{ info['postCode'] }}{{ info['country'] }} {{ info['state'] }} {{ info['city'] }} {{ info['address0']
+      }}{{ info['address1'] }}
 
-        <q-icon
-          name="fas fa-internet-explorer"
-          class="q-pr-md q-pl-md q-pt-xs"
-          color="teal"
-          v-if="info['website'] != ' '"
-        />
-        <a target="_blank" :href="WebSiteUrl(info['website'])" v-if="info['website'] != ' '">
-          {{ WebSiteUrl(info['website']) }}
-        </a>
-      </q-item>
-    </template>
+      <q-icon
+        name="fas fa-internet-explorer"
+        class="q-pr-md q-pl-md q-pt-xs"
+        color="teal"
+        v-if="info['website'] != ' '"
+      />
+      <a target="_blank" :href="WebSiteUrl(info['website'])" v-if="info['website'] != ' '">
+        {{ WebSiteUrl(info['website']) }}
+      </a>
+    </q-item>
     <q-inner-loading :showing="showLoading">
       <q-spinner-ios size="50px" color="primary" />
     </q-inner-loading>
@@ -104,7 +100,7 @@ const props = defineProps({
 const showLoading = ref(false)
 
 // component vars
-const supplierInfo = ref([])
+const info = ref({})
 
 // actions
 const doUpdate = () => {
@@ -114,7 +110,7 @@ const doUpdate = () => {
 
   axiosGet('/Data/SupplierDetails', { supplierCode: props.supplierCode })
     .then((response) => {
-      supplierInfo.value = response
+      info.value = response[0]
     })
     .finally(() => {
       showLoading.value = false
@@ -122,7 +118,7 @@ const doUpdate = () => {
 }
 
 const WebSiteUrl = (url) => {
-  if (url.toLowerCase().substr(0, 4) === 'http') {
+  if (url?.toLowerCase().substr(0, 4) === 'http') {
     return url
   } else {
     return 'http://' + url
@@ -136,7 +132,6 @@ onMounted(() => {
 
 watch(props, (value, oldValue) => {
   console.debug('watch:', oldValue, '--->', value)
-
   doUpdate()
 })
 </script>

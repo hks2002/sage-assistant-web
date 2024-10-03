@@ -2,7 +2,8 @@
 * @Author                : Robert Huang<56649783@qq.com>
 * @CreatedDate           : 2022-03-25 11:01:00
 * @LastEditors           : Robert Huang<56649783@qq.com>
-* @LastEditDate          : 2024-07-15 13:53:18
+* @LastEditDate          : 2025-01-24 10:37:45
+* @FilePath              : sage-assistant-web/src/layouts/PageHeader.vue
 * @CopyRight             : Dedienne Aerospace China ZhuHai
 -->
 
@@ -12,7 +13,7 @@
       <q-btn flat dense round icon="fas fa-outdent" aria-label="Menu" @click="toggleLeftDrawer" />
       <q-btn v-show="$q.screen.gt.xs" dense flat round size="sm" class="q-mr-xs" @click="goHome">
         <q-avatar dense>
-          <img src="/imgs/logo.svg" style="background-color: white" />
+          <q-img src="/imgs/logo.svg" style="background-color: white" />
         </q-avatar>
       </q-btn>
       <q-toolbar-title>{{ $t('S.APP_NAME') }}{{ $route.path }}</q-toolbar-title>
@@ -26,7 +27,6 @@
           color="primary"
           v-model="site"
           :options="siteList"
-          @update:model-value="changeSite"
         >
           <template #selected-item="{ opt }">
             <span class="text-white">{{ opt }}</span>
@@ -39,9 +39,8 @@
           map-options
           options-dense
           color="primary"
-          v-model="locale"
+          v-model="language"
           :options="langOptions"
-          @update:model-value="changeLanguage"
         >
           <template #selected-item="{ opt }">
             <span class="text-white">{{ opt.label }}</span>
@@ -66,12 +65,14 @@
 
 <script setup>
 import { axiosGet, axiosPost } from '@/assets/axiosActions'
-import { usePagesStore } from '@/stores/pageManager'
-import { Cookies, Dialog, LocalStorage, SessionStorage, useQuasar } from 'quasar'
-import languages from 'quasar/lang/index.json'
-import { inject, onBeforeMount, ref } from 'vue'
+import { usePageStore } from '@/stores/PageStore'
+import { storeToRefs } from 'pinia'
+import { Dialog, SessionStorage, useQuasar } from 'quasar'
+import { onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
+
+import languages from 'quasar/lang/index.json'
 
 /* eslint-disable */
 const props = defineProps({
@@ -83,21 +84,25 @@ const props = defineProps({
 })
 
 // common vars
-const pagesStore = usePagesStore()
+const $pageStore = usePageStore()
 const $router = useRouter()
 const $q = useQuasar()
-const ebus = inject('ebus')
 
 // header vars
-const site = ref(null)
-const siteList = ref(null)
-const userInfo = ref('')
+const { site, language, siteList, userInfo } = storeToRefs($pageStore)
 const totalInformCount = ref(0)
 
 // languages vars
-// 'en-US', 'zh-CN'
-const { locale, t } = useI18n()
-const appLanguages = languages.filter((lang) => ['en-US', 'zh-CN'].includes(lang.isoName))
+const { t } = useI18n()
+const appLangs = []
+const i18nFiles = require.context('@/i18n', false, /.json$/)
+i18nFiles.keys().forEach((key) => {
+  // remove "./" and ".js"
+  const lang = key.slice(2, -5)
+  appLangs.push(lang)
+  console.debug('\u001b[35m' + '[i18n] ', 'adding', lang)
+})
+const appLanguages = languages.filter((lang) => appLangs.includes(lang.isoName))
 const langOptions = appLanguages.map((lang) => ({
   label: lang.nativeName,
   value: lang.isoName
@@ -105,7 +110,7 @@ const langOptions = appLanguages.map((lang) => ({
 
 // actions
 const toggleLeftDrawer = () => {
-  ebus.emit('toggleLeftDrawer')
+  $pageStore.toggleLeftDrawer()
 }
 
 const showHelp = () => {
@@ -116,8 +121,8 @@ const showHelp = () => {
 }
 
 const goHome = () => {
-  pagesStore.$reset()
-  $router.push({ name: 'Home' })
+  $pageStore.$reset()
+  $router.push({ name: 'Dashboard' })
 }
 
 const doLogout = () => {
@@ -127,40 +132,18 @@ const doLogout = () => {
   $router.push({ path: '/Login' })
 }
 
-const changeSite = (val) => {
-  LocalStorage.set('site', val)
-  ebus.emit('changeSite', val)
-}
-
-const changeLanguage = (val) => {
-  // This change $t() in template automatically,
-  locale.value = val
-  // Save this change in Cookies
-  Cookies.set('locale', val)
-
-  // Json data import won't update automatically,
-  // so send a signal
-  ebus.emit('changeLanguage', val)
-}
-
 // event handing
-onBeforeMount(() => {
-  if (!LocalStorage.has('site')) {
-    site.value = 'ZHU'
-    LocalStorage.set('site', site.value)
-  } else {
-    site.value = LocalStorage.getItem('site')
-  }
-
+onMounted(() => {
   axiosGet('/Data/Sites').then((data) => {
+    data.push('CHINA')
+    data.push('ALL')
     siteList.value = data
-    LocalStorage.set('siteList', siteList.value)
   })
 
   axiosPost('/Data/Profile', {}).then((response) => {
     if (response.success) {
       SessionStorage.set('userProfiles', response.profile)
-      userInfo.value = response.profile.userName + '<' + response.profile.email + '>'
+      $pageStore.setUserInfo(response.profile.userName + '<' + response.profile.email + '>')
     }
   })
 

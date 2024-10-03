@@ -2,10 +2,11 @@
 * @Author                : Robert Huang<56649783@qq.com>
 * @CreatedDate           : 2022-04-01 16:30:00
 * @LastEditors           : Robert Huang<56649783@qq.com>
-* @LastEditDate          : 2023-11-30 12:56:27
-* @CopyRight             : Dedienne Aerospace China ZhuHai
+* @LastEditDate          : 2024-10-16 15:00:17
+* @FilePath              : sage-assistant-web/src/components/stock/QMarkupTableStockHistory.vue
+* @CopyRight             : MerBleueAviation
 -->
-
+ 
 <template>
   <q-markup-table dense bordered class="col-grow">
     <thead style="position: sticky; top: 0px; z-index: 1">
@@ -61,13 +62,13 @@
 </template>
 
 <script setup>
-import { axiosGet } from '@/assets/axiosActions'
-import { jsonToExcel } from '@/assets/dataUtils'
-import { LocalStorage } from 'quasar'
-import { inject, onBeforeUnmount, onMounted, ref, watch } from 'vue'
-import { useI18n } from 'vue-i18n'
+import { axiosGet } from '@/assets/axiosActions';
+import { jsonToExcel } from '@/assets/dataUtils';
+import { onMounted, ref, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
 
 const props = defineProps({
+  site: String,
   PnOrName: { type: String, require: false, default: '' },
   dateFrom: String,
   dateTo: String
@@ -75,9 +76,7 @@ const props = defineProps({
 
 // common vars
 const { t } = useI18n()
-const ebus = inject('ebus')
 const showLoading = ref(false)
-const site = ref(LocalStorage.getItem('site'))
 
 // component vars
 const stockHistory = ref([])
@@ -88,9 +87,9 @@ const doUpdate = () => {
 
   axiosGet(
     '/Data/StockHistory?Site=' +
-      site.value +
+      props.site +
       '&PnOrName=' +
-      props.PnOrName +
+      props.PnOrName.toLowerCase() +
       '&DateFrom=' +
       props.dateFrom +
       '&DateTo=' +
@@ -127,26 +126,17 @@ const download = () => {
     value.PN = '#' + value.PN
   })
   const title = t('S.{site} STOCK HISTORY {dateFrom}_{dateTo}', {
-    site: site.value,
+    site: props.site,
     dateFrom: props.dateFrom,
     dateTo: props.dateTo
   })
 
-  jsonToExcel(header, strPNData, title)
+  jsonToExcel(title, props.site, strPNData)
 }
 
 // events
 onMounted(() => {
   doUpdate()
-})
-
-ebus.on('changeSite', (newSite) => {
-  site.value = newSite
-  doUpdate()
-})
-
-onBeforeUnmount(() => {
-  ebus.off('changeSite')
 })
 
 watch(props, (value, oldValue) => {

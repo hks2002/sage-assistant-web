@@ -2,8 +2,8 @@
 * @Author                : Robert Huang<56649783@qq.com>
 * @CreatedDate           : 2022-03-25 11:01:00
 * @LastEditors           : Robert Huang<56649783@qq.com>
-* @LastEditDate          : 2023-06-21 15:37:22
-* @FilePath              : src/layouts/PopMenuTabPanel.vue
+* @LastEditDate          : 2024-11-29 19:30:17
+* @FilePath              : sage-assistant-web/src/layouts/PopMenuTabPanel.vue
 * @CopyRight             : Dedienne Aerospace China ZhuHai
 -->
 
@@ -26,21 +26,5 @@
   </q-tab-panel>
 </template>
 
-<script setup>
-// import ebus from '@/assets/ebus'
-// import { useQuasar } from 'quasar'
-// import { onBeforeUnmount } from 'vue'
-// import { useRoute, useRouter } from 'vue-router'
-
-// const q = useQuasar()
-// const { route } = useRoute()
-// const { router } = useRouter()
-// q.loadingBar.stop()
-
-// // event handing
-// ebus.on('toggleLeftDrawer', toggleLeftDrawer)
-// onBeforeUnmount(() => {
-//   ebus.off('toggleLeftDrawer', toggleLeftDrawer)
-// })
-</script>
+<script setup></script>
 <style lang="scss" scoped></style>

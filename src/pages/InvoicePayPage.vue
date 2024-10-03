@@ -2,116 +2,183 @@
 * @Author                : Robert Huang<56649783@qq.com>
 * @CreatedDate           : 2023-06-17 23:07:00
 * @LastEditors           : Robert Huang<56649783@qq.com>
-* @LastEditDate          : 2023-11-30 11:01:33
+* @LastEditDate          : 2025-01-24 14:40:36
+* @FilePath              : sage-assistant-web/src/pages/InvoicePayPage.vue
 * @CopyRight             : Dedienne Aerospace China ZhuHai
 -->
 
 <template>
-  <WaitInputLottieVue v-if="!customerCode && isAuthorized('GESSIH')" />
-  <ExceptionLottieVue :ErrorCode="403" v-if="!isAuthorized('GESSIH')" />
-
-  <div class="row q-gutter-sm q-px-sm q-pt-sm" v-if="isAuthorized('GESSIH')">
-    <QSelectAxios
-      option-label="customerName"
-      option-value="customerCode"
-      data-url="/Data/CustomerHelper"
-      :label="$t('S.SEARCH_CUSTOMER') + ' ' + $t('S.DOUBLE_PERCENT_FOR_ALL')"
-      input-style="font-weight:bolder;font-size:25px;text-transform:uppercase"
-      popup-content-style="font-weight:bold;font-size:25px"
-      popup-content-class="text-secondary"
-      class="col-grow"
-      @input-value="checkInputAll"
-      @update:model-value="searchCustomer"
-    />
-    <q-toggle v-model="proSearch" :label="$t('S.PRO_SEARCH')" class="col-1" />
-    <q-option-group
-      v-model="dateType"
-      :options="[
-        { label: $t('F.InvoiceDate'), value: 'invoiceDate' },
-        { label: $t('F.DueDate'), value: 'dueDate' },
-        { label: $t('F.PaymentDate'), value: 'payDate' }
-      ]"
-      inline
-      class="col-3"
-    />
-    <q-input
-      v-model="dateFrom"
-      dense
-      outlined
-      debounce="1000"
-      mask="date"
-      type="date"
-      :label="$t('S.FROM')"
-      class="col-2"
-    />
-    <q-input
-      v-model="dateTo"
-      dense
-      outlined
-      debounce="1000"
-      mask="date"
-      type="date"
-      :label="$t('S.TO')"
-      class="col-2"
-    />
-  </div>
-  <q-list class="q-pa-sm" v-if="customerCode">
-    <q-table-invoice-pay-vue
-      :customerCode="customerCode"
-      :dateFrom="dateFrom"
-      :dateTo="dateTo"
-      :site="site"
-      :dateType="dateType"
-      :proSearch="proSearch"
-    />
-  </q-list>
+  <q-page :style-fn="$pageStore.setPageHeightStyle">
+    <div class="row q-gutter-sm q-pa-sm">
+      <q-btn-group outline>
+        <q-btn
+          dense
+          outline
+          no-caps
+          color="primary"
+          icon="watch_later"
+          :label="$t('S.LAST_5YEAR')"
+          @click="updateDateRange('lastNYear', 5)"
+        />
+        <q-btn
+          dense
+          outline
+          no-caps
+          color="primary"
+          icon="watch_later"
+          :label="$t('S.LAST_YEAR')"
+          @click="updateDateRange('lastNYear', 1)"
+        />
+        <q-btn
+          dense
+          outline
+          no-caps
+          color="primary"
+          icon="watch_later"
+          :label="$t('S.THIS_YEAR')"
+          @click="updateDateRange('lastNYear', 0)"
+        />
+      </q-btn-group>
+      <QSelectAxiosVue
+        option-label="customerName"
+        option-value="customerCode"
+        v-model="customerCode"
+        data-url="/Data/CustomerHelper"
+        :label="$t('S.SEARCH_CUSTOMER')"
+        input-style="font-weight:bolder;font-size:25px;text-transform:uppercase"
+        popup-content-style="font-weight:bold;font-size:25px"
+        popup-content-class="text-secondary"
+        class="col-2"
+        @clear="clearCustomer()"
+      />
+      <q-input
+        v-model="dateFrom"
+        dense
+        outlined
+        debounce="1000"
+        mask="date"
+        type="date"
+        :label="$t('S.FROM')"
+        class="col-1"
+      />
+      <q-input
+        v-model="dateTo"
+        dense
+        outlined
+        debounce="1000"
+        mask="date"
+        type="date"
+        :label="$t('S.TO')"
+        class="col-1"
+      />
+      <div class="q-gutter-sm">
+        <q-radio dense v-model="colClass" val="col-3" :label="$t('S.SMALL')" />
+        <q-radio dense v-model="colClass" val="col-6" :label="$t('S.BIG')" />
+      </div>
+    </div>
+    <div class="row q-col-gutter-sm q-pa-sm" :style="$pageStore.setDomHeightStyle(56)">
+      <div :class="colClass">
+        <EchartFinancialInvoiceSummaryAmount
+          dateType="NEW"
+          payStatus="ALL"
+          :customerCode="customerCode"
+          :site="site"
+          :dateFrom="dateFrom"
+          :dateTo="dateTo"
+          :interval="showBy"
+          style="height: 400px"
+        />
+      </div>
+      <div :class="colClass">
+        <EchartFinancialInvoiceSummaryAmount
+          dateType="PAY"
+          payStatus="Paid"
+          :customerCode="customerCode"
+          :site="site"
+          :dateFrom="dateFrom"
+          :dateTo="dateTo"
+          :interval="showBy"
+          style="height: 400px"
+        />
+      </div>
+      <div :class="colClass">
+        <EchartFinancialInvoiceSummaryAmount
+          dateType="DUE"
+          payStatus="Paid"
+          :customerCode="customerCode"
+          :site="site"
+          :dateFrom="dateFrom"
+          :dateTo="dateTo"
+          :interval="showBy"
+          style="height: 400px"
+        />
+      </div>
+      <div :class="colClass">
+        <EchartFinancialInvoiceSummaryAmount
+          dateType="DUE"
+          payStatus="PU-Paid"
+          :customerCode="customerCode"
+          :site="site"
+          :dateFrom="dateFrom"
+          :dateTo="dateTo"
+          :interval="showBy"
+          style="height: 400px"
+        />
+      </div>
+      <div class="col-12">
+        <q-table-invoice-pay-vue
+          :customerCode="customerCode"
+          :dateFrom="dateFrom"
+          :dateTo="dateTo"
+          :site="site"
+          :style="$pageStore.setDomHeightStyle(80)"
+        />
+      </div>
+    </div>
+  </q-page>
 </template>
 
 <script setup>
-import { isAuthorized } from '@/assets/auth'
+import EchartFinancialInvoiceSummaryAmount from '@/components/echarts/EchartFinancialInvoiceSummaryAmount.vue'
 import QTableInvoicePayVue from '@/components/Financial/QTableInvoicePay.vue'
-import ExceptionLottieVue from '@/components/lottie/ExceptionLottie.vue'
-import WaitInputLottieVue from '@/components/lottie/WaitInputLottie.vue'
-import QSelectAxios from '@/controls/QSelectAxios.vue'
-import { date, LocalStorage } from 'quasar'
-import { inject, onBeforeUnmount, ref } from 'vue'
+import QSelectAxiosVue from '@/controls/QSelectAxios.vue'
 
-/* eslint-disable */
-const props = defineProps({
-  pageHeight: { type: Number, default: 0 /* not passing  */ }
-})
+import { ref } from 'vue'
+import { useRouter } from 'vue-router'
 
-// common vars
-const ebus = inject('ebus')
-const site = ref(LocalStorage.getItem('site'))
+import { getDateRange } from '@/assets/dateUtils'
+import { usePageStore } from '@/stores/PageStore'
+import { storeToRefs } from 'pinia'
+const $pageStore = usePageStore()
+
 // page vars
-const customerCode = ref(null)
-const proSearch = ref(false)
-const dateType = ref('invoiceDate')
+const { site } = storeToRefs($pageStore)
 
-const { formatDate, addToDate } = date
-const nowTimeStamp = Date.now()
-const fromTimeStamp = addToDate(nowTimeStamp, { years: -2 })
-const dateFrom = ref(formatDate(fromTimeStamp, 'YYYY-MM-DD'))
-const dateTo = ref(formatDate(nowTimeStamp, 'YYYY-MM-DD'))
+const colClass = ref('col-3')
+const customerCode = ref('ALL')
+const showBy = ref('Month')
 
-// check if searchAll
-const checkInputAll = (inputText) => {
-  if (inputText === '%%') {
-    customerCode.value = '%%'
+const dateRange = ref(getDateRange('lastNYear', 0))
+const dateFrom = ref(dateRange.value.dateFrom)
+const dateTo = ref(dateRange.value.dateTo)
+
+const updateDateRange = (rangeName, n) => {
+  dateRange.value = getDateRange(rangeName, n)
+  dateFrom.value = dateRange.value.dateFrom
+  dateTo.value = dateRange.value.dateTo
+  if (rangeName === 'lastNYear' && n > 1) {
+    showBy.value = 'Year'
+  } else {
+    showBy.value = 'Month'
   }
 }
 
-const searchCustomer = (Code) => {
-  customerCode.value = Code
+const clearCustomer = () => {
+  customerCode.value = 'ALL'
 }
 
-// events
-ebus.on('changeSite', (newSite) => {
-  site.value = newSite
-})
-
-onBeforeUnmount(() => {
-  ebus.off('changeSite')
-})
+const router = useRouter()
+if (router.currentRoute.value.query.site) {
+  site.value = router.currentRoute.value.query.site
+}
 </script>

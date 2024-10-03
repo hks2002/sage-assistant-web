@@ -2,8 +2,8 @@
 * @Author                : Robert Huang<56649783@qq.com>
 * @CreatedDate           : 2022-10-09 17:38:00
 * @LastEditors           : Robert Huang<56649783@qq.com>
-* @LastEditDate          : 2023-06-10 09:59:31
-* @FilePath              : src/components/lottie/LottiePlayer.vue
+* @LastEditDate          : 2024-11-29 19:25:22
+* @FilePath              : sage-assistant-web/src/components/lottie/LottiePlayer.vue
 * @CopyRight             : Dedienne Aerospace China ZhuHai
 -->
 

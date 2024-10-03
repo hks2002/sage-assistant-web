@@ -7,7 +7,7 @@
  *****************************************************************************/
 
 import { getQueryParameters } from '@/assets/mockExt'
-import orderBy from 'lodash'
+import orderBy from 'lodash-es'
 import Mock from 'mockjs'
 
 // Mock.setup({ timeout: '500-1000' })

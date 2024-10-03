@@ -2,30 +2,35 @@
  * @Author                : Robert Huang<56649783@qq.com>                     *
  * @CreatedDate           : 2022-03-25 11:01:00                               *
  * @LastEditors           : Robert Huang<56649783@qq.com>                     *
- * @LastEditDate          : 2023-11-30 11:11:29                               *
+ * @LastEditDate          : 2025-01-24 09:24:38                               *
+ * @FilePath              : sage-assistant-web/src/assets/echartsCfg.js       *
  * @CopyRight             : Dedienne Aerospace China ZhuHai                   *
  *****************************************************************************/
 
 const echarts = require('echarts/lib/echarts')
-import { jsonToExcel, jsonToMultiLine, jsonToTable } from 'assets/dataUtils.js'
 import { BarChart, LineChart, PieChart, SankeyChart, ScatterChart } from 'echarts/charts'
 import {
   DataZoomComponent,
+  GraphicComponent,
   GridComponent,
   LegendComponent,
   TitleComponent,
   ToolboxComponent,
   TooltipComponent
 } from 'echarts/components'
-import _cloneDeep from 'lodash/cloneDeep'
-import _get from 'lodash/get'
-import _merge from 'lodash/merge'
+import { CanvasRenderer, SVGRenderer } from 'echarts/renderers'
+
 import { Dialog, date } from 'quasar'
 
+import { jsonToExcel, jsonToMultiLine, jsonToTable } from '@/assets/dataUtils.js'
+
 echarts.use([
+  SVGRenderer,
+  CanvasRenderer,
   GridComponent,
   ToolboxComponent,
   DataZoomComponent,
+  GraphicComponent,
   LegendComponent,
   TitleComponent,
   TooltipComponent,
@@ -37,9 +42,18 @@ echarts.use([
 ])
 
 // --------------------------------- default setting ------------------------------
-const defaultSeriesColor = [
+const defaultColor = [
+  '#5470c6',
+  '#91cc75',
+  '#fac858',
+  '#3ba272',
+  '#fc8452',
+  '#9a60b4',
+  '#ea7ccc',
   '#40a9ff',
+  '#73c0de',
   '#f759ab',
+  '#ee6666',
   '#ffa940',
   '#bae637',
   '#9254de',
@@ -64,6 +78,23 @@ const defaultSeriesColor = [
   '#ff7875'
 ]
 
+const defaultTitle = (title, subtitle) => {
+  return {
+    text: title,
+    textStyle: {
+      fontSize: 12
+    },
+    subtext: subtitle,
+    subtextStyle: {
+      fontSize: 12
+    },
+    left: 'center',
+    top: 'top'
+  }
+}
+
+const defaultLegend = { left: 10, top: 20, itemGap: 5, itemWidth: 14, itemHeight: 14 }
+
 const defaultTooltip = {
   backgroundColor: 'rgba(255,255,255,0.8)',
   borderWidth: '1',
@@ -77,6 +108,8 @@ const defaultTooltip = {
   confine: true
 }
 
+const multiLineFormatter = (params) => jsonToMultiLine(params.data)
+
 const defaultXAxisTime = {
   type: 'time',
   splitLine: {
@@ -89,23 +122,41 @@ const defaultXAxisTime = {
     formatter: '{MM}-{dd}\n{yyyy}'
   }
 }
-
-const defaultYAxisUSD = {
+const defaultYAxisPercent = {
+  type: 'value',
   min: 0,
-  max: function (value) {
-    if (isNaN(value.max)) {
-      return 1000
-    } else {
-      return null
-    }
-  },
-  minInterval: 100,
+  max: 100,
+  nameLocation: 'start',
   axisLabel: {
-    formatter: '{value}\nUSD'
+    formatter: '{value} %'
   }
 }
 
-const defaultDataZoom = function (axises, xStartValue, yStartValue) {
+const defaultYAxis = (axisLabel) => {
+  return {
+    min: 0,
+    max: (value) => {
+      if (isNaN(value.max)) {
+        return 1000
+      } else {
+        return null
+      }
+    },
+    minInterval: 100,
+    axisLabel: {
+      formatter: `{value}\n${axisLabel}`
+    }
+  }
+}
+
+const defaultYAxis2 = (gridIndex, axisLabel) => {
+  return {
+    gridIndex: gridIndex,
+    ...defaultYAxis(axisLabel)
+  }
+}
+
+const defaultDataZoom = (axises, xStartValue, yStartValue) => {
   const dataZoom = []
   if (axises.toLowerCase().indexOf('x') > -1) {
     if (xStartValue) {
@@ -161,27 +212,30 @@ const defaultDataZoom = function (axises, xStartValue, yStartValue) {
   return dataZoom
 }
 
-const defaultToolbox = function (headers, data, title) {
+const defaultToolbox = (title, data, headers) => {
   return {
+    itemGap: 4,
+    orient: 'vertical',
     feature: {
-      //  use viewData instead.
+      //  use myDataView instead.
       // dataView: {
       //  title: 'xx',
       //  optionToContent: () => jsonToTable(headers, data, title)
       // },
-      dataZoom: {
-        show: true
-      },
-      myTool: {
+      myDataView: {
         show: true,
-        title: 'View',
+        title: 'Data',
         icon: 'path://M17.5,17.3H33 M17.5,17.3H33 M45.4,29.5h-28 M11.5,2v56H51V14.8L38.4,2H11.5z M38.4,2.2v12.7H51 M45.4,41.7h-28',
         onclick: () => {
           Dialog.create({
-            message: jsonToTable(headers, data, title),
+            message: jsonToTable(title, data, headers),
             html: true,
             fullWidth: true,
-            fullHeight: true
+            fullHeight: true,
+            ok: {
+              icon: 'fas fa-sign-out-alt',
+              color: 'primary'
+            }
           })
             .onOk(() => {
               // console.log('OK')
@@ -197,148 +251,107 @@ const defaultToolbox = function (headers, data, title) {
       saveAsImage: {
         show: true
       },
-      myTool2: {
+      myDownload: {
         show: true,
         title: 'Download',
         icon: 'path://M4.7,22.9L29.3,45.5L54.7,23.4M4.6,43.6L4.6,58L53.8,58L53.8,43.6M29.2,45.1L29.2,0M4.7,35.9L29.3,45.5L54.7,35.4',
         onclick: () => {
           const timeStamp = Date.now()
           const formattedString = date.formatDate(timeStamp, 'YYYY-MM-DD')
-          jsonToExcel(headers, data, title + formattedString)
+          jsonToExcel(title, formattedString, data, headers)
         }
       }
     }
   }
 }
 
-const defaultLegend = { left: 10, top: 20 }
-
-const defaultEchartOption = {
-  textStyle: {
-    fontSize: 10
-  },
-  title: {
-    text: 'This is title',
-    subtext: 'This is subtitle',
-    left: 'center'
-  },
-  legend: defaultLegend,
-  grid: [{}],
-  tooltip: defaultTooltip
-}
-
-const defaultLineSerial = function (index, value, labelFormatter, dimensions, encodeX, encodeY) {
+const defaultToolboxWithZoom = (title, data, headers) => {
   return {
-    type: 'line',
-    datasetIndex: index,
-    name: value,
-    label: {
-      show: true,
-      position: 'bottom',
-      formatter: labelFormatter
-    },
-    tooltip: {
-      trigger: 'item',
-      formatter: (params) => jsonToMultiLine(dimensions, params.data)
-    },
-    dimensions: dimensions,
-    encode: {
-      x: encodeX,
-      y: encodeY
-    }
-  }
-}
-const defaultBarSerial = function (index, value, labelFormatter, dimensions, encodeX, encodeY) {
-  return {
-    type: 'bar',
-    datasetIndex: index,
-    name: value,
-    label: {
-      show: true,
-      position: 'inside',
-      formatter: labelFormatter
-    },
-    tooltip: {
-      trigger: 'item',
-      formatter: (params) => jsonToMultiLine(dimensions, params.data)
-    },
-    dimensions: dimensions,
-    encode: {
-      x: encodeX,
-      y: encodeY
+    itemGap: 4,
+    orient: 'vertical',
+    feature: {
+      myMaximize: {
+        show: true,
+        title: 'Maximize',
+        icon: 'M 0 0 L 10 0 L 10 10 L 0 10 L 0 0 M 0 0',
+        onclick: () => {} // let it empty here, will be modified later
+      },
+      myRestore: {
+        show: true,
+        title: 'Restore',
+        icon: 'M 0 0 L 10 0 L 10 10 L 0 10 L 0 0 M 2 -2 L 12 -2 L 12 8',
+        onclick: () => {} // let it empty here, will be modified later
+      },
+      ...defaultToolbox(title, data, headers).feature
     }
   }
 }
 
-const defaultScatterSerial = function (index, value, labelFormatter, dimensions, encodeX, encodeY) {
-  return {
-    type: 'scatter',
-    datasetIndex: index,
-    name: value,
-    label: {
-      show: true,
-      position: 'bottom',
-      formatter: labelFormatter
-    },
-    tooltip: {
-      trigger: 'item',
-      formatter: (params) => jsonToMultiLine(dimensions, params.data)
-    },
-    dimensions: dimensions,
-    encode: {
-      x: encodeX,
-      y: encodeY
-    }
+const genMonthSerial = (startTxt, endTxt, includeFuture = false) => {
+  const startDate = date.extractDate(startTxt, 'YYYY-MM-DD')
+  let endDate = date.extractDate(endTxt, 'YYYY-MM-DD')
+  let tmpDate = startDate
+  let months = []
+
+  while (tmpDate < endDate) {
+    const fmtString = date.formatDate(tmpDate, 'YYYY-MM')
+    tmpDate = date.addToDate(tmpDate, { months: 1 })
+    months.push(fmtString)
+  }
+  return months
+}
+
+const genYearSerial = (startTxt, endTxt, includeFuture = false) => {
+  const startDate = date.extractDate(startTxt, 'YYYY-MM-DD')
+  let endDate = date.extractDate(endTxt, 'YYYY-MM-DD')
+  let tmpDate = startDate
+  let years = []
+
+  while (tmpDate < endDate) {
+    const fmtString = date.formatDate(tmpDate, 'YYYY')
+    tmpDate = date.addToDate(tmpDate, { years: 1 })
+    years.push(fmtString)
+  }
+  return years
+}
+
+const isFuture = (dateTxt, type) => {
+  const now = Date.now()
+  if (type === 'Month') {
+    return date.extractDate(dateTxt, 'YYYY-MM') > now
+  } else {
+    return date.extractDate(dateTxt, 'YYYY') > now
   }
 }
 
-const defaultBarStackedSerial = function (index, value, labelFormatter, dimensions, encodeX, encodeY) {
-  return mergerOption(defaultBarSerial(index, value, labelFormatter, dimensions, encodeX, encodeY), { stack: 'total' })
-}
-
-const DefaultPieSerial = function (index, labelFormatter, dimensions, summed, encode) {
-  return {
-    type: 'pie',
-    datasetIndex: index,
-    radius: [0, '30%'],
-    label: {
-      formatter: labelFormatter
-    },
-    tooltip: {
-      trigger: 'item',
-      formatter: (params) => _get(params.data, summed) + '<br/>' + encode + ':' + _get(params.data, encode) + '<br/>'
-    },
-    labelLine: {},
-    dimensions: dimensions,
-    encode: {
-      value: encode
-    }
+const formatNumber = (num) => {
+  if (num >= 1000000000) {
+    return (num / 1000000000).toFixed(1) + 'B'
+  } else if (num >= 1000000) {
+    return (num / 1000000).toFixed(1) + 'M'
+  } else if (num >= 1000) {
+    return (num / 1000).toFixed(1) + 'K'
+  } else {
+    return num.toFixed(1).toString()
   }
-}
-
-const AttachedPieSerial = function (index, labelFormatter, dimensions, summed, encode) {
-  return mergerOption(DefaultPieSerial(index, labelFormatter, dimensions, summed, encode), { center: ['88%', '50%'] })
-}
-
-function mergerOption(defaultOption, clientOption) {
-  const defaultOptionClone = _cloneDeep(defaultOption)
-  return _merge(defaultOptionClone, clientOption)
 }
 
 export {
-  AttachedPieSerial,
-  defaultBarSerial,
-  defaultBarStackedSerial,
+  defaultColor,
   defaultDataZoom,
-  defaultEchartOption,
   defaultLegend,
-  defaultLineSerial,
-  defaultScatterSerial,
-  defaultSeriesColor,
+  defaultTitle,
   defaultToolbox,
+  defaultToolboxWithZoom,
   defaultTooltip,
   defaultXAxisTime,
-  defaultYAxisUSD,
+  defaultYAxis,
+  defaultYAxis2,
+  defaultYAxisPercent,
   echarts,
-  mergerOption
+  formatNumber,
+  genMonthSerial,
+  genYearSerial,
+  isFuture,
+  multiLineFormatter
 }

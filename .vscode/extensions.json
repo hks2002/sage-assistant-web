@@ -13,12 +13,14 @@
     "richie5um2.vscode-sort-json",
     "streetsidesoftware.code-spell-checker",
     "adpyke.vscode-sql-formatter",
-    "vue.volar"
+    "vue.volar",
+    "merbleueaviation.auto-header-plus",
+    "merbleueaviation.emoji-commit-tiny",
+    "octref.vetur"
   ],
   "unwantedRecommendations": [
     "misterj.vue-volar-extention-pack",
     "hookyqr.beautify",
-    "octref.vetur",
     "znck.vue-language-features",
     "Wscats.vue",
     "eamodio.gitlens",

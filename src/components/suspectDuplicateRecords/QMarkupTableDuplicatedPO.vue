@@ -2,8 +2,9 @@
 * @Author                : Robert Huang<56649783@qq.com>
 * @CreatedDate           : 2023-11-14 15:52:00
 * @LastEditors           : Robert Huang<56649783@qq.com>
-* @LastEditDate          : 2024-07-19 01:28:27
-* @CopyRight             : Dedienne Aerospace China ZhuHai
+* @LastEditDate          : 2024-10-16 15:54:58
+* @FilePath              : sage-assistant-web/src/components/suspectDuplicateRecords/QMarkupTableDuplicatedPO.vue
+* @CopyRight             : MerBleueAviation
 -->
 
 <template>
@@ -11,7 +12,7 @@
   <q-markup-table dense>
     <thead style="position: sticky; top: 0px; z-index: 1">
       <tr>
-        <td :colspan="11" class="bg-teal text-h6 text-white shadow-2">
+        <td :colspan="13" class="bg-teal text-h6 text-white shadow-2">
           {{ title }}
           <q-btn dense flat icon="fas fa-download" @click="download()" />
         </td>
@@ -109,7 +110,7 @@ const download = () => {
     'totalSalesQty',
     'seq'
   ]
-  jsonToExcel(header, duplicatedPO.value, title.value)
+  jsonToExcel(title.value, duplicatedPO.value)
 }
 
 const title = computed(() =>

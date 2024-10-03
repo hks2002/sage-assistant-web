@@ -3,11 +3,18 @@
     "baseUrl": ".",
     "paths": {
       // add webpack alias support for Auto Import/Path Intellisense
-      "@ctr/*": ["src/components/controls/*"],
-      "@/*": ["src/*"],
-      "app/*": ["*"]
+      "@/*": [
+        "src/*"
+      ],
+      "app/*": [
+        "*"
+      ]
     },
     "jsx": "preserve"
   },
-  "exclude": ["dist", ".quasar", "node_modules"]
+  "exclude": [
+    "dist",
+    ".quasar",
+    "node_modules"
+  ]
 }

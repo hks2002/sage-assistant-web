@@ -2,12 +2,13 @@
 * @Author                : Robert Huang<56649783@qq.com>
 * @CreatedDate           : 2023-06-21 16:13:00
 * @LastEditors           : Robert Huang<56649783@qq.com>
-* @LastEditDate          : 2023-11-30 10:59:22
+* @LastEditDate          : 2024-11-29 19:31:10
+* @FilePath              : sage-assistant-web/src/pages/AboutPage.vue
 * @CopyRight             : Dedienne Aerospace China ZhuHai
 -->
 
 <template>
-  <div class="flex flex-center">
+  <q-page class="flex flex-center">
     <q-card>
       <div class="row text-h6 bg-primary text-white q-pl-sm">{{ $t('S.ABOUT') }} {{ $t('S.APP_NAME') }}</div>
       <div />
@@ -46,7 +47,7 @@
         </ul>
       </div>
     </q-card>
-  </div>
+  </q-page>
 </template>
 
 <script setup>

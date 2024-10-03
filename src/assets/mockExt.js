@@ -1,11 +1,11 @@
-/*********************************************************************************************************************
- * @Author                : Robert Huang<56649783@qq.com>                                                            *
- * @CreatedDate           : 2022-05-20 12:50:00                                                                      *
- * @LastEditors           : Robert Huang<56649783@qq.com>                                                            *
- * @LastEditDate          : 2023-06-15 16:33:38                                                                      *
- * @FilePath              : src/assets/mockExt.js                                                                    *
- * @CopyRight             : Dedienne Aerospace China ZhuHai                                                          *
- ********************************************************************************************************************/
+/******************************************************************************
+ * @Author                : Robert Huang<56649783@qq.com>                     *
+ * @CreatedDate           : 2022-05-20 12:50:00                               *
+ * @LastEditors           : Robert Huang<56649783@qq.com>                     *
+ * @LastEditDate          : 2024-11-29 19:05:36                               *
+ * @FilePath              : sage-assistant-web/src/assets/mockExt.js          *
+ * @CopyRight             : Dedienne Aerospace China ZhuHai                   *
+ *****************************************************************************/
 
 import Mock from 'mockjs'
 import qs from 'qs'
@@ -196,4 +196,4 @@ const getPostData = (options) => {
   return data
 }
 
-export { Mock, dataWithStatusCode, getQueryParameters, getPostParameters, getPostData }
+export { Mock, dataWithStatusCode, getPostData, getPostParameters, getQueryParameters }

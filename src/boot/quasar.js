@@ -1,21 +1,23 @@
-/*********************************************************************************************************************
- * @Author                : Robert Huang<56649783@qq.com>                                                            *
- * @CreatedDate           : 2023-08-12 16:14:56                                                                      *
- * @LastEditors           : Robert Huang<56649783@qq.com>                                                            *
- * @LastEditDate          : 2023-08-27 22:19:54                                                                      *
- * @FilePath              : sage-assistant-web/src/boot/quasar.js                                                    *
- * @CopyRight             : Dedienne Aerospace China ZhuHai                                                          *
- ********************************************************************************************************************/
+/******************************************************************************
+ * @Author                : Robert Huang<56649783@qq.com>                     *
+ * @CreatedDate           : 2023-08-12 16:14:56                               *
+ * @LastEditors           : Robert Huang<56649783@qq.com>                     *
+ * @LastEditDate          : 2025-01-19 23:14:14                               *
+ * @FilePath              : sage-assistant-web/src/boot/quasar.js             *
+ * @CopyRight             : Dedienne Aerospace China ZhuHai                   *
+ *****************************************************************************/
 
-// import 'default-passive-events'
+// require('default-passive-events')
+
 // set default for quasar
 import { Loading, Notify, QSpinnerBars } from 'quasar'
+import { boot } from 'quasar/wrappers'
 Loading.setDefaults({ spinner: QSpinnerBars, spinnerSize: 40 })
 
 Notify.setDefaults({ position: 'top', textColor: 'white', html: true })
 Notify.registerType('success', {
   icon: 'fas fa-check-square',
-  color: 'success'
+  color: 'green'
 })
 Notify.registerType('fail', {
   icon: 'fas fa-exclamation-circle',
@@ -37,3 +39,5 @@ Notify.registerType('ongoing', {
   icon: 'fas fa-spinner',
   color: 'grey-8'
 })
+
+export default boot(({ app }) => {})

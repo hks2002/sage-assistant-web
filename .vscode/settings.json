@@ -1,11 +1,21 @@
 {
-  "workbench.iconTheme": "material-icon-theme",
+  "workbench.iconTheme": "vs-seti",
   // eslint
   "eslint.validate": [
     "javascript",
     "javascriptreact",
     "typescript",
     "vue"
+  ],
+  "editor.rulers": [
+    {
+      "column": 80,
+      "color": "#4000ff"
+    },
+    {
+      "column": 120,
+      "color": "#d6225e"
+    }
   ],
   // bracket pair colorizer
   "editor.bracketPairColorization.enabled": true,
@@ -19,6 +29,10 @@
   "editor.formatOnPaste": true,
   "editor.formatOnSave": true,
   "editor.formatOnType": true,
+  // no semi
+  "prettier.semi": false,
+  // 使用单引号
+  "prettier.singleQuote": true,
   // whitespace show
   "editor.renderWhitespace": "trailing",
   // large file
@@ -75,5 +89,9 @@
     },
     "custom": true, // Enable the `custom` dictionary
     "internal-terms": false // Disable the `internal-terms` dictionary
+  },
+  "cSpell.language": "en,en-US",
+  "auto-header-plus.commentElementsValue": {
+    "CopyRight": "Dedienne Aerospace China ZhuHai"
   }
 }

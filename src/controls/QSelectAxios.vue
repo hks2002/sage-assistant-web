@@ -2,7 +2,7 @@
 * @Author                : Robert Huang<56649783@qq.com>
 * @CreatedDate           : 2022-05-20 12:00:00
 * @LastEditors           : Robert Huang<56649783@qq.com>
-* @LastEditDate          : 2023-08-27 21:03:43
+* @LastEditDate          : 2024-11-29 19:28:42
 * @FilePath              : sage-assistant-web/src/controls/QSelectAxios.vue
 * @CopyRight             : Dedienne Aerospace China ZhuHai
 -->
@@ -29,13 +29,19 @@ Note: 'multiple' can't with 'fill-input', 'hide-selected'
     :options="options"
     :option-label="optionLabel"
     :option-value="optionValue"
+    :loading="showLoading"
     @filter="filterFn"
     @filter-abort="abortFilterFn"
   >
-    <template v-slot:no-option>
+    <template v-slot:no-option v-if="!showLoading">
       <q-item>
         <q-item-section class="text-red"> {{ $t('S.NO_RESULTS') }} </q-item-section>
       </q-item>
+    </template>
+    <template v-slot:loading>
+      <q-inner-loading showing>
+        <q-spinner-ios size="50px" color="primary" />
+      </q-inner-loading>
     </template>
   </q-select>
 </template>
@@ -66,6 +72,7 @@ const props = defineProps({
 
 const model = ref(null)
 const options = ref([])
+const showLoading = ref(false)
 
 const filterFn = (inputVal, done, abort) => {
   if (inputVal.length < props.minQueryLen) {
@@ -77,21 +84,17 @@ const filterFn = (inputVal, done, abort) => {
   const params = {}
 
   params[props.optionLabel] = inputVal.toUpperCase()
+  showLoading.value = true
 
-  axiosGet(url, params).then((data) => {
-    options.value = data
-    // ref.moveOptionSelection(1, true)
-  })
+  axiosGet(url, params)
+    .then((data) => {
+      options.value = data
+    })
+    .finally(() => {
+      showLoading.value = false
+    })
 
-  done(
-    () => {
-      // Callback to call to make the actual updates, you can filter the options
-    },
-    () => {
-      // Callback to call at the end after the update has been fully processed by QSelect
-      // (ref) "ref" is the Vue reference to the QSelect
-    }
-  )
+  done()
 }
 
 const abortFilterFn = () => {

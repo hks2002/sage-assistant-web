@@ -2,7 +2,8 @@
 * @Author                : Robert Huang<56649783@qq.com>
 * @CreatedDate           : 2023-06-22 23:52:00
 * @LastEditors           : Robert Huang<56649783@qq.com>
-* @LastEditDate          : 2024-03-25 12:10:03
+* @LastEditDate          : 2025-01-24 13:39:31
+* @FilePath              : sage-assistant-web/src/components/Financial/QTableInvoicePay.vue
 * @CopyRight             : Dedienne Aerospace China ZhuHai
 -->
 
@@ -10,229 +11,96 @@
   <!-- set height and width in parent -->
   <q-table
     dense
-    class="sticky-first-header-row-table"
+    class="sticky-header-column--dense"
+    table-header-class="text-white"
     :rows="rows"
     :columns="columns"
-    :visibleColumns="visibleColumns"
-    :rows-per-page-options="[50, 100, 200, 500, 1000, 0]"
-    :style="{ height: tableHeight + 'px' }"
+    :rows-per-page-options="[100, 200, 500, 1000, 0]"
+    :loading="showLoading"
   >
     <template v-slot:top>
-      <div class="text-h6">{{ title }} <q-btn dense flat icon="fas fa-download" @click="download()" /></div>
+      <div class="col-12 text-h6 text-center">{{ title }}</div>
+      <div class="col-12 q-gutter-sm row">
+        <q-btn dense flat icon="fas fa-download" color="primary" @click="download()" :label="t('S.DOWNLOAD')" />
+        <q-select
+          dense
+          outlined
+          debounce="1000"
+          :options="['NEW', 'DUE', 'PAY']"
+          class="col-1"
+          :label="$t('S.SEARCH_DATE_TYPE')"
+          v-model="dateType"
+        />
+        <q-select
+          dense
+          outlined
+          debounce="1000"
+          :options="['PU-Paid', 'P-Paid', 'U-Paid', 'Paid', 'ALL']"
+          class="col-1"
+          :label="$t('F.Status')"
+          v-model="payStatus"
+        />
+      </div>
     </template>
     <template v-slot:body-cell-status="{ row }">
       <td :class="['text-center', row.status === 'U-Paid' ? 'unpaid' : row.status === 'P-Paid' ? 'ppaid' : '']">
         {{ row.status }}
       </td>
     </template>
+    <template v-slot:loading>
+      <q-inner-loading showing>
+        <q-spinner-ios size="50px" color="primary" />
+      </q-inner-loading>
+    </template>
   </q-table>
-  <q-inner-loading :showing="showLoading">
-    <q-spinner-ios size="50px" color="primary" />
-  </q-inner-loading>
 </template>
 
 <script setup>
 import { axiosGet } from '@/assets/axiosActions'
 import { jsonToExcel } from 'assets/dataUtils'
-import toLower from 'lodash/toLower'
-import { uid } from 'quasar'
-import { computed, inject, onMounted, ref, watch } from 'vue'
+import { date, uid } from 'quasar'
+import { onMounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 const props = defineProps({
-  customerCode: {
-    type: String,
-    require: false,
-    default: null
-  },
-  dateFrom: {
-    type: String,
-    require: true
-  },
-  dateTo: {
-    type: String,
-    require: true
-  },
-  dateType: {
-    type: String,
-    require: true
-  },
-  proSearch: {
-    type: Boolean,
-    require: false,
-    default: false
-  },
-  site: {
-    type: String,
-    require: false,
-    default: null
-  }
+  customerCode: String,
+  dateFrom: String,
+  dateTo: String,
+  site: String
 })
 
 // common vars
 const showLoading = ref(false)
 const { t } = useI18n()
-const bodyHeight = inject('bodyHeight')
-const ebus = inject('ebus')
 
 // components vars
+let dateType = ref('DUE')
+let payStatus = ref('PU-Paid')
 let columns = ref([])
 let rows = ref([])
 let fieldNames = ref([])
 
 const loadColumns = () => {
-  columns.value = [
-    {
-      field: 'idx',
-      label: '#',
-      align: 'left'
-    },
-    {
-      field: 'site',
-      label: t('F.Site'),
-      align: 'center'
-    },
-    {
-      field: 'customer',
-      label: t('F.Customer'),
-      align: 'center'
-    },
-    {
-      field: 'name',
-      label: t('F.Name'),
-      align: 'left'
-    },
-    {
-      field: 'invoiceNO',
-      label: t('F.InvoiceNO'),
-      align: 'left'
-    },
-    {
-      field: 'currency',
-      label: t('F.Currency'),
-      align: 'center'
-    },
-    {
-      field: 'amount',
-      label: t('F.Amount'),
-      align: 'right'
-    },
-    {
-      field: 'pay',
-      label: t('F.Pay'),
-      align: 'right',
-      sortable: true
-    },
-    {
-      field: 'amountLocal',
-      label: t('F.AmountLocal'),
-      align: 'right'
-    },
-    {
-      field: 'payLocal',
-      label: t('F.PayLocal'),
-      align: 'right'
-    },
-    {
-      field: 'orderNO',
-      label: t('F.OrderNO'),
-      align: 'left'
-    },
-    {
-      field: 'createDate',
-      label: t('F.CreateDate'),
-      align: 'left'
-    },
-    {
-      field: 'dueDate',
-      label: t('F.DueDate'),
-      align: 'left'
-    },
-    {
-      field: 'payDate',
-      label: t('F.PayDate'),
-      align: 'left'
-    },
-    {
-      field: 'fapiao',
-      label: t('F.Fapiao'),
-      align: 'left'
-    },
-    {
-      field: 'custRef',
-      label: t('F.CustRef'),
-      align: 'left'
-    },
-    {
-      field: 'status',
-      label: t('F.Status'),
-      align: 'center'
-    },
-    {
-      field: 'matchedBy',
-      label: t('F.MatchedBy'),
-      align: 'center'
-    },
-    {
-      field: 'payNO',
-      label: t('F.PayNO'),
-      align: 'left'
-    },
-    {
-      field: 'payCurrency',
-      label: t('F.PayCurrency'),
-      align: 'center'
-    },
-    {
-      field: 'payInPayNO',
-      label: t('F.PayInPayNO'),
-      align: 'left'
-    },
-    {
-      field: 'desc0',
-      label: t('F.Desc0'),
-      align: 'left'
-    },
-    {
-      field: 'desc1',
-      label: t('F.Desc1'),
-      align: 'left'
-    }
-  ]
-  // set name and sortable
-  columns.value.forEach((item, idx, array) => {
-    array[idx].name = toLower(item.field)
-    array[idx].sortable = true
-  })
+  delete require.cache[require.resolve('@/components/Financial/QTableInvoicePayColumns.js')]
 
-  // get all columns name
-  columns.value.forEach((item) => {
-    fieldNames.value.push(item.field)
+  Promise.resolve(require('@/components/Financial/QTableInvoicePayColumns.js').default).then((cols) => {
+    // add low case name
+    cols.forEach((item, idx, array) => {
+      array[idx].name = item.field.toLowerCase()
+      array[idx].sortable = true
+
+      fieldNames.value.push(item.field)
+    })
+    columns.value = cols
   })
 }
 
-// computed vars
-const proFieldNames = ['matchedBy', 'payNO', 'payCurrency', 'payInPayNO', 'desc0', 'desc1']
-const finalFieldNames = computed(() => {
-  return props.proSearch ? fieldNames.value : fieldNames.value.filter((fieldName) => !proFieldNames.includes(fieldName))
-})
-
-const visibleColumns = computed(() => {
-  let cols = []
-  finalFieldNames.value.forEach((item) => {
-    cols.push(toLower(item))
-  })
-  return cols
-})
-
-const tableHeight = computed(() => {
-  return bodyHeight.value - 80
-})
-
 const title = ref('')
 const setTitle = () => {
-  title.value = t('S.INVOICE PAY OF CUSTOMER {customerCode} FROM {dateFrom} TO {dateTo}', {
+  title.value = t('S.INVOICE PAY OF CUSTOMER {customerCode} FROM {dateType} {dateFrom} TO {dateTo} {payStatus}', {
     customerCode: props.customerCode,
+    dateType: dateType.value,
+    payStatus: payStatus.value,
     dateFrom: props.dateFrom,
     dateTo: props.dateTo
   })
@@ -243,15 +111,13 @@ const doUpdate = () => {
   if (!props.customerCode) return
   showLoading.value = true
 
-  const code = props.customerCode === '%%' ? '' : props.customerCode
-  const proSuffix = props.proSearch ? 'Pro' : ''
-
-  axiosGet('/Data/FinancialInvoicePay' + proSuffix, {
+  axiosGet('/Data/FinancialInvoicePay', {
     Site: props.site,
-    CustomerCode: code,
+    CustomerCode: props.customerCode,
     DateFrom: props.dateFrom,
     DateTo: props.dateTo,
-    DateType: props.dateType
+    DateType: dateType.value,
+    PayStatus: payStatus.value
   })
     .then((response) => {
       response.forEach((item, idx) => {
@@ -273,7 +139,24 @@ const doUpdate = () => {
 }
 
 const download = () => {
-  jsonToExcel(finalFieldNames.value, rows.value, props.customerCode + '-Invoice Pay')
+  if (!props.site || !props.customerCode || !date.isValid(props.dateFrom) || !date.isValid(props.dateTo)) return
+
+  showLoading.value = true
+
+  axiosGet('/Data/FinancialInvoicePayPro', {
+    Site: props.site,
+    CustomerCode: props.customerCode,
+    DateFrom: props.dateFrom,
+    DateTo: props.dateTo,
+    DateType: dateType.value,
+    PayStatus: payStatus.value
+  })
+    .then((data) => {
+      jsonToExcel(title.value + '_' + props.site, props.customerCode, data)
+    })
+    .finally(() => {
+      showLoading.value = false
+    })
 }
 
 // events
@@ -287,8 +170,16 @@ watch(props, (value, oldValue) => {
   console.debug('watch:', oldValue, '--->', value)
   doUpdate()
 })
+watch(dateType, (value, oldValue) => {
+  setTitle()
+  doUpdate()
+})
+watch(payStatus, (value, oldValue) => {
+  setTitle()
+  doUpdate()
+})
 
-ebus.on('changeLanguage', () => {
+watch(useI18n().locale, () => {
   loadColumns()
   setTitle()
 })

@@ -2,7 +2,8 @@
 * @Author                : Robert Huang<56649783@qq.com>
 * @CreatedDate           : 2023-11-15 23:10:00
 * @LastEditors           : Robert Huang<56649783@qq.com>
-* @LastEditDate          : 2024-01-24 16:58:18
+* @LastEditDate          : 2024-11-29 19:24:50
+* @FilePath              : sage-assistant-web/src/components/linkItems/LinkItems.vue
 * @CopyRight             : Dedienne Aerospace China ZhuHai
 -->
 
@@ -364,7 +365,6 @@
 <script setup>
 import { axiosGet } from '@/assets/axiosActions'
 import { tableToExcel } from '@/assets/dataUtils'
-import { toLower } from 'lodash'
 import { date } from 'quasar'
 import { computed, inject, onMounted, ref, shallowRef, watch } from 'vue'
 
@@ -402,7 +402,7 @@ const columns = ref(require('@/components/linkItems/linkItemsFields').default)
 // add name and sortable
 let AllHeader = []
 columns.value.forEach((item, idx, array) => {
-  array[idx].name = toLower(item.field)
+  array[idx].name = item.field.toLowerCase()
   AllHeader.push(item.field)
 })
 const rows = shallowRef([])
@@ -415,7 +415,7 @@ const finalHeader = computed(() => {
 const visibleColumns = computed(() => {
   let cols = []
   finalHeader.value.forEach((item) => {
-    cols.push(toLower(item))
+    cols.push(item.toLowerCase())
   })
   return cols
 })
@@ -594,10 +594,6 @@ const updatePage = (page) => {
   doUpdate()
 }
 
-// events
-ebus.on('changeLanguage', () => {
-  reloadColumns()
-})
 // events
 onMounted(() => {
   doUpdate({

@@ -2,30 +2,24 @@
 * @Author                : Robert Huang<56649783@qq.com>
 * @CreatedDate           : 2023-06-22 21:00:00
 * @LastEditors           : Robert Huang<56649783@qq.com>
-* @LastEditDate          : 2023-11-17 13:45:26
+* @LastEditDate          : 2025-01-05 21:39:40
+* @FilePath              : sage-assistant-web/src/components/echarts/EchartAccountBalance.vue
 * @CopyRight             : Dedienne Aerospace China ZhuHai
 -->
 
 <template>
-  <q-item>
-    <base-echart :e-chart-option="eChartOption" />
-    <q-inner-loading :showing="showLoading">
-      <q-spinner-ios size="50px" color="primary" />
-    </q-inner-loading>
-  </q-item>
+  <base-echart :e-chart-option="eChartOption" :show-loading="showLoading" />
 </template>
 
 <script setup>
+import BaseEchart from './BaseEchart.vue'
+
 import { axiosGet } from '@/assets/axiosActions'
 import { defaultToolbox, defaultTooltip } from '@/assets/echartsCfg.js'
-import _forEach from 'lodash/forEach'
-import _groupBy from 'lodash/groupBy'
-import _map from 'lodash/map'
-import _uniq from 'lodash/uniq'
+import { forEach, groupBy, map, uniq } from 'lodash-es'
 import { Quasar } from 'quasar'
 import { onMounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
-import BaseEchart from './BaseEchart.vue'
 
 const props = defineProps({
   accountNO: { type: String, require: true, default: '' },
@@ -83,13 +77,13 @@ const doUpdate = () => {
 }
 
 const prepareData = () => {
-  _forEach(data, (value) => {
+  forEach(data, (value) => {
     value['accountAndCurrency'] = value['accountNO'] + value['currency']
   })
-  legend = _uniq(_map(data, 'accountAndCurrency'))
-  dataByLegend = _groupBy(data, 'accountAndCurrency')
+  legend = uniq(map(data, 'accountAndCurrency'))
+  dataByLegend = groupBy(data, 'accountAndCurrency')
   series = []
-  _forEach(legend, (value, index) => {
+  forEach(legend, (value, index) => {
     const data12 = []
     for (let i = 0; i <= 12; i++) {
       // key C1,D1,M1,B1
@@ -122,7 +116,7 @@ const setEchart = () => {
       itemHeight: 10,
       textStyle: { fontSize: 10 }
     },
-    toolbox: defaultToolbox(dimensions, data, 'Account ' + props.accountNO + ' ' + catText + ' of ' + props.year),
+    toolbox: defaultToolbox('Account ' + props.accountNO + ' ' + catText + ' of ' + props.year, data, dimensions),
     tooltip: defaultTooltip,
     xAxis: {
       type: 'category',
